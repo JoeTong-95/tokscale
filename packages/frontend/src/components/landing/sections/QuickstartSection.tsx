@@ -330,12 +330,12 @@ const CommandInputArea = styled.div`
   }
 `;
 
-const CommandText = styled.span`
-  font-family: "Inconsolata", monospace !important;
+/* A <code> element picks up the loaded mono font from the global code rule. */
+const CommandText = styled.code`
   font-weight: 700;
   font-size: 16px;
   line-height: 0.94em;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.03em;
   text-align: center;
   color: #9ad7ed;
   white-space: nowrap;

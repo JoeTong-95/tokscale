@@ -56,6 +56,27 @@
   --service-focus: #75b6ff;
   --background: #000;
   --foreground: #ffffff;
+
+  /* tokscale.ai v2. Additive: black canvas, thin rules, one accent blue,
+     cyan only for numbers that need emphasis. --font-display comes from
+     next/font in app/layout.tsx. */
+  --v2-canvas: #000000;
+  --v2-surface: #07090d;
+  --v2-surface-raised: #0d1016;
+  --v2-rule: rgba(255, 255, 255, 0.1);
+  --v2-rule-strong: rgba(255, 255, 255, 0.18);
+  --v2-text: #f4f7fb;
+  --v2-text-muted: #a3adbd;
+  --v2-text-subtle: #848d9c;
+  --v2-accent: #0073ff;
+  /* Filled controls with white text: #0073ff is 4.3:1 with white, this is 5.2:1. */
+  --v2-accent-strong: #0066e6;
+  --v2-accent-soft: rgba(0, 115, 255, 0.14);
+  --v2-numeric: #53d1f3;
+  --v2-focus: #75b6ff;
+  --v2-font-display: var(--font-display), "Iowan Old Style", Georgia, serif;
+  --v2-font-ui: var(--font-figtree), system-ui, -apple-system, sans-serif;
+  --v2-font-mono: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 /* react-toastify loads after this file and sets --toastify-font-family to

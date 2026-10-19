@@ -97,7 +97,10 @@ const Line = styled.span`
   }
 `;
 
+/* Above the snapshot backdrop, which reaches up behind the hero's lower edge. */
 const Hero = styled.section`
+  position: relative;
+  z-index: 1;
   padding: 128px 0 56px;
 
   @media (max-width: 720px) {
@@ -195,10 +198,9 @@ const Closing = styled.section`
 const ClosingArt = styled.div`
   position: absolute;
   z-index: -1;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  inset: 0;
   display: flex;
+  align-items: flex-end;
   justify-content: center;
   overflow: hidden;
   pointer-events: none;

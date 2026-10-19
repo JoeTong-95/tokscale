@@ -135,7 +135,7 @@ function ModelItem({ model }: { model: ModelUsageRow }) {
       <RowLink href={`/models/${encodeURIComponent(model.key)}`} $kind="models">
         <Rank>{model.rank}</Rank>
         <NameBlock>
-          <Name>{model.name}</Name>
+          <Name $wrapNarrow>{model.name}</Name>
           <Sub>{model.lab ?? "Unknown lab"}</Sub>
         </NameBlock>
         <Value>
@@ -274,7 +274,7 @@ const modelsGrid = css`
   grid-template-columns: 20px minmax(0, 1fr) 92px 92px;
 
   @media (max-width: 520px) {
-    grid-template-columns: 20px minmax(0, 1fr) 64px 64px;
+    grid-template-columns: 16px minmax(0, 1fr) 52px 48px;
   }
 `;
 
@@ -377,11 +377,15 @@ const ellipsis = css`
   white-space: nowrap;
 `;
 
-const Name = styled.span`
+const Name = styled.span<{ $wrapNarrow?: boolean }>`
   ${ellipsis}
   color: var(--v2-text);
   font-size: 15px;
   font-weight: 500;
+
+  @media (max-width: 520px) {
+    white-space: ${({ $wrapNarrow }) => ($wrapNarrow ? "normal" : "nowrap")};
+  }
 `;
 
 const Sub = styled.span`

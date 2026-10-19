@@ -280,6 +280,13 @@ const StackList = styled.dl`
     margin: 0;
     min-width: 0;
   }
+
+  @media (max-width: 400px) {
+    > div {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 6px;
+    }
+  }
 `;
 
 const Chips = styled.ul`

@@ -73,7 +73,6 @@ const TokenLabel = styled.span`
 `;
 
 const TokenValue = styled.span`
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   font-weight: 600;
 `;
 

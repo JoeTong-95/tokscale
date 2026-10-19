@@ -1,0 +1,340 @@
+"use client";
+
+import Link from "next/link";
+import styled from "styled-components";
+import type { Coverage, ModelUsageRow } from "@/lib/explore";
+import { agentLogoUrl } from "./agents";
+import { compactCurrency, compactNumber, coverageRangeLabel, percent, periodLabel, userChange, wholeNumber } from "./format";
+import { Arrow, Container, Eyebrow, focusRing, Lead, Section, SectionHeader, SectionTitle, TextLink } from "./primitives";
+
+interface ModelsSectionProps {
+  models: ModelUsageRow[];
+  coverage: Coverage | null;
+}
+
+export function ModelsSection({ models, coverage }: ModelsSectionProps) {
+  const pair = models.slice(0, 2);
+  const range = coverage ? coverageRangeLabel(coverage) : null;
+
+  return (
+    <Section aria-labelledby="home-models-title">
+      <Container>
+        <Head>
+          <SectionHeader>
+            <Eyebrow>Models</Eyebrow>
+            <SectionTitle id="home-models-title">Compare models before you build.</SectionTitle>
+            <Lead>
+              See how many people use a model, which agents they use it through, and how many tokens it handles.
+            </Lead>
+          </SectionHeader>
+          <TextLink href="/models">
+            Compare models <Arrow />
+          </TextLink>
+        </Head>
+
+        {pair.length > 0 && coverage ? (
+          <Comparison>
+            <ComparisonMeta>
+              <span>
+                Top {pair.length} by active users · {periodLabel(coverage.period)}
+                {range ? ` (${range})` : ""}
+              </span>
+              <span>{wholeNumber(coverage.accounts)} active accounts in this period</span>
+            </ComparisonMeta>
+            <Pair>
+              {pair.map((model) => (
+                <ModelColumn key={model.key} model={model} accounts={coverage.accounts} />
+              ))}
+            </Pair>
+          </Comparison>
+        ) : null}
+      </Container>
+    </Section>
+  );
+}
+
+function ModelColumn({ model, accounts }: { model: ModelUsageRow; accounts: number }) {
+  const change = userChange(model);
+  const titleId = `home-model-${model.key.replace(/[^a-z0-9-]/gi, "-")}`;
+  return (
+    <Column aria-labelledby={titleId}>
+      <ModelHead>
+        <ModelRank>#{model.rank}</ModelRank>
+        <ModelName id={titleId}>{model.name}</ModelName>
+        <ModelLab>{model.lab ?? "Unknown lab"}</ModelLab>
+      </ModelHead>
+      <Facts>
+        <Fact>
+          <dt>
+            Active users
+            <small>People who used it in the period</small>
+          </dt>
+          <dd>
+            {wholeNumber(model.activeUsers)}
+            {change.kind === "new" ? (
+              <Delta>New this period</Delta>
+            ) : change.kind === "none" ? null : (
+              <Delta>{change.label} vs previous period</Delta>
+            )}
+          </dd>
+        </Fact>
+        <Fact>
+          <dt>
+            Adoption
+            <small>Share of all {wholeNumber(accounts)} active accounts</small>
+          </dt>
+          <dd>{percent(model.adoption)}</dd>
+        </Fact>
+        <Fact>
+          <dt>
+            Tokens
+            <small>Input, output, cache, and reasoning tokens</small>
+          </dt>
+          <dd>{compactNumber(model.tokens)}</dd>
+        </Fact>
+        <Fact>
+          <dt>
+            Est. cost
+            <small>At public list prices, not what people paid</small>
+          </dt>
+          <dd>{compactCurrency(model.estimatedCost)}</dd>
+        </Fact>
+        <Fact $stack>
+          <dt>
+            Top agents
+            <small>Share of this model&apos;s tokens</small>
+          </dt>
+          <dd>
+            {model.topAgents.length ? (
+              <AgentList>
+                {model.topAgents.map((agent) => {
+                  const logo = agentLogoUrl(agent);
+                  return (
+                    <li key={agent.key}>
+                      {logo ? <AgentLogo src={logo} alt="" width={16} height={16} loading="lazy" /> : <i aria-hidden="true" />}
+                      <span>{agent.name}</span>
+                      <b>{percent(agent.share)}</b>
+                    </li>
+                  );
+                })}
+              </AgentList>
+            ) : (
+              "—"
+            )}
+          </dd>
+        </Fact>
+      </Facts>
+      <ColumnFooter>
+        <ModelLink href={`/models/${encodeURIComponent(model.key)}`}>
+          {model.name} details <Arrow />
+        </ModelLink>
+      </ColumnFooter>
+    </Column>
+  );
+}
+
+const Head = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 40px;
+`;
+
+const Comparison = styled.div`
+  border: 1px solid var(--v2-rule-strong);
+  border-radius: 12px;
+  background: var(--v2-surface);
+`;
+
+const ComparisonMeta = styled.p`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 16px;
+  margin: 0;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--v2-rule);
+  color: var(--v2-text-subtle);
+  font-size: 13px;
+
+  @media (max-width: 520px) {
+    padding: 12px 16px;
+  }
+`;
+
+const Pair = styled.div`
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+
+  @media (max-width: 820px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+`;
+
+const Column = styled.section`
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+
+  & + & {
+    border-left: 1px solid var(--v2-rule);
+  }
+
+  @media (max-width: 820px) {
+    & + & {
+      border-top: 1px solid var(--v2-rule);
+      border-left: 0;
+    }
+  }
+`;
+
+const ModelHead = styled.header`
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 12px;
+  padding: 24px 24px 16px;
+
+  @media (max-width: 520px) {
+    padding: 20px 16px 12px;
+  }
+`;
+
+const ModelRank = styled.span`
+  grid-row: span 2;
+  padding-top: 6px;
+  color: var(--v2-text-subtle);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+`;
+
+const ModelName = styled.h3`
+  margin: 0;
+  color: var(--v2-text);
+  font-family: var(--v2-font-display);
+  font-size: 34px;
+  font-weight: 400;
+  line-height: 1.1;
+`;
+
+const ModelLab = styled.p`
+  margin: 2px 0 0;
+  color: var(--v2-text-muted);
+  font-size: 14px;
+`;
+
+const Facts = styled.dl`
+  flex: 1;
+  margin: 0;
+  padding: 0 24px;
+
+  @media (max-width: 520px) {
+    padding: 0 16px;
+  }
+`;
+
+const Fact = styled.div<{ $stack?: boolean }>`
+  display: grid;
+  grid-template-columns: ${({ $stack }) => ($stack ? "minmax(0, 1fr)" : "minmax(0, 1fr) auto")};
+  gap: ${({ $stack }) => ($stack ? "10px" : "16px")};
+  align-items: baseline;
+  padding: 14px 0;
+  border-top: 1px solid var(--v2-rule);
+
+  dt {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    color: var(--v2-text);
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  dt small {
+    color: var(--v2-text-subtle);
+    font-size: 12px;
+    font-weight: 400;
+  }
+
+  dd {
+    display: flex;
+    flex-direction: column;
+    align-items: ${({ $stack }) => ($stack ? "stretch" : "flex-end")};
+    margin: 0;
+    color: var(--v2-text);
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+`;
+
+const Delta = styled.span`
+  color: var(--v2-numeric);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0;
+`;
+
+const AgentList = styled.ul`
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+  letter-spacing: 0;
+
+  li {
+    display: grid;
+    grid-template-columns: 16px minmax(0, 1fr) auto;
+    gap: 8px;
+    align-items: center;
+  }
+
+  span {
+    grid-column: 2;
+    color: var(--v2-text-muted);
+    font-weight: 400;
+  }
+
+  b {
+    color: var(--v2-text);
+    font-weight: 500;
+  }
+`;
+
+const AgentLogo = styled.img`
+  grid-column: 1;
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  object-fit: contain;
+`;
+
+const ColumnFooter = styled.div`
+  padding: 16px 24px 20px;
+  border-top: 1px solid var(--v2-rule);
+
+  @media (max-width: 520px) {
+    padding: 16px;
+  }
+`;
+
+const ModelLink = styled(Link)`
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  border-radius: 4px;
+  color: var(--v2-text);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  ${focusRing}
+
+  span[aria-hidden] {
+    color: var(--v2-accent);
+  }
+`;

@@ -46,7 +46,6 @@ const StyledTextarea = styled.textarea<{ $hasError?: boolean }>`
   width: 100%;
   height: 18rem; /* h-72 */
   padding: 1rem; /* p-4 */
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* font-mono */
   font-size: 0.875rem; /* text-sm */
   border-radius: 1rem; /* rounded-2xl */
   border-width: 2px;

@@ -21,7 +21,7 @@ import type {
 export * from "./types";
 
 /** Models need this many distinct all-time accounts before they get an indexable page. */
-export const MIN_INDEXABLE_MODEL_USERS = 3;
+export const MIN_INDEXABLE_MODEL_USERS = 5;
 const SNAPSHOT_SIZE = 5;
 
 function hasDatabase(): boolean {

@@ -143,9 +143,11 @@ export default async function QuarterPage({ params }: PageProps) {
           <span>Period of report {formatDate(q.periodOfReport)}</span>
           <span>Filed {formatDate(q.filedAt)}</span>
           {story ? <span>Published {formatDate(story.publishedAt)}</span> : null}
-          <span>
-            Numbers reviewed {formatDate(story?.reviewedAt ?? q.secRetrievedAt.slice(0, 10))} against the SEC tables
-          </span>
+          {story ? (
+            <span>Numbers checked against the SEC tables {formatDate(story.reviewedAt)}</span>
+          ) : (
+            <span>Data from SEC EDGAR, retrieved {formatDate(q.secRetrievedAt.slice(0, 10))}</span>
+          )}
         </p>
       </header>
 

@@ -3,6 +3,7 @@ import { Navigation } from "@/components/layout/Navigation";
 import { HomePage } from "@/components/home/HomePage";
 import type { CapitalPreviewItem } from "@/components/home/CapitalPreview";
 import { getCommunitySnapshot, getHumansLeaderboard, getModelLeaderboard } from "@/lib/explore";
+import { getFeaturedCapital } from "@/lib/capital";
 import { homeUrl } from "@/lib/seo/urls";
 
 // Declared per-page rather than on the root layout: `alternates.canonical` is
@@ -14,23 +15,14 @@ export const metadata: Metadata = {
   },
 };
 
-// Local stub until the capital workstream provides real entries.
-const CAPITAL_PREVIEW: CapitalPreviewItem[] = [
-  {
-    title: "Thiel Macro holdings, Q2 2026",
-    fund: "Thiel Macro",
-    quarter: "Q2 2026",
-    href: "/capital/funds/thiel-macro/holdings/2026-q2",
-    summary: "The positions the fund reported at the end of the quarter in its 13F filing.",
-  },
-  {
-    title: "Pershing Square holdings, Q2 2026",
-    fund: "Pershing Square",
-    quarter: "Q2 2026",
-    href: "/capital/funds/pershing-square/holdings/2026-q2",
-    summary: "The positions the fund reported at the end of the quarter in its 13F filing.",
-  },
-];
+// Featured 13F stories; the home cards keep their engraving art instead of the OG data cards.
+const CAPITAL_PREVIEW: CapitalPreviewItem[] = getFeaturedCapital().map(({ title, fund, quarter, href, summary }) => ({
+  title,
+  fund,
+  quarter,
+  href,
+  summary,
+}));
 
 export default async function Page() {
   const [snapshot, humans, models] = await Promise.all([

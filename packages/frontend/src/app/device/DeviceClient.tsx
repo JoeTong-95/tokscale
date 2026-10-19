@@ -162,7 +162,6 @@ const Input = styled.input`
   padding: 16px;
   text-align: center;
   font-size: 24px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   letter-spacing: 0.3em;
   border: 1px solid;
   border-color: var(--color-border-default);

@@ -1532,7 +1532,6 @@ const TooltipMetricLabel = styled.span`
 
 const TooltipMetricValue = styled.span`
   color: var(--service-text);
-  font-family: var(--font-mono);
   font-weight: 600;
   text-align: right;
 `;
@@ -1648,7 +1647,6 @@ const DetailMetricLabel = styled.div`
 const DetailMetricValue = styled.div`
   overflow: hidden;
   color: var(--service-text);
-  font-family: var(--font-mono);
   font-size: 0.8125rem;
   font-weight: 600;
   text-overflow: ellipsis;
@@ -1773,7 +1771,6 @@ const ClientName = styled.strong`
 const ClientTotal = styled.span`
   flex: 0 0 auto;
   color: var(--service-text-muted);
-  font-family: var(--font-mono);
   font-size: 0.6875rem;
   font-variant-numeric: tabular-nums;
 `;
@@ -1797,7 +1794,6 @@ const ModelRow = styled.div`
 const ModelName = styled.span`
   overflow: hidden;
   color: var(--service-text);
-  font-family: var(--font-mono);
   font-size: 0.6875rem;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1805,7 +1801,6 @@ const ModelName = styled.span`
 
 const ModelValue = styled.span`
   color: var(--service-text);
-  font-family: var(--font-mono);
   font-size: 0.6875rem;
   font-variant-numeric: tabular-nums;
 `;

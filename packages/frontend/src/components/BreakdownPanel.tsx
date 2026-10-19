@@ -342,7 +342,6 @@ const ModelHeader = styled.div`
 `;
 
 const ModelName = styled.span`
-  font-family: var(--font-mono);
   font-size: 0.875rem;
   font-weight: 600;
   flex: 1 1 auto;
@@ -429,7 +428,6 @@ const BadgeLabel = styled.span`
 `;
 
 const BadgeValue = styled.span`
-  font-family: var(--font-mono);
   font-weight: 600;
 `;
 

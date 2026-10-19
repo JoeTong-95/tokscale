@@ -58,12 +58,22 @@
   --foreground: #ffffff;
 }
 
-* {
+/* react-toastify loads after this file and sets --toastify-font-family to
+   sans-serif on :root. Set it on the container so toasts stay on Figtree. */
+.Toastify {
+  --toastify-font-family: var(--font-figtree), system-ui, -apple-system, sans-serif;
+}
+
+/* Figtree is set on the document root and inherited. It used to be forced on
+   every element with `* { font-family: ... !important }`, which blocked any
+   component from choosing another face (for example the v2 display serif).
+   Form controls inherit through the global style in lib/providers. */
+html {
   font-family:
     var(--font-figtree),
     system-ui,
     -apple-system,
-    sans-serif !important;
+    sans-serif;
 }
 
 body {

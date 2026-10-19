@@ -15,6 +15,7 @@ import {
   resolveExplorePeriod,
 } from "@/components/explore/format";
 import { ModelDetailView } from "@/components/explore/ModelDetailView";
+import { companySlugForLab } from "@/lib/companyLinks";
 import { buildExploreHref } from "../../leaderboard/views";
 
 interface PageProps {
@@ -85,7 +86,12 @@ export default async function ModelPage({ params, searchParams }: PageProps) {
   const loaded = await loadDetail(key, requested);
   if (!loaded) notFound();
 
-  const { detail, period, fallbackFrom } = loaded;
+  const { period, fallbackFrom } = loaded;
+  // Link the lab only when a company page exists for it.
+  const detail: ModelDetail = {
+    ...loaded.detail,
+    model: { ...loaded.detail.model, labSlug: companySlugForLab(loaded.detail.model.labSlug) },
+  };
   const path = `/models/${encodeURIComponent(detail.model.key)}`;
   const periodOptions = EXPLORE_PERIODS.map((value) => ({
     href: buildExploreHref(path, { period: requested }, { period: value }, { period: DEFAULT_EXPLORE_PERIOD }),

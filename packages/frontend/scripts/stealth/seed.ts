@@ -248,6 +248,23 @@ const MODEL_UPGRADES: Record<string, string> = {
   "gemini-3.5-flash": "gemini-3.8-flash",
 };
 
+/**
+ * Synthetic accounts have no GitHub account, and the UI falls back to
+ * github.com/<username>.png (a 404). Give them a plain monogram instead of
+ * borrowing anyone's real avatar.
+ */
+function monogramAvatar(seed: string, label: string): string {
+  let hash = 0;
+  for (const ch of seed) hash = (hash * 31 + ch.charCodeAt(0)) >>> 0;
+  const hue = hash % 360;
+  const svg =
+    `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96">` +
+    `<rect width="96" height="96" fill="hsl(${hue} 28% 22%)"/>` +
+    `<text x="48" y="58" font-family="Arial, sans-serif" font-size="32" font-weight="700" fill="hsl(${hue} 60% 78%)" text-anchor="middle">${label}</text>` +
+    `</svg>`;
+  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+}
+
 const WORDS_A = ["amber", "brisk", "cedar", "dusk", "ember", "fjord", "glade", "harbor", "iris", "juniper", "kestrel", "lumen", "maple", "north", "onyx", "pine", "quartz", "river", "slate", "tidal"];
 const WORDS_B = ["builder", "coder", "dev", "hacker", "maker", "shipper", "tinkerer", "writer"];
 
@@ -282,6 +299,17 @@ function remixAccount(base: SeedAccount, index: number, today: string): SeedAcco
   const upgrades = new Map<string, string>();
   for (const [from, to] of Object.entries(MODEL_UPGRADES)) if (rng() < 0.35) upgrades.set(from, to);
 
+  // Long tail: a remix keeps the base account's main models but only some of
+  // its rarely used ones, so niche models do not appear in every remix.
+  const modelTokens = new Map<string, number>();
+  for (const day of kept) {
+    for (const entry of Object.values(day.breakdown)) {
+      for (const [model, cell] of Object.entries(entry.models)) modelTokens.set(model, (modelTokens.get(model) ?? 0) + cell.tokens);
+    }
+  }
+  const mainModels = new Set([...modelTokens.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5).map(([model]) => model));
+  const droppedModels = new Set([...modelTokens.keys()].filter((model) => !mainModels.has(model) && rng() < 0.7));
+
   const days: SeedDay[] = [];
   for (const day of kept) {
     if (day.date !== kept[kept.length - 1].date && rng() < dropRate) continue;
@@ -294,6 +322,7 @@ function remixAccount(base: SeedAccount, index: number, today: string): SeedAcco
       if (factor === undefined) continue;
       const models: Record<string, ModelCell> = {};
       for (const [model, cell] of Object.entries(entry.models)) {
+        if (droppedModels.has(model)) continue;
         const scaled = scaleCell(cell, scale * factor * jitter);
         if (scaled.tokens <= 0) continue;
         const target = upgrades.get(model) ?? model;
@@ -315,7 +344,7 @@ function remixAccount(base: SeedAccount, index: number, today: string): SeedAcco
     githubId: 900_000_000 + index,
     username,
     displayName: `Synthetic ${word.replace("-", " ")} ${index}`,
-    avatarUrl: null,
+    avatarUrl: monogramAvatar(username, word.split("-").map((w) => w[0].toUpperCase()).join("")),
     hidden: false,
     cliVersion: "stealth-seed",
     submitCount: Math.max(1, Math.round(days.length * uniform(rng, 1, 6))),
@@ -346,7 +375,7 @@ function hiddenAccount(index: number, today: string): SeedAccount {
     githubId: 990_000_000 + index,
     username: `synthetic-hidden-${String(index).padStart(2, "0")}`,
     displayName: `Synthetic hidden ${index}`,
-    avatarUrl: null,
+    avatarUrl: monogramAvatar(`synthetic-hidden-${index}`, "H"),
     hidden: true,
     cliVersion: "stealth-seed",
     submitCount: 45,
@@ -519,9 +548,11 @@ async function main(): Promise<void> {
     await sql.begin(async (tx) => {
       await writeAccounts(tx as unknown as postgres.Sql, accounts);
     });
-    await sql`ANALYZE users`;
-    await sql`ANALYZE submissions`;
-    await sql`ANALYZE daily_breakdown`;
+    // Re-seeding deletes the previous rows; reclaim them so query timings stay comparable.
+    await sql`VACUUM ANALYZE users`;
+    await sql`VACUUM ANALYZE submissions`;
+    await sql`VACUUM ANALYZE submitted_devices`;
+    await sql`VACUUM ANALYZE daily_breakdown`;
   } finally {
     await sql.end({ timeout: 5 });
   }

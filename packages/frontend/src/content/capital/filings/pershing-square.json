@@ -1,0 +1,1147 @@
+{
+  "slug": "pershing-square",
+  "secRetrievedAt": "2026-09-29T15:21:58Z",
+  "quarters": [
+    {
+      "quarter": "2025-q2",
+      "periodOfReport": "2025-06-30",
+      "reports": [
+        {
+          "accession": "0001172661-25-003509",
+          "form": "13F-HR",
+          "reportType": "13F HOLDINGS REPORT",
+          "filerName": "Pershing Square Capital Management, L.P.",
+          "cik": "0001336528",
+          "periodOfReport": "2025-06-30",
+          "filedAt": "2025-08-14",
+          "declaredTotalUsd": 13729120533,
+          "declaredEntries": 11,
+          "otherManagers": [],
+          "urls": {
+            "index": "https://www.sec.gov/Archives/edgar/data/1336528/000117266125003509/0001172661-25-003509-index.htm",
+            "primaryDoc": "https://www.sec.gov/Archives/edgar/data/1336528/000117266125003509/primary_doc.xml",
+            "infoTable": "https://www.sec.gov/Archives/edgar/data/1336528/000117266125003509/infotable.xml"
+          }
+        },
+        {
+          "accession": "0001172661-25-003512",
+          "form": "13F-HR",
+          "reportType": "13F COMBINATION REPORT",
+          "filerName": "PERSHING SQUARE HOLDCO, L.P.",
+          "cik": "0002026053",
+          "periodOfReport": "2025-06-30",
+          "filedAt": "2025-08-14",
+          "declaredTotalUsd": 607500000,
+          "declaredEntries": 1,
+          "otherManagers": [],
+          "urls": {
+            "index": "https://www.sec.gov/Archives/edgar/data/2026053/000117266125003512/0001172661-25-003512-index.htm",
+            "primaryDoc": "https://www.sec.gov/Archives/edgar/data/2026053/000117266125003512/primary_doc.xml",
+            "infoTable": "https://www.sec.gov/Archives/edgar/data/2026053/000117266125003512/infotable.xml"
+          }
+        }
+      ],
+      "notices": [],
+      "placeholderRows": 0,
+      "holdings": [
+        {
+          "cusip6": "90353T",
+          "issuer": "UBER TECHNOLOGIES INC",
+          "company": "uber",
+          "valueUsd": 2827098321,
+          "shares": 30301161,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "90353T100",
+              "titleOfClass": "COM",
+              "valueUsd": 2827098321,
+              "shares": 30301161
+            }
+          ]
+        },
+        {
+          "cusip6": "11271J",
+          "issuer": "BROOKFIELD CORP",
+          "company": "brookfield",
+          "valueUsd": 2545770554,
+          "shares": 41160397,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "11271J107",
+              "titleOfClass": "CL A LTD VT SH",
+              "valueUsd": 2545770554,
+              "shares": 41160397
+            }
+          ]
+        },
+        {
+          "cusip6": "02079K",
+          "issuer": "ALPHABET INC",
+          "company": "alphabet",
+          "valueUsd": 2066937824,
+          "shares": 11687011,
+          "rows": 2,
+          "classes": [
+            {
+              "cusip": "02079K107",
+              "titleOfClass": "CAP STK CL C",
+              "valueUsd": 1121819859,
+              "shares": 6324031
+            },
+            {
+              "cusip": "02079K305",
+              "titleOfClass": "CAP STK CL A",
+              "valueUsd": 945117965,
+              "shares": 5362980
+            }
+          ]
+        },
+        {
+          "cusip6": "44267T",
+          "issuer": "HOWARD HUGHES HOLDINGS INC",
+          "company": "howard-hughes",
+          "valueUsd": 1880014320,
+          "shares": 27852064,
+          "rows": 2,
+          "classes": [
+            {
+              "cusip": "44267T102",
+              "titleOfClass": "COM",
+              "valueUsd": 1880014320,
+              "shares": 27852064
+            }
+          ]
+        },
+        {
+          "cusip6": "76131D",
+          "issuer": "RESTAURANT BRANDS INTL INC",
+          "company": "restaurant-brands-international",
+          "valueUsd": 1524730589,
+          "shares": 23000914,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "76131D103",
+              "titleOfClass": "COM",
+              "valueUsd": 1524730589,
+              "shares": 23000914
+            }
+          ]
+        },
+        {
+          "cusip6": "023135",
+          "issuer": "AMAZON COM INC",
+          "company": "amazon",
+          "valueUsd": 1277577297,
+          "shares": 5823316,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "023135106",
+              "titleOfClass": "COM",
+              "valueUsd": 1277577297,
+              "shares": 5823316
+            }
+          ]
+        },
+        {
+          "cusip6": "169656",
+          "issuer": "CHIPOTLE MEXICAN GRILL INC",
+          "company": "chipotle",
+          "valueUsd": 1209537089,
+          "shares": 21541177,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "169656105",
+              "titleOfClass": "COM",
+              "valueUsd": 1209537089,
+              "shares": 21541177
+            }
+          ]
+        },
+        {
+          "cusip6": "43300A",
+          "issuer": "HILTON WORLDWIDE HLDGS INC",
+          "company": "hilton",
+          "valueUsd": 807164145,
+          "shares": 3030578,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "43300A203",
+              "titleOfClass": "COM",
+              "valueUsd": 807164145,
+              "shares": 3030578
+            }
+          ]
+        },
+        {
+          "cusip6": "42806J",
+          "issuer": "HERTZ GLOBAL HLDGS INC",
+          "company": "hertz",
+          "valueUsd": 104096897,
+          "shares": 15241127,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "42806J700",
+              "titleOfClass": "COM NEW",
+              "valueUsd": 104096897,
+              "shares": 15241127
+            }
+          ]
+        },
+        {
+          "cusip6": "812215",
+          "issuer": "SEAPORT ENTMT GROUP INC",
+          "company": "seaport-entertainment",
+          "valueUsd": 93693497,
+          "shares": 5023780,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "812215200",
+              "titleOfClass": "COMMON STOCK",
+              "valueUsd": 93693497,
+              "shares": 5023780
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "quarter": "2025-q3",
+      "periodOfReport": "2025-09-30",
+      "reports": [
+        {
+          "accession": "0001172661-25-005039",
+          "form": "13F-HR",
+          "reportType": "13F HOLDINGS REPORT",
+          "filerName": "Pershing Square Capital Management, L.P.",
+          "cik": "0001336528",
+          "periodOfReport": "2025-09-30",
+          "filedAt": "2025-11-14",
+          "declaredTotalUsd": 14643293767,
+          "declaredEntries": 11,
+          "otherManagers": [],
+          "urls": {
+            "index": "https://www.sec.gov/Archives/edgar/data/1336528/000117266125005039/0001172661-25-005039-index.htm",
+            "primaryDoc": "https://www.sec.gov/Archives/edgar/data/1336528/000117266125005039/primary_doc.xml",
+            "infoTable": "https://www.sec.gov/Archives/edgar/data/1336528/000117266125005039/infotable.xml"
+          }
+        },
+        {
+          "accession": "0001172661-25-005115",
+          "form": "13F-HR",
+          "reportType": "13F COMBINATION REPORT",
+          "filerName": "PERSHING SQUARE HOLDCO, L.P.",
+          "cik": "0002026053",
+          "periodOfReport": "2025-09-30",
+          "filedAt": "2025-11-14",
+          "declaredTotalUsd": 739530000,
+          "declaredEntries": 1,
+          "otherManagers": [],
+          "urls": {
+            "index": "https://www.sec.gov/Archives/edgar/data/2026053/000117266125005115/0001172661-25-005115-index.htm",
+            "primaryDoc": "https://www.sec.gov/Archives/edgar/data/2026053/000117266125005115/primary_doc.xml",
+            "infoTable": "https://www.sec.gov/Archives/edgar/data/2026053/000117266125005115/infotable.xml"
+          }
+        }
+      ],
+      "notices": [],
+      "placeholderRows": 0,
+      "holdings": [
+        {
+          "cusip6": "90353T",
+          "issuer": "UBER TECHNOLOGIES INC",
+          "company": "uber",
+          "valueUsd": 2965602648,
+          "shares": 30270518,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "90353T100",
+              "titleOfClass": "COM",
+              "valueUsd": 2965602648,
+              "shares": 30270518
+            }
+          ]
+        },
+        {
+          "cusip6": "11271J",
+          "issuer": "BROOKFIELD CORP",
+          "company": "brookfield",
+          "valueUsd": 2813167442,
+          "shares": 41020231,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "11271J107",
+              "titleOfClass": "CL A LTD VT SH",
+              "valueUsd": 2813167442,
+              "shares": 41020231
+            }
+          ]
+        },
+        {
+          "cusip6": "02079K",
+          "issuer": "ALPHABET INC",
+          "company": "alphabet",
+          "valueUsd": 2717787586,
+          "shares": 11168004,
+          "rows": 2,
+          "classes": [
+            {
+              "cusip": "02079K107",
+              "titleOfClass": "CAP STK CL C",
+              "valueUsd": 1540217750,
+              "shares": 6324031
+            },
+            {
+              "cusip": "02079K305",
+              "titleOfClass": "CAP STK CL A",
+              "valueUsd": 1177569836,
+              "shares": 4843973
+            }
+          ]
+        },
+        {
+          "cusip6": "44267T",
+          "issuer": "HOWARD HUGHES HOLDINGS INC",
+          "company": "howard-hughes",
+          "valueUsd": 2288604099,
+          "shares": 27852064,
+          "rows": 2,
+          "classes": [
+            {
+              "cusip": "44267T102",
+              "titleOfClass": "COM",
+              "valueUsd": 2288604099,
+              "shares": 27852064
+            }
+          ]
+        },
+        {
+          "cusip6": "76131D",
+          "issuer": "RESTAURANT BRANDS INTL INC",
+          "company": "restaurant-brands-international",
+          "valueUsd": 1469799913,
+          "shares": 22915496,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "76131D103",
+              "titleOfClass": "COM",
+              "valueUsd": 1469799913,
+              "shares": 22915496
+            }
+          ]
+        },
+        {
+          "cusip6": "023135",
+          "issuer": "AMAZON COM INC",
+          "company": "amazon",
+          "valueUsd": 1278625494,
+          "shares": 5823316,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "023135106",
+              "titleOfClass": "COM",
+              "valueUsd": 1278625494,
+              "shares": 5823316
+            }
+          ]
+        },
+        {
+          "cusip6": "169656",
+          "issuer": "CHIPOTLE MEXICAN GRILL INC",
+          "company": "chipotle",
+          "valueUsd": 844198727,
+          "shares": 21541177,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "169656105",
+              "titleOfClass": "COM",
+              "valueUsd": 844198727,
+              "shares": 21541177
+            }
+          ]
+        },
+        {
+          "cusip6": "43300A",
+          "issuer": "HILTON WORLDWIDE HLDGS INC",
+          "company": "hilton",
+          "valueUsd": 786253156,
+          "shares": 3030578,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "43300A203",
+              "titleOfClass": "COM",
+              "valueUsd": 786253156,
+              "shares": 3030578
+            }
+          ]
+        },
+        {
+          "cusip6": "812215",
+          "issuer": "SEAPORT ENTMT GROUP INC",
+          "company": "seaport-entertainment",
+          "valueUsd": 115145038,
+          "shares": 5023780,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "812215200",
+              "titleOfClass": "COMMON STOCK",
+              "valueUsd": 115145038,
+              "shares": 5023780
+            }
+          ]
+        },
+        {
+          "cusip6": "42806J",
+          "issuer": "HERTZ GLOBAL HLDGS INC",
+          "company": "hertz",
+          "valueUsd": 103639664,
+          "shares": 15241127,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "42806J700",
+              "titleOfClass": "COM NEW",
+              "valueUsd": 103639664,
+              "shares": 15241127
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "quarter": "2025-q4",
+      "periodOfReport": "2025-12-31",
+      "reports": [
+        {
+          "accession": "0001172661-26-001091",
+          "form": "13F-HR",
+          "reportType": "13F HOLDINGS REPORT",
+          "filerName": "Pershing Square Capital Management, L.P.",
+          "cik": "0001336528",
+          "periodOfReport": "2025-12-31",
+          "filedAt": "2026-02-17",
+          "declaredTotalUsd": 15526737802,
+          "declaredEntries": 11,
+          "otherManagers": [],
+          "urls": {
+            "index": "https://www.sec.gov/Archives/edgar/data/1336528/000117266126001091/0001172661-26-001091-index.htm",
+            "primaryDoc": "https://www.sec.gov/Archives/edgar/data/1336528/000117266126001091/primary_doc.xml",
+            "infoTable": "https://www.sec.gov/Archives/edgar/data/1336528/000117266126001091/infotable.xml"
+          }
+        },
+        {
+          "accession": "0001172661-26-001095",
+          "form": "13F-HR",
+          "reportType": "13F COMBINATION REPORT",
+          "filerName": "PERSHING SQUARE HOLDCO, L.P.",
+          "cik": "0002026053",
+          "periodOfReport": "2025-12-31",
+          "filedAt": "2026-02-17",
+          "declaredTotalUsd": 717930000,
+          "declaredEntries": 1,
+          "otherManagers": [],
+          "urls": {
+            "index": "https://www.sec.gov/Archives/edgar/data/2026053/000117266126001095/0001172661-26-001095-index.htm",
+            "primaryDoc": "https://www.sec.gov/Archives/edgar/data/2026053/000117266126001095/primary_doc.xml",
+            "infoTable": "https://www.sec.gov/Archives/edgar/data/2026053/000117266126001095/infotable.xml"
+          }
+        }
+      ],
+      "notices": [],
+      "placeholderRows": 0,
+      "holdings": [
+        {
+          "cusip6": "11271J",
+          "issuer": "BROOKFIELD CORP",
+          "company": "brookfield",
+          "valueUsd": 2817787754,
+          "shares": 61403089,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "11271J107",
+              "titleOfClass": "CL A LTD VT SH",
+              "valueUsd": 2817787754,
+              "shares": 61403089
+            }
+          ]
+        },
+        {
+          "cusip6": "90353T",
+          "issuer": "UBER TECHNOLOGIES INC",
+          "company": "uber",
+          "valueUsd": 2468273945,
+          "shares": 30207734,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "90353T100",
+              "titleOfClass": "COM",
+              "valueUsd": 2468273945,
+              "shares": 30207734
+            }
+          ]
+        },
+        {
+          "cusip6": "44267T",
+          "issuer": "HOWARD HUGHES HOLDINGS INC",
+          "company": "howard-hughes",
+          "valueUsd": 2221759145,
+          "shares": 27852064,
+          "rows": 2,
+          "classes": [
+            {
+              "cusip": "44267T102",
+              "titleOfClass": "COM",
+              "valueUsd": 2221759145,
+              "shares": 27852064
+            }
+          ]
+        },
+        {
+          "cusip6": "023135",
+          "issuer": "AMAZON COM INC",
+          "company": "amazon",
+          "valueUsd": 2217677936,
+          "shares": 9607824,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "023135106",
+              "titleOfClass": "COM",
+              "valueUsd": 2217677936,
+              "shares": 9607824
+            }
+          ]
+        },
+        {
+          "cusip6": "02079K",
+          "issuer": "ALPHABET INC",
+          "company": "alphabet",
+          "valueUsd": 2146529681,
+          "shares": 6842168,
+          "rows": 2,
+          "classes": [
+            {
+              "cusip": "02079K107",
+              "titleOfClass": "CAP STK CL C",
+              "valueUsd": 1934222720,
+              "shares": 6163871
+            },
+            {
+              "cusip": "02079K305",
+              "titleOfClass": "CAP STK CL A",
+              "valueUsd": 212306961,
+              "shares": 678297
+            }
+          ]
+        },
+        {
+          "cusip6": "30303M",
+          "issuer": "META PLATFORMS INC",
+          "company": "meta",
+          "valueUsd": 1764796161,
+          "shares": 2673569,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "30303M102",
+              "titleOfClass": "CL A",
+              "valueUsd": 1764796161,
+              "shares": 2673569
+            }
+          ]
+        },
+        {
+          "cusip6": "76131D",
+          "issuer": "RESTAURANT BRANDS INTL INC",
+          "company": "restaurant-brands-international",
+          "valueUsd": 1560199922,
+          "shares": 22866773,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "76131D103",
+              "titleOfClass": "COM",
+              "valueUsd": 1560199922,
+              "shares": 22866773
+            }
+          ]
+        },
+        {
+          "cusip6": "43300A",
+          "issuer": "HILTON WORLDWIDE HLDGS INC",
+          "company": "hilton",
+          "valueUsd": 869983734,
+          "shares": 3028664,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "43300A203",
+              "titleOfClass": "COM",
+              "valueUsd": 869983734,
+              "shares": 3028664
+            }
+          ]
+        },
+        {
+          "cusip6": "812215",
+          "issuer": "SEAPORT ENTMT GROUP INC",
+          "company": "seaport-entertainment",
+          "valueUsd": 99320131,
+          "shares": 5023780,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "812215200",
+              "titleOfClass": "COMMON STOCK",
+              "valueUsd": 99320131,
+              "shares": 5023780
+            }
+          ]
+        },
+        {
+          "cusip6": "42806J",
+          "issuer": "HERTZ GLOBAL HLDGS INC",
+          "company": "hertz",
+          "valueUsd": 78339393,
+          "shares": 15241127,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "42806J700",
+              "titleOfClass": "COM NEW",
+              "valueUsd": 78339393,
+              "shares": 15241127
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "quarter": "2026-q1",
+      "periodOfReport": "2026-03-31",
+      "reports": [
+        {
+          "accession": "0001172661-26-002336",
+          "form": "13F-HR",
+          "reportType": "13F HOLDINGS REPORT",
+          "filerName": "Pershing Square Capital Management, L.P.",
+          "cik": "0001336528",
+          "periodOfReport": "2026-03-31",
+          "filedAt": "2026-05-15",
+          "declaredTotalUsd": 13714299861,
+          "declaredEntries": 11,
+          "otherManagers": [],
+          "urls": {
+            "index": "https://www.sec.gov/Archives/edgar/data/1336528/000117266126002336/0001172661-26-002336-index.htm",
+            "primaryDoc": "https://www.sec.gov/Archives/edgar/data/1336528/000117266126002336/primary_doc.xml",
+            "infoTable": "https://www.sec.gov/Archives/edgar/data/1336528/000117266126002336/infotable.xml"
+          }
+        },
+        {
+          "accession": "0001172661-26-002339",
+          "form": "13F-HR",
+          "reportType": "13F COMBINATION REPORT",
+          "filerName": "PERSHING SQUARE INC.",
+          "cik": "0002026053",
+          "periodOfReport": "2026-03-31",
+          "filedAt": "2026-05-15",
+          "declaredTotalUsd": 569340000,
+          "declaredEntries": 1,
+          "otherManagers": [],
+          "urls": {
+            "index": "https://www.sec.gov/Archives/edgar/data/2026053/000117266126002339/0001172661-26-002339-index.htm",
+            "primaryDoc": "https://www.sec.gov/Archives/edgar/data/2026053/000117266126002339/primary_doc.xml",
+            "infoTable": "https://www.sec.gov/Archives/edgar/data/2026053/000117266126002339/infotable.xml"
+          }
+        }
+      ],
+      "notices": [],
+      "placeholderRows": 0,
+      "holdings": [
+        {
+          "cusip6": "11271J",
+          "issuer": "BROOKFIELD CORP",
+          "company": "brookfield",
+          "valueUsd": 2415946008,
+          "shares": 59697208,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "11271J107",
+              "titleOfClass": "CL A LTD VT SH",
+              "valueUsd": 2415946008,
+              "shares": 59697208
+            }
+          ]
+        },
+        {
+          "cusip6": "023135",
+          "issuer": "AMAZON COM INC",
+          "company": "amazon",
+          "valueUsd": 2385104083,
+          "shares": 11451981,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "023135106",
+              "titleOfClass": "COM",
+              "valueUsd": 2385104083,
+              "shares": 11451981
+            }
+          ]
+        },
+        {
+          "cusip6": "90353T",
+          "issuer": "UBER TECHNOLOGIES INC",
+          "company": "uber",
+          "valueUsd": 2154934398,
+          "shares": 29958771,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "90353T100",
+              "titleOfClass": "COM",
+              "valueUsd": 2154934398,
+              "shares": 29958771
+            }
+          ]
+        },
+        {
+          "cusip6": "594918",
+          "issuer": "MICROSOFT CORP",
+          "company": "microsoft",
+          "valueUsd": 2092970053,
+          "shares": 5654078,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "594918104",
+              "titleOfClass": "COM",
+              "valueUsd": 2092970053,
+              "shares": 5654078
+            }
+          ]
+        },
+        {
+          "cusip6": "44267T",
+          "issuer": "HOWARD HUGHES HOLDINGS INC",
+          "company": "howard-hughes",
+          "valueUsd": 1761921569,
+          "shares": 27852064,
+          "rows": 2,
+          "classes": [
+            {
+              "cusip": "44267T102",
+              "titleOfClass": "COM",
+              "valueUsd": 1761921569,
+              "shares": 27852064
+            }
+          ]
+        },
+        {
+          "cusip6": "76131D",
+          "issuer": "RESTAURANT BRANDS INTL INC",
+          "company": "restaurant-brands-international",
+          "valueUsd": 1673501194,
+          "shares": 22645483,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "76131D103",
+              "titleOfClass": "COM",
+              "valueUsd": 1673501194,
+              "shares": 22645483
+            }
+          ]
+        },
+        {
+          "cusip6": "30303M",
+          "issuer": "META PLATFORMS INC",
+          "company": "meta",
+          "valueUsd": 1522358404,
+          "shares": 2660861,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "30303M102",
+              "titleOfClass": "CL A",
+              "valueUsd": 1522358404,
+              "shares": 2660861
+            }
+          ]
+        },
+        {
+          "cusip6": "812215",
+          "issuer": "SEAPORT ENTMT GROUP INC",
+          "company": "seaport-entertainment",
+          "valueUsd": 107910794,
+          "shares": 5023780,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "812215200",
+              "titleOfClass": "COMMON STOCK",
+              "valueUsd": 107910794,
+              "shares": 5023780
+            }
+          ]
+        },
+        {
+          "cusip6": "02079K",
+          "issuer": "ALPHABET INC",
+          "company": "alphabet",
+          "valueUsd": 98731763,
+          "shares": 344102,
+          "rows": 2,
+          "classes": [
+            {
+              "cusip": "02079K107",
+              "titleOfClass": "CAP STK CL C",
+              "valueUsd": 89421720,
+              "shares": 311726
+            },
+            {
+              "cusip": "02079K305",
+              "titleOfClass": "CAP STK CL A",
+              "valueUsd": 9310043,
+              "shares": 32376
+            }
+          ]
+        },
+        {
+          "cusip6": "42806J",
+          "issuer": "HERTZ GLOBAL HLDGS INC",
+          "company": "hertz",
+          "valueUsd": 70261595,
+          "shares": 15241127,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "42806J700",
+              "titleOfClass": "COM NEW",
+              "valueUsd": 70261595,
+              "shares": 15241127
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "quarter": "2026-q2",
+      "periodOfReport": "2026-06-30",
+      "reports": [
+        {
+          "accession": "0001172661-26-003790",
+          "form": "13F-HR",
+          "reportType": "13F HOLDINGS REPORT",
+          "filerName": "PERSHING SQUARE INC.",
+          "cik": "0002026053",
+          "periodOfReport": "2026-06-30",
+          "filedAt": "2026-08-14",
+          "declaredTotalUsd": 19465692772,
+          "declaredEntries": 15,
+          "otherManagers": [
+            {
+              "sequence": 1,
+              "name": "Pershing Square Capital Management, L.P.",
+              "cik": "0001336528"
+            },
+            {
+              "sequence": 2,
+              "name": "PSCM GP, LLC",
+              "cik": "0001336477"
+            },
+            {
+              "sequence": 3,
+              "name": "Pershing Square Partner Group LLC",
+              "cik": "0002129159"
+            },
+            {
+              "sequence": 4,
+              "name": "Pershing Square Management, LLC",
+              "cik": "0002027456"
+            },
+            {
+              "sequence": 5,
+              "name": "Pershing Square PSUS Holdings, LLC",
+              "cik": "0002129160"
+            },
+            {
+              "sequence": 6,
+              "name": "Pershing Square HHH Holdings, LLC",
+              "cik": "0002131683"
+            }
+          ],
+          "urls": {
+            "index": "https://www.sec.gov/Archives/edgar/data/2026053/000117266126003790/0001172661-26-003790-index.htm",
+            "primaryDoc": "https://www.sec.gov/Archives/edgar/data/2026053/000117266126003790/primary_doc.xml",
+            "infoTable": "https://www.sec.gov/Archives/edgar/data/2026053/000117266126003790/infotable.xml"
+          }
+        }
+      ],
+      "notices": [
+        {
+          "accession": "0001172661-26-003777",
+          "form": "13F-NT",
+          "filerName": "Pershing Square Capital Management, L.P.",
+          "cik": "0001336528",
+          "periodOfReport": "2026-06-30",
+          "filedAt": "2026-08-14",
+          "noticeManagers": [
+            {
+              "name": "PERSHING SQUARE INC.",
+              "cik": "0002026053"
+            }
+          ],
+          "urls": {
+            "index": "https://www.sec.gov/Archives/edgar/data/1336528/000117266126003777/0001172661-26-003777-index.htm",
+            "primaryDoc": "https://www.sec.gov/Archives/edgar/data/1336528/000117266126003777/primary_doc.xml"
+          }
+        }
+      ],
+      "placeholderRows": 0,
+      "holdings": [
+        {
+          "cusip6": "90353T",
+          "issuer": "UBER TECHNOLOGIES INC",
+          "company": "uber",
+          "valueUsd": 2476978592,
+          "shares": 34326200,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "90353T100",
+              "titleOfClass": "COM",
+              "valueUsd": 2476978592,
+              "shares": 34326200
+            }
+          ]
+        },
+        {
+          "cusip6": "11271J",
+          "issuer": "BROOKFIELD CORP",
+          "company": "brookfield",
+          "valueUsd": 2448117792,
+          "shares": 57481047,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "11271J107",
+              "titleOfClass": "CL A LTD VT SH",
+              "valueUsd": 2448117792,
+              "shares": 57481047
+            }
+          ]
+        },
+        {
+          "cusip6": "594918",
+          "issuer": "MICROSOFT CORP",
+          "company": "microsoft",
+          "valueUsd": 2315234425,
+          "shares": 6206730,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "594918104",
+              "titleOfClass": "COM",
+              "valueUsd": 2315234425,
+              "shares": 6206730
+            }
+          ]
+        },
+        {
+          "cusip6": "023135",
+          "issuer": "AMAZON COM INC",
+          "company": "amazon",
+          "valueUsd": 2041109677,
+          "shares": 8563857,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "023135106",
+              "titleOfClass": "COM",
+              "valueUsd": 2041109677,
+              "shares": 8563857
+            }
+          ]
+        },
+        {
+          "cusip6": "44267T",
+          "issuer": "HOWARD HUGHES HOLDINGS INC",
+          "company": "howard-hughes",
+          "valueUsd": 1991144055,
+          "shares": 27852064,
+          "rows": 2,
+          "classes": [
+            {
+              "cusip": "44267T102",
+              "titleOfClass": "COM",
+              "valueUsd": 1991144055,
+              "shares": 27852064
+            }
+          ]
+        },
+        {
+          "cusip6": "76131D",
+          "issuer": "RESTAURANT BRANDS INTL INC",
+          "company": "restaurant-brands-international",
+          "valueUsd": 1872301303,
+          "shares": 25821284,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "76131D103",
+              "titleOfClass": "COM",
+              "valueUsd": 1872301303,
+              "shares": 25821284
+            }
+          ]
+        },
+        {
+          "cusip6": "30303M",
+          "issuer": "META PLATFORMS INC",
+          "company": "meta",
+          "valueUsd": 1800309764,
+          "shares": 3196062,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "30303M102",
+              "titleOfClass": "CL A",
+              "valueUsd": 1800309764,
+              "shares": 3196062
+            }
+          ]
+        },
+        {
+          "cusip6": "92826C",
+          "issuer": "VISA INC",
+          "company": "visa",
+          "valueUsd": 1122065552,
+          "shares": 3270470,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "92826C839",
+              "titleOfClass": "COM CL A",
+              "valueUsd": 1122065552,
+              "shares": 3270470
+            }
+          ]
+        },
+        {
+          "cusip6": "57636Q",
+          "issuer": "MASTERCARD INCORPORATED",
+          "company": "mastercard",
+          "valueUsd": 1091218186,
+          "shares": 2124646,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "57636Q104",
+              "titleOfClass": "CL A",
+              "valueUsd": 1091218186,
+              "shares": 2124646
+            }
+          ]
+        },
+        {
+          "cusip6": "78409V",
+          "issuer": "S&P GLOBAL INC",
+          "company": "sp-global",
+          "valueUsd": 1056088305,
+          "shares": 2593155,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "78409V104",
+              "titleOfClass": "COM",
+              "valueUsd": 1056088305,
+              "shares": 2593155
+            }
+          ]
+        },
+        {
+          "cusip6": "64110L",
+          "issuer": "NETFLIX INC.",
+          "company": "netflix",
+          "valueUsd": 934016601,
+          "shares": 13081465,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "64110L106",
+              "titleOfClass": "COM",
+              "valueUsd": 934016601,
+              "shares": 13081465
+            }
+          ]
+        },
+        {
+          "cusip6": "71531T",
+          "issuer": "PERSHING SQUARE USA LTD",
+          "company": "pershing-square-usa",
+          "valueUsd": 149520000,
+          "shares": 4000000,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "71531T105",
+              "titleOfClass": "COM SHS",
+              "valueUsd": 149520000,
+              "shares": 4000000
+            }
+          ]
+        },
+        {
+          "cusip6": "812215",
+          "issuer": "SEAPORT ENTMT GROUP INC",
+          "company": "seaport-entertainment",
+          "valueUsd": 133632548,
+          "shares": 5023780,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "812215200",
+              "titleOfClass": "COMMON STOCK",
+              "valueUsd": 133632548,
+              "shares": 5023780
+            }
+          ]
+        },
+        {
+          "cusip6": "42806J",
+          "issuer": "HERTZ GLOBAL HLDGS INC",
+          "company": "hertz",
+          "valueUsd": 33955972,
+          "shares": 14991599,
+          "rows": 1,
+          "classes": [
+            {
+              "cusip": "42806J700",
+              "titleOfClass": "COM NEW",
+              "valueUsd": 33955972,
+              "shares": 14991599
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

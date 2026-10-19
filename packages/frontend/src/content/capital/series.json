@@ -1,0 +1,31 @@
+{
+  "series": [
+    {
+      "slug": "inside-the-13f",
+      "name": "Inside the 13F",
+      "summary": "One quarterly 13F filing at a time: what a tracked manager reported, what changed, and what the filing does not show.",
+      "entries": [
+        {
+          "fund": "thiel-macro",
+          "quarter": "2026-q2",
+          "story": "thiel-macro-2026-q2"
+        },
+        {
+          "fund": "pershing-square",
+          "quarter": "2026-q2",
+          "story": "pershing-square-2026-q2"
+        }
+      ],
+      "inReview": [
+        {
+          "fund": "tci",
+          "quarter": "2026-q2"
+        },
+        {
+          "fund": "atreides",
+          "quarter": "2026-q2"
+        }
+      ]
+    }
+  ]
+}

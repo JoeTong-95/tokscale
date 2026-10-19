@@ -1,0 +1,46 @@
+{
+  "themes": [
+    {
+      "slug": "power-and-grid",
+      "name": "Power and the grid",
+      "summary": "Utilities and power producers that generate and deliver electricity, including to data centers.",
+      "companies": [
+        "vistra",
+        "american-electric-power",
+        "dte-energy",
+        "firstenergy",
+        "cms-energy"
+      ]
+    },
+    {
+      "slug": "cloud-and-ai-platforms",
+      "name": "Cloud and AI platforms",
+      "summary": "Companies that run large cloud, software or AI platforms.",
+      "companies": [
+        "amazon",
+        "microsoft",
+        "meta",
+        "alphabet"
+      ]
+    },
+    {
+      "slug": "energy-supply",
+      "name": "Oil, gas and nuclear",
+      "summary": "Fuel producers and reactor developers, outside the regulated grid.",
+      "companies": [
+        "vista-energy",
+        "x-energy"
+      ]
+    },
+    {
+      "slug": "payments-and-data",
+      "name": "Payments and market data",
+      "summary": "Payment networks and a ratings and index provider.",
+      "companies": [
+        "visa",
+        "mastercard",
+        "sp-global"
+      ]
+    }
+  ]
+}

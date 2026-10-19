@@ -1,0 +1,44 @@
+{
+  "funds": [
+    {
+      "slug": "thiel-macro",
+      "status": "published",
+      "name": "Thiel Macro LLC",
+      "shortName": "Thiel Macro",
+      "person": "Peter Thiel",
+      "summary": "The 13F filer associated with Peter Thiel. Its reports list a small number of U.S.-listed stocks.",
+      "scope": "This is Thiel Macro LLC's 13F report. It is not Founders Fund's portfolio and not Peter Thiel's total investments.",
+      "reporting": "Thiel Macro LLC (CIK 1562087) files its own 13F holdings reports. Its Q4 2025 and Q1 2026 reports listed no positions: each had one placeholder row with a value of $0.",
+      "filings": "thiel-macro"
+    },
+    {
+      "slug": "pershing-square",
+      "status": "published",
+      "name": "Pershing Square",
+      "shortName": "Pershing Square",
+      "person": "Bill Ackman",
+      "summary": "Bill Ackman's investment firm. It holds a concentrated set of large U.S.-listed companies.",
+      "scope": "These are the 13F reports of the Pershing Square group of managers, combined without double counting. They do not include private investments, shorts or non-U.S.-listed holdings.",
+      "reporting": "For Q2 2026, Pershing Square Inc. (CIK 2026053, formerly Pershing Square Holdco, L.P.) filed the 13F holdings report for the group. Pershing Square Capital Management, L.P. (CIK 1336528) filed a 13F notice that points to that report. For earlier quarters, Tokscale adds Pershing Square Capital Management's holdings report to Pershing Square Holdco's combination report. A combination report lists only the positions that no other report covers, so the two do not overlap.",
+      "filings": "pershing-square"
+    },
+    {
+      "slug": "tci",
+      "status": "in-review",
+      "name": "TCI Fund Management Ltd",
+      "shortName": "TCI",
+      "person": "Chris Hohn",
+      "summary": "Q2 2026 13F in review.",
+      "reviewNote": "Not published yet. The holdings have not been checked line by line against the raw SEC information table."
+    },
+    {
+      "slug": "atreides",
+      "status": "in-review",
+      "name": "Atreides Management, LP",
+      "shortName": "Atreides",
+      "person": "Gavin Baker",
+      "summary": "Q2 2026 13F in review.",
+      "reviewNote": "Not published yet. A secondary source's sum of the holdings did not match the total on the filing's cover page. It stays unpublished until the raw SEC table is checked."
+    }
+  ]
+}

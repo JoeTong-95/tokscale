@@ -927,11 +927,11 @@ function LeaderboardMobileRow({
   sortBy: LeaderboardSortBy;
 }) {
   const primary = sortBy === "cost"
-    ? { label: "Cost", value: formatCurrency(user.totalCost) }
+    ? { label: "Est. cost", value: formatCurrency(user.totalCost) }
     : { label: "Tokens", value: formatNumber(user.totalTokens) };
   const secondary = sortBy === "cost"
     ? `${formatNumber(user.totalTokens)} tokens`
-    : formatCurrency(user.totalCost);
+    : `${formatCurrency(user.totalCost)} est. cost`;
 
   return (
     <MobileRankingRow
@@ -1191,9 +1191,9 @@ export default function LeaderboardClient({ initialData, currentUser, initialSor
             </MetricValue>
           </MetricItem>
           <MetricItem>
-            <MetricLabel>Cost</MetricLabel>
+            <MetricLabel>Est. cost</MetricLabel>
             <MetricValue
-              aria-label={`Cost ${data.stats.totalCost.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2 })}`}
+              aria-label={`Estimated cost ${data.stats.totalCost.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2 })}`}
               title={data.stats.totalCost.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2 })}
             >
               <HoverTooltip data-tooltip={data.stats.totalCost.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 })}>
@@ -1250,7 +1250,7 @@ export default function LeaderboardClient({ initialData, currentUser, initialSor
               </CurrentUserStatValue>
             </CurrentUserStat>
             <CurrentUserStat>
-              <CurrentUserStatLabel>Cost</CurrentUserStatLabel>
+              <CurrentUserStatLabel>Est. cost</CurrentUserStatLabel>
               <CurrentUserStatValue>
                 <HoverTooltip data-tooltip={currentUserRank.totalCost.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 })}>
                   {formatCurrency(currentUserRank.totalCost)}
@@ -1348,7 +1348,7 @@ export default function LeaderboardClient({ initialData, currentUser, initialSor
             value={effectiveSortBy}
             options={[
               { value: "tokens", label: "Tokens" },
-              { value: "cost", label: "Cost" },
+              { value: "cost", label: "Est. cost" },
             ]}
             onChange={(value) => {
               setUrlSortOverride(null);
@@ -1400,7 +1400,7 @@ export default function LeaderboardClient({ initialData, currentUser, initialSor
                     <tr>
                       <TableHeaderCell className="rank-cell">Rank</TableHeaderCell>
                       <TableHeaderCell>User</TableHeaderCell>
-                      <TableHeaderCell className="text-right hidden-cost-mobile">Cost</TableHeaderCell>
+                      <TableHeaderCell className="text-right hidden-cost-mobile">Est. cost</TableHeaderCell>
                       <TableHeaderCell className="text-right">Tokens</TableHeaderCell>
                     </tr>
                   </TableHead>

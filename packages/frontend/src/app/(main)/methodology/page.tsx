@@ -156,8 +156,8 @@ export default function MethodologyPage() {
           <h2 id="updates">Updates</h2>
           <p>
             Numbers change only when people submit. Each table shows the time of the newest submission it includes
-            (&ldquo;Data through&rdquo;). A new submission shows up after the next refresh of the rankings, not instantly,
-            so we never label these pages as live.
+            (&ldquo;Data through&rdquo;). Rankings are cached for up to 10 minutes, so a new submission can take that long
+            to appear. We never label these pages as live.
           </p>
 
           <h2 id="never">What Tokscale never collects</h2>

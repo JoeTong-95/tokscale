@@ -290,12 +290,18 @@ const HeroTitle = styled.h1`
   letter-spacing: -0.05em;
   color: #ffffff;
 
+  text-wrap: balance;
+
   @media (max-width: 900px) {
     text-align: center;
   }
 
   @media (max-width: 480px) {
     font-size: 36px;
+  }
+
+  @media (max-width: 360px) {
+    font-size: 32px;
   }
 `;
 

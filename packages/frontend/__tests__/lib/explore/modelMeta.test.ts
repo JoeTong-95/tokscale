@@ -51,6 +51,8 @@ describe("modelDisplayName", () => {
     ["grok-4.6", "Grok 4.6"],
     ["codex-mini-latest", "Codex Mini Latest"],
     ["big-pickle", "Big Pickle"],
+    ["antigravity-claude-sonnet-4-6-thinking", "Antigravity Claude Sonnet 4.6 Thinking"],
+    ["gpt-5.2-xhigh", "GPT-5.2 XHigh"],
   ])("%s -> %s", (key, name) => {
     expect(modelDisplayName(key)).toBe(name);
   });

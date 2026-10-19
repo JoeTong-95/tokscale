@@ -78,6 +78,8 @@ const BRAND_TOKENS: Record<string, string> = {
 
 const UPPER_TOKENS = new Set(["oss", "vl", "it", "mlx", "gguf", "bf16", "fp8", "nvfp4"]);
 
+const WORD_TOKENS: Record<string, string> = { xhigh: "XHigh" };
+
 /** Brands written with a hyphen before their version: "GPT-5.6", "GLM-5.3". */
 const HYPHENATED_BRANDS = new Set(["gpt", "glm"]);
 
@@ -90,6 +92,8 @@ function prettifyToken(token: string): string {
     return `${BRAND_TOKENS[brandWithVersion[1]]}${brandWithVersion[2]}`;
   }
   if (UPPER_TOKENS.has(token)) return token.toUpperCase();
+  const word = ownValue(WORD_TOKENS, token);
+  if (word) return word;
   // Parameter sizes: "20b" -> "20B", "a17b" -> "A17B", "128k" -> "128K".
   if (/^a?\d+(?:\.\d+)?[bkmt]$/.test(token)) return token.toUpperCase();
   // Version-like tokens: "k3" -> "K3", "v4" -> "V4", "m2.7" -> "M2.7".
@@ -109,8 +113,9 @@ export function modelDisplayName(key: string): string {
   if (tokens.length === 0) return key;
 
   // Claude splits versions across tokens ("opus-4-5"); join digit runs with ".".
+  // Also when a product prefix comes first ("antigravity-claude-sonnet-4-6").
   const merged: string[] = [];
-  const isClaude = tokens[0] === "claude";
+  const isClaude = tokens.includes("claude");
   for (const token of tokens) {
     const previous = merged[merged.length - 1];
     if (isClaude && previous !== undefined && /^\d+$/.test(token) && /^\d+(?:\.\d+)*$/.test(previous)) {

@@ -7,6 +7,8 @@ export const fundPath = (fund: string) => `/capital/funds/${encodeURIComponent(f
 export const quarterPath = (fund: string, quarter: string) =>
   `${fundPath(fund)}/holdings/${encodeURIComponent(quarter)}`;
 export const companyPath = (slug: string) => `/companies/${encodeURIComponent(slug)}`;
+/** 1200x630 Open Graph card for a quarter page (route handler next to the page). */
+export const quarterOgImagePath = (fund: string, quarter: string) => `${quarterPath(fund, quarter)}/og`;
 
 export const absoluteUrl = (path: string) => `${getPublicOrigin()}${path}`;
 export const capitalUrl = () => absoluteUrl(capitalPath());

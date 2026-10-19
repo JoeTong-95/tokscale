@@ -268,7 +268,7 @@ describe("pages and SEO", () => {
     expect(featured).toHaveLength(2);
     for (const item of featured) {
       expect(item.href).toMatch(/^\/capital\/funds\/[a-z-]+\/holdings\/\d{4}-q[1-4]$/);
-      expect(item.imageUrl).toBe(`${item.href}/opengraph-image`);
+      expect(item.imageUrl).toBe(`${item.href}/og`);
       expect(item.summary).toContain("reported 13F value");
     }
   });

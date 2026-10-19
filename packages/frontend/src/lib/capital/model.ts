@@ -10,7 +10,7 @@ import type {
   ThemeRecord,
 } from "./schema";
 import { readableSicDescription, sectorForSic } from "./sectors";
-import { companyPath, fundPath, quarterPath } from "./urls";
+import { companyPath, fundPath, quarterOgImagePath, quarterPath } from "./urls";
 
 /**
  * Derived views over the capital content. Pages import from "@/lib/capital".
@@ -418,6 +418,6 @@ export function getFeaturedCapital(): FeaturedCapitalItem[] {
       quarter: quarter.label,
       href: quarter.href,
       summary: `${story.cardSummary} ${formatUsdCompact(quarter.reportedValueUsd)} reported 13F value across ${quarter.holdings.length} holdings; largest ${quarter.holdings[0].company.name} at ${formatWeight(quarter.holdings[0].weight)}.`,
-      imageUrl: `${quarter.href}/opengraph-image`,
+      imageUrl: quarterOgImagePath(quarter.fund, quarter.quarter),
     }));
 }

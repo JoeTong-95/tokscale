@@ -143,30 +143,35 @@ const Actions = styled.div`
 const SnapshotStage = styled.div`
   position: relative;
   isolation: isolate;
-  padding-bottom: 48px;
+  /* Room under the card for the observatory engraving. */
+  padding-bottom: clamp(220px, 26vw, 360px);
 
   @media (max-width: 720px) {
-    padding-bottom: 24px;
+    padding-bottom: 210px;
   }
 `;
 
 const Backdrop = styled.div`
   position: absolute;
   z-index: -1;
-  top: -140px;
+  bottom: -24px;
   left: 50%;
-  width: min(1680px, 140vw);
+  width: min(1240px, 118vw);
   transform: translateX(-50%);
   pointer-events: none;
-  opacity: 0.5;
-  /* Fade the sides and the base so the dome never runs into the next section. */
+  opacity: 0.62;
+  /*
+   * Sits below the snapshot card: the card covers only the sky, and the dome
+   * and telescope show in the space under it. Fade the sides, the top (behind
+   * the card), and the base so it runs softly into the next section.
+   */
   -webkit-mask-image:
-    radial-gradient(ellipse 62% 75% at 50% 45%, #000 45%, transparent 100%),
-    linear-gradient(to bottom, #000 50%, transparent 80%);
+    radial-gradient(ellipse 66% 90% at 50% 58%, #000 50%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, #000 30%, #000 74%, transparent 100%);
   -webkit-mask-composite: source-in;
   mask-image:
-    radial-gradient(ellipse 62% 75% at 50% 45%, #000 45%, transparent 100%),
-    linear-gradient(to bottom, #000 50%, transparent 80%);
+    radial-gradient(ellipse 66% 90% at 50% 58%, #000 50%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, #000 30%, #000 74%, transparent 100%);
   mask-composite: intersect;
 
   img {
@@ -176,9 +181,9 @@ const Backdrop = styled.div`
   }
 
   @media (max-width: 720px) {
-    top: -48px;
-    width: 220vw;
-    opacity: 0.4;
+    bottom: -12px;
+    width: 175vw;
+    opacity: 0.5;
   }
 `;
 

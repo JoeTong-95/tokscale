@@ -31,6 +31,11 @@ Rules carried over from the explore pages:
 | [OpenRouter models API](https://openrouter.ai/api/v1/models) | 468 models, prices, context; Artificial Analysis indexes for 304 models | Public JSON | API terms; the indexes are Artificial Analysis data | Live | Not measured | Cross-check only |
 | [SWE-bench leaderboards](https://raw.githubusercontent.com/SWE-bench/swe-bench.github.io/master/data/leaderboards.json) | Verified (180), Lite, Multimodal, Multilingual boards | GitHub raw | License not stated | Newest entry 2026-02-26 | Mostly older models | History only |
 | Aider polyglot, LiveBench | Coding and general boards | GitHub YAML, Hugging Face | Open | Last updates 2025-10 and 2025-04 | Stale | Skip |
+| [OpenRouter Datasets API](https://openrouter.ai/docs/client-sdks/python/sdks/datasets/README.md) | Daily token totals for the top 50 models; top apps by tokens (filter `coding`, `cli-agent`); weekly cost per session by harness and model | Any OpenRouter API key; 30 requests/min, 500/day | CC BY 4.0, "Source: OpenRouter ..., as of ..." | Daily / weekly | Not measured (needs key) | Second usage sample next to Tokscale; harness x model cost |
+| [OpenRouter Benchmarks API](https://openrouter.ai/docs/client-sdks/python/sdks/benchmarks/README.md) | One endpoint for Artificial Analysis indexes, Design Arena, and OpenRouter's own tau-bench, GPQA and search evals | Any OpenRouter API key | License not stated (the Datasets API is CC BY; this one is not) | Live | Not measured | Cross-check only |
+| [SWE-Bench Pro V2](https://labs.scale.com/leaderboard/swe_bench_pro_public_v2) (Scale) | Refreshed public split (642 tasks, Sept 22, 2026), locked protocol, re-graded on a clean image | Leaderboard site; tasks on GitHub | Tasks MIT (github scaleapi/SWE-bench_Pro-os); leaderboard site "All rights reserved" | Sept 2026 | Newest frontier models | Cite and link; ask before republishing |
+| [Vals AI](https://www.vals.ai/benchmarks/terminal-bench-4) | Independent runs with one fixed harness (Mini-SWE-agent): Terminal-Bench 4.0, SWE-bench Verified; score, cost per test, duration | Public pages | Terms not found | Updated 2026-10-19 | Opus 5.5 65.15%, Sonnet 5.5 64.14%, GPT-6 Astra 59.60% (TB 4.0) | Same-harness comparison; ask before republishing |
+| [Artificial Analysis coding agents](https://artificialanalysis.ai/agents/coding-agents) | Coding Agent Index v1.5 (DeepSWE v1.1, Terminal-Bench 4.0, SWE-Atlas-QnA), harness comparison, cost, tokens and time per task, refusals, reward hacking | Public pages; API terms apply | Attribution; Terms of Use and Data Platform Terms | Current | 14 of 39 models shown by default | Reference; licensing to confirm |
 
 ## 3. Findings that shape the design
 
@@ -59,6 +64,21 @@ Rules carried over from the explore pages:
    pass rates. Each gets its own column and unit. ECI is labelled "Epoch Capabilities Index", not a Tokscale score.
 7. **Interesting gaps appear.** For example, Gemini 4 Argon is #5 on ECI but has little Tokscale usage. The usage-vs-capability
    chart makes these gaps visible.
+
+## 3a. Market check (searched 2026-10-21)
+
+- **Kilo** ([kilo.ai/leaderboard](https://kilo.ai/leaderboard)) already ranks models by real usage inside Kilo Code, next to its own
+  KiloBench scores, with a cost-vs-performance chart where bubble size is Kilo usage. This is the closest product to ours.
+  Its usage comes from one agent. Tokscale sees usage across about 60 agents, split per agent, with the real token mix.
+- **Artificial Analysis** runs a Coding Agent Index with harness comparisons, cost per task and time per task.
+- **Vals AI** runs Terminal-Bench 4.0 and SWE-bench Verified with one fixed harness, with cost and duration per test.
+- **Aggregators** such as BenchLM and llm-stats list hundreds of benchmarks without usage data.
+
+So "benchmarks next to usage" is not new by itself. What only Tokscale can show:
+
+1. Usage across many agents, and which agent carries each model.
+2. Real token mix and the effective price it implies (cache reads dominate).
+3. Public builder profiles linked to the models they use.
 
 ## 4. Pages
 
@@ -115,7 +135,8 @@ New this week (releases, new results)        Sources and attribution
 | Category | Benchmark | Source |
 |---|---|---|
 | Overall | Epoch Capabilities Index | Epoch AI |
-| Agentic coding | Terminal-Bench 4.0 | tbench.ai (terms to confirm) |
+| Agentic coding | Terminal-Bench 4.0 | tbench.ai or Vals AI (terms to confirm) |
+| Agentic coding | SWE-Bench Pro V2 | Scale (cite and link until terms are confirmed) |
 | Agentic coding | CursorBench, DeepSWE, FrontierSWE | Epoch AI (collected) |
 | Web development | WebDev Arena | LMArena |
 | Agents | Agent Arena | LMArena |
@@ -179,3 +200,5 @@ Every page that shows a source shows its attribution line.
 4. For Terminal-Bench: ask the maintainers for permission, or only link to their leaderboard?
 5. Should "price at real agent usage" be public after we measure it on production?
 6. Do we want our own evaluations later (phase 3)?
+7. Should we create a free OpenRouter API key for its CC BY usage datasets (a second usage sample, and cost per session by
+   harness and model)? It would be stored as a secret.

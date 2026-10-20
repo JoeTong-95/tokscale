@@ -19,7 +19,7 @@ import {
   sortLabel,
 } from "./format";
 import { UNKNOWN_LAB_NAME } from "./catalog";
-import { AgentMark, ChangeText, EmptyNote, InlineLink, ShareMeter, VisuallyHidden } from "./ExploreUI";
+import { AgentMark, ChangeText, EmptyNote, InlineLink, ModelMark, ShareMeter, VisuallyHidden } from "./ExploreUI";
 
 const TableWrap = styled.div`
   display: none;
@@ -91,6 +91,13 @@ const Rank = styled.span`
   font-size: 0.8125rem;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
+`;
+
+const ModelIdentity = styled.div`
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
 `;
 
 const Identity = styled.div`
@@ -411,10 +418,13 @@ export function ModelBoard({ rows, coverage, period, sort }: BoardProps<ModelUsa
                     <Rank>{row.rank}</Rank>
                   </Td>
                   <Td>
-                    <Identity>
-                      <NameLink href={modelPath(row.key)}>{row.name}</NameLink>
-                      <SubText>{row.lab ?? UNKNOWN_LAB_NAME}</SubText>
-                    </Identity>
+                    <ModelIdentity>
+                      <ModelMark model={row} size={28} />
+                      <Identity>
+                        <NameLink href={modelPath(row.key)}>{row.name}</NameLink>
+                        <SubText>{row.lab ?? UNKNOWN_LAB_NAME}</SubText>
+                      </Identity>
+                    </ModelIdentity>
                   </Td>
                   <Td $align="right">
                     <UsersCell>
@@ -456,6 +466,7 @@ export function ModelBoard({ rows, coverage, period, sort }: BoardProps<ModelUsa
               <MobileRow>
                 <MobileRank>{row.rank}</MobileRank>
                 <MobileName>
+                  <ModelMark model={row} size={20} />
                   <MobileNameLink href={modelPath(row.key)}>{row.name}</MobileNameLink>
                 </MobileName>
                 <MobilePrimary>
@@ -560,6 +571,7 @@ export function AgentBoard({ rows, coverage, period, sort }: BoardProps<AgentUsa
                     <TopList aria-label={`Top models in ${row.name}`}>
                       {row.topModels.map((model) => (
                         <TopItem key={model.key}>
+                          <ModelMark model={model} size={16} />
                           <TopModelLink href={modelPath(model.key)}>{model.name}</TopModelLink>
                           <TopShare>{formatShare(model.share)}</TopShare>
                         </TopItem>

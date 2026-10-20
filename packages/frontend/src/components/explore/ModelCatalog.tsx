@@ -22,6 +22,7 @@ import {
   InlineLink,
   LinkSegments,
   SectionTitle,
+  ModelMark,
   VisuallyHidden,
   type LinkOption,
 } from "./ExploreUI";
@@ -190,7 +191,13 @@ const Item = styled.li`
 const NameBlock = styled.div`
   display: grid;
   min-width: 0;
-  gap: 2px;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 2px 10px;
+
+  > :first-child {
+    grid-row: span 2;
+  }
 `;
 
 /* Stretched link: the whole row is the touch target. */
@@ -322,7 +329,15 @@ interface ModelCatalogProps {
   initialLab: string;
 }
 
-export function ModelCatalog({ rows, coverage, sort, periodOptions, sortOptions, initialQuery, initialLab }: ModelCatalogProps) {
+export function ModelCatalog({
+  rows,
+  coverage,
+  sort,
+  periodOptions,
+  sortOptions,
+  initialQuery,
+  initialLab,
+}: ModelCatalogProps) {
   const [query, setQuery] = useState(initialQuery);
   const [lab, setLab] = useState(initialLab);
   const searchId = useId();
@@ -435,6 +450,7 @@ export function ModelCatalog({ rows, coverage, sort, periodOptions, sortOptions,
                 {group.models.map((model) => (
                   <Item key={model.key}>
                     <NameBlock>
+                      <ModelMark model={model} size={28} />
                       <NameLink href={modelPath(model.key)}>{model.name}</NameLink>
                       <Key>{model.key}</Key>
                     </NameBlock>

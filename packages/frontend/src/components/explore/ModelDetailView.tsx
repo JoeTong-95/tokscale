@@ -29,6 +29,7 @@ import {
   CoverageLine,
   InlineLink,
   LinkSegments,
+  ModelMark,
   PageTitle,
   Section,
   SectionNote,
@@ -92,6 +93,13 @@ const Identity = styled.header`
   display: grid;
   gap: 8px;
   margin-bottom: 20px;
+`;
+
+const TitleRow = styled.div`
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 14px;
 `;
 
 const IdentityMeta = styled.p`
@@ -431,7 +439,10 @@ export function ModelDetailView({ detail, period, periodOptions, fallbackFrom }:
       </Breadcrumb>
 
       <Identity>
-        <PageTitle>{model.name}</PageTitle>
+        <TitleRow>
+          <ModelMark model={model} size={44} />
+          <PageTitle>{model.name}</PageTitle>
+        </TitleRow>
         <IdentityMeta>
           <span>
             {model.labSlug ? <InlineLink href={companyPath(model.labSlug)}>{labName}</InlineLink> : labName}
@@ -585,6 +596,7 @@ export function ModelDetailView({ detail, period, periodOptions, fallbackFrom }:
               {detail.related.map((related) => (
                 <Row key={related.key}>
                   <RowName>
+                    <ModelMark model={related} size={20} />
                     <RowLink href={modelPath(related.key)}>{related.name}</RowLink>
                   </RowName>
                   <RowMeter>

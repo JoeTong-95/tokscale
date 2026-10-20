@@ -12,6 +12,8 @@ import { SOURCE_LOGOS } from "@/lib/constants";
 import type { AgentRef, Coverage } from "@/lib/explore";
 import { clampShare, describeCoverage, formatShare, type UsersChange } from "./format";
 
+export { ModelMark } from "./ModelMark";
+
 export const DISPLAY_FONT = "var(--font-display, inherit) !important";
 
 export const PageHeader = styled.header`

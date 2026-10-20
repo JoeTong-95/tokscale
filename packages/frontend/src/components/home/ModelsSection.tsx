@@ -3,6 +3,7 @@
 import Link from "next/link";
 import styled from "styled-components";
 import type { Coverage, ModelUsageRow } from "@/lib/explore";
+import { ModelMark } from "@/components/explore/ModelMark";
 import { agentLogoUrl } from "./agents";
 import { compactCurrency, compactNumber, coverageRangeLabel, percent, periodLabel, userChange, wholeNumber } from "./format";
 import { Arrow, Container, Eyebrow, focusRing, Lead, Section, SectionHeader, SectionTitle, TextLink } from "./primitives";
@@ -60,6 +61,9 @@ function ModelColumn({ model, accounts }: { model: ModelUsageRow; accounts: numb
     <Column aria-labelledby={titleId}>
       <ModelHead>
         <ModelRank>#{model.rank}</ModelRank>
+        <MarkSlot>
+          <ModelMark model={model} size={40} />
+        </MarkSlot>
         <ModelName id={titleId}>{model.name}</ModelName>
         <ModelLab>{model.lab ?? "Unknown lab"}</ModelLab>
       </ModelHead>
@@ -192,13 +196,19 @@ const Column = styled.section`
 
 const ModelHead = styled.header`
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-columns: auto auto minmax(0, 1fr);
   column-gap: 12px;
   padding: 24px 24px 16px;
 
   @media (max-width: 520px) {
     padding: 20px 16px 12px;
   }
+`;
+
+const MarkSlot = styled.span`
+  display: flex;
+  grid-row: span 2;
+  align-self: center;
 `;
 
 const ModelRank = styled.span`

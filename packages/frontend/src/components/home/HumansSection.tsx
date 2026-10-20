@@ -2,6 +2,7 @@
 
 import styled from "styled-components";
 import type { Coverage, HumanRow } from "@/lib/explore";
+import { ModelMark } from "@/components/explore/ModelMark";
 import { agentLogoUrl } from "./agents";
 import { compactCurrency, compactNumber, coverageDays, coverageRangeLabel, periodLabel, uniqueByKey, wholeNumber } from "./format";
 import { Arrow, Container, Eyebrow, Lead, Section, SectionHeader, SectionTitle, TextLink } from "./primitives";
@@ -94,6 +95,7 @@ function FeaturedProfile({ human, coverage }: { human: HumanRow; coverage: Cover
                 <Chips>
                   {uniqueByKey(human.topModels).map((model) => (
                     <li key={model.key}>
+                      <ModelMark model={model} size={16} />
                       {model.name}
                       {model.lab ? <span>{model.lab}</span> : null}
                     </li>

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import styled, { css } from "styled-components";
 import type { CommunitySnapshot as Snapshot, HumanRow, ModelUsageRow } from "@/lib/explore";
+import { ModelMark } from "@/components/explore/ModelMark";
 import { Arrow, focusRing, VisuallyHidden } from "./primitives";
 import { compactNumber, coverageRangeLabel, periodLabel, uniqueNames, updatedLabel, userChange, wholeNumber } from "./format";
 
@@ -134,10 +135,13 @@ function ModelItem({ model }: { model: ModelUsageRow }) {
     <li>
       <RowLink href={`/models/${encodeURIComponent(model.key)}`} $kind="models">
         <Rank>{model.rank}</Rank>
-        <NameBlock>
-          <Name $wrapNarrow>{model.name}</Name>
-          <Sub>{model.lab ?? "Unknown lab"}</Sub>
-        </NameBlock>
+        <Identity>
+          <ModelMark model={model} size={28} />
+          <NameBlock>
+            <Name $wrapNarrow>{model.name}</Name>
+            <Sub>{model.lab ?? "Unknown lab"}</Sub>
+          </NameBlock>
+        </Identity>
         <Value>
           <VisuallyHidden>Active users: </VisuallyHidden>
           {wholeNumber(model.activeUsers)}

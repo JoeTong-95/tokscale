@@ -327,6 +327,8 @@ interface ModelCatalogProps {
   sortOptions: LinkOption[];
   initialQuery: string;
   initialLab: string;
+  /** Lab slug -> company page slug, only for labs that have a company page. */
+  companySlugs: Record<string, string>;
 }
 
 export function ModelCatalog({
@@ -337,6 +339,7 @@ export function ModelCatalog({
   sortOptions,
   initialQuery,
   initialLab,
+  companySlugs,
 }: ModelCatalogProps) {
   const [query, setQuery] = useState(initialQuery);
   const [lab, setLab] = useState(initialLab);
@@ -444,7 +447,9 @@ export function ModelCatalog({
                 <SectionTitle id={`lab-${group.key}`}>
                   {group.name} <LabMeta>{group.models.length === 1 ? "1 model" : `${group.models.length} models`}</LabMeta>
                 </SectionTitle>
-                {group.slug ? <CompanyLink href={companyPath(group.slug)}>About {group.name}</CompanyLink> : null}
+                {group.slug && companySlugs[group.slug] ? (
+                  <CompanyLink href={companyPath(companySlugs[group.slug])}>About {group.name}</CompanyLink>
+                ) : null}
               </LabHeading>
               <List>
                 {group.models.map((model) => (

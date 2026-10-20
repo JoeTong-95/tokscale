@@ -7,6 +7,7 @@ import { homeUrl } from "@/lib/seo/urls";
 import { breadcrumbJsonLd, modelsIndexUrl, serializeJsonLd } from "@/lib/seo/explore";
 import { EXPLORE_PERIODS, EXPLORE_SORTS, periodShortLabel, resolveExplorePeriod, resolveExploreSort, sortLabel } from "@/components/explore/format";
 import { ModelCatalog } from "@/components/explore/ModelCatalog";
+import { companySlugForLab } from "@/lib/companyLinks";
 import { PageHeader, PageLead, PageTitle } from "@/components/explore/ExploreUI";
 import { buildExploreHref } from "../leaderboard/views";
 
@@ -42,6 +43,11 @@ export default async function ModelsPage({ searchParams }: PageProps) {
   const period = resolveExplorePeriod(params.period, CATALOG_DEFAULT_PERIOD);
   const sort = resolveExploreSort(params.sort);
   const ranked = await getModelLeaderboard({ period, sort, limit: CATALOG_LIMIT });
+  const companySlugs: Record<string, string> = {};
+  for (const row of ranked.rows) {
+    const company = row.labSlug ? companySlugForLab(row.labSlug) : null;
+    if (row.labSlug && company) companySlugs[row.labSlug] = company;
+  }
 
   const current = { period, sort };
   const defaults = { period: CATALOG_DEFAULT_PERIOD, sort: "users" };
@@ -81,6 +87,7 @@ export default async function ModelsPage({ searchParams }: PageProps) {
           sortOptions={sortOptions}
           initialQuery={text(params.q)}
           initialLab={text(params.lab) || "all"}
+          companySlugs={companySlugs}
         />
       </main>
       <ServiceFooter />

@@ -24,38 +24,107 @@ export const LABS = {
   zai: { name: "Z.ai", slug: "zai" },
   mistral: { name: "Mistral", slug: "mistral" },
   minimax: { name: "MiniMax", slug: "minimax" },
+  meta: { name: "Meta", slug: "meta" },
+  nvidia: { name: "NVIDIA", slug: "nvidia" },
+  xiaomi: { name: "Xiaomi", slug: "xiaomi" },
+  cursor: { name: "Cursor", slug: "cursor" },
+  stepfun: { name: "StepFun", slug: "stepfun" },
+  meituan: { name: "Meituan", slug: "meituan" },
+  upstage: { name: "Upstage", slug: "upstage" },
+  bytedance: { name: "ByteDance", slug: "bytedance" },
+  kwaipilot: { name: "Kwaipilot", slug: "kwaipilot" },
+  inception: { name: "Inception", slug: "inception" },
+  arcee: { name: "Arcee AI", slug: "arcee-ai" },
 } as const satisfies Record<string, Lab>;
 
+/**
+ * Model family marks vendored from LobeHub Icons (MIT) under
+ * public/assets/v2/models/. A family mark can differ from its lab's mark
+ * (Gemini and Gemma are both Google).
+ */
+export type ModelLogo =
+  | "claude"
+  | "openai"
+  | "gemini"
+  | "gemma"
+  | "grok"
+  | "kimi"
+  | "qwen"
+  | "deepseek"
+  | "zai"
+  | "mistral"
+  | "minimax"
+  | "meta"
+  | "nvidia"
+  | "xiaomimimo"
+  | "cursor"
+  | "stepfun"
+  | "longcat"
+  | "upstage"
+  | "bytedance"
+  | "kwaipilot"
+  | "inception"
+  | "arcee";
+
+interface FamilyRule {
+  pattern: RegExp;
+  lab: Lab;
+  logo: ModelLogo;
+}
+
 /** Ordered: the first matching rule wins. Each pattern is anchored at the start of the key. */
-const LAB_RULES: Array<[RegExp, Lab]> = [
-  [/^claude(?:-|$)/, LABS.anthropic],
-  [/^(?:gpt|chatgpt|codex)(?:-|$)/, LABS.openai],
-  [/^o\d+(?:-|$)/, LABS.openai],
-  [/^(?:gemini|gemma)/, LABS.google],
-  [/^grok(?:-|$)/, LABS.xai],
-  [/^kimi(?:-|$)/, LABS.moonshot],
-  [/^qwen/, LABS.alibaba],
-  [/^deepseek(?:-|$)/, LABS.deepseek],
-  [/^glm(?:-|\d|$)/, LABS.zai],
-  [/^(?:mistral|devstral|codestral)(?:-|$)/, LABS.mistral],
-  [/^minimax(?:-|$)/, LABS.minimax],
+const FAMILY_RULES: FamilyRule[] = [
+  { pattern: /^claude(?:-|$)/, lab: LABS.anthropic, logo: "claude" },
+  { pattern: /^(?:gpt|chatgpt|codex)(?:-|$)/, lab: LABS.openai, logo: "openai" },
+  { pattern: /^o\d+(?:-|$)/, lab: LABS.openai, logo: "openai" },
+  { pattern: /^openai[.-]/, lab: LABS.openai, logo: "openai" },
+  { pattern: /^gemini/, lab: LABS.google, logo: "gemini" },
+  { pattern: /^gemma/, lab: LABS.google, logo: "gemma" },
+  { pattern: /^grok(?:-|$)/, lab: LABS.xai, logo: "grok" },
+  { pattern: /^kimi(?:-|$)/, lab: LABS.moonshot, logo: "kimi" },
+  { pattern: /^qwen/, lab: LABS.alibaba, logo: "qwen" },
+  { pattern: /^deepseek(?:-|$)/, lab: LABS.deepseek, logo: "deepseek" },
+  { pattern: /^(?:zai-)?glm(?:-|\d|$)/, lab: LABS.zai, logo: "zai" },
+  { pattern: /^(?:mistral|devstral|codestral|magistral)(?:-|$)/, lab: LABS.mistral, logo: "mistral" },
+  { pattern: /^minimax(?:-|$)/, lab: LABS.minimax, logo: "minimax" },
+  { pattern: /^llama[\d-]/, lab: LABS.meta, logo: "meta" },
+  { pattern: /^(?:nvidia-)?nemotron(?:-|$)/, lab: LABS.nvidia, logo: "nvidia" },
+  { pattern: /^mimo(?:-|$)/, lab: LABS.xiaomi, logo: "xiaomimimo" },
+  { pattern: /^composer-\d/, lab: LABS.cursor, logo: "cursor" },
+  { pattern: /^step-\d/, lab: LABS.stepfun, logo: "stepfun" },
+  { pattern: /^longcat(?:-|$)/, lab: LABS.meituan, logo: "longcat" },
+  { pattern: /^solar-/, lab: LABS.upstage, logo: "upstage" },
+  { pattern: /^seed-(?:\d|oss)/, lab: LABS.bytedance, logo: "bytedance" },
+  { pattern: /^kat-coder(?:-|$)/, lab: LABS.kwaipilot, logo: "kwaipilot" },
+  { pattern: /^mercury-\d/, lab: LABS.inception, logo: "inception" },
+  { pattern: /^trinity-/, lab: LABS.arcee, logo: "arcee" },
 ];
 
 /**
  * Agent products that prefix the model id they route to
  * ("antigravity-gemini-3.8-flash", "cursor-grok-4.6-xhigh"). Stripped only for
- * lab lookup; the key itself is never rewritten.
+ * family lookup; the key itself is never rewritten.
  */
 const PRODUCT_PREFIXES = ["antigravity-", "cursor-"];
 
-export function labForModel(key: string): Lab | null {
+function familyForModel(key: string): FamilyRule | null {
   const candidates = [key, ...PRODUCT_PREFIXES.filter((p) => key.startsWith(p)).map((p) => key.slice(p.length))];
   for (const candidate of candidates) {
-    for (const [pattern, lab] of LAB_RULES) {
-      if (pattern.test(candidate)) return lab;
+    for (const rule of FAMILY_RULES) {
+      if (rule.pattern.test(candidate)) return rule;
     }
   }
   return null;
+}
+
+/** Path of the family mark for a model key, or null when the family is unknown. */
+export function modelLogoUrl(key: string): string | null {
+  const family = familyForModel(key);
+  return family ? `/assets/v2/models/${family.logo}.svg` : null;
+}
+
+export function labForModel(key: string): Lab | null {
+  return familyForModel(key)?.lab ?? null;
 }
 
 const BRAND_TOKENS: Record<string, string> = {
@@ -74,6 +143,9 @@ const BRAND_TOKENS: Record<string, string> = {
   devstral: "Devstral",
   codestral: "Codestral",
   minimax: "MiniMax",
+  mimo: "MiMo",
+  longcat: "LongCat",
+  kat: "KAT",
 };
 
 const UPPER_TOKENS = new Set(["oss", "vl", "it", "mlx", "gguf", "bf16", "fp8", "nvfp4"]);
@@ -141,7 +213,13 @@ export function modelDisplayName(key: string): string {
 
 export function modelRef(key: string): ModelRef {
   const lab = labForModel(key);
-  return { key, name: modelDisplayName(key), lab: lab?.name ?? null, labSlug: lab?.slug ?? null };
+  return {
+    key,
+    name: modelDisplayName(key),
+    lab: lab?.name ?? null,
+    labSlug: lab?.slug ?? null,
+    logoUrl: modelLogoUrl(key),
+  };
 }
 
 /** Legacy client ids folded into their current id (mirrors the submit path). */

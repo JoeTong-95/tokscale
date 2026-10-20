@@ -28,7 +28,8 @@ import type { ExplorePeriod, ModelDetail } from "./types";
 import { maxAnchorDate, queryStart, resolveWindow, toIsoDate, type ExploreWindow } from "./window";
 
 export const EXPLORE_REVALIDATE_SECONDS = 600;
-const CACHE_VERSION = "v1";
+// v2: ModelRef gained logoUrl and more families got a lab.
+const CACHE_VERSION = "v2";
 const TAGS = ["explore"];
 
 /** Visible (not leaderboard-hidden) day rows. */

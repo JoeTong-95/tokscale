@@ -32,6 +32,8 @@ export interface ModelRef {
   lab: string | null;
   /** Lab/company slug for /companies/[slug], or null. */
   labSlug: string | null;
+  /** Model family mark (e.g. "/assets/v2/models/claude.svg"), or null when the family is unknown. */
+  logoUrl: string | null;
 }
 
 export interface AgentRef {

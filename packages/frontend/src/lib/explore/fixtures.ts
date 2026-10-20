@@ -13,8 +13,15 @@ import type {
   ModelRef,
   ModelUsageRow,
 } from "./types";
+import { modelLogoUrl } from "./modelMeta";
 
-const M = (key: string, name: string, lab: string | null, labSlug: string | null): ModelRef => ({ key, name, lab, labSlug });
+const M = (key: string, name: string, lab: string | null, labSlug: string | null): ModelRef => ({
+  key,
+  name,
+  lab,
+  labSlug,
+  logoUrl: modelLogoUrl(key),
+});
 const A = (key: string, name: string): AgentRef => ({ key, name, logoUrl: null });
 
 export const FIXTURE_MODELS: ModelRef[] = [

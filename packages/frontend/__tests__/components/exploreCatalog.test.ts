@@ -8,6 +8,7 @@ function row(key: string, lab: string | null, labSlug: string | null, activeUser
     name: key.toUpperCase(),
     lab,
     labSlug,
+    logoUrl: null,
     rank: 0,
     activeUsers,
     previousActiveUsers: null,

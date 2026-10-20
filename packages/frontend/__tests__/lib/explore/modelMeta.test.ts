@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { agentRef, labForModel, modelDisplayName, modelRef } from "@/lib/explore/modelMeta";
+import { agentRef, labForModel, modelDisplayName, modelLogoUrl, modelRef } from "@/lib/explore/modelMeta";
 
 describe("labForModel", () => {
   it.each([
@@ -20,11 +20,27 @@ describe("labForModel", () => {
     ["minimax-m2.7", "MiniMax", "minimax"],
     ["antigravity-gemini-3.8-flash", "Google", "google"],
     ["cursor-grok-4.6-xhigh", "xAI", "xai"],
+    ["zai-glm-4.7", "Z.ai", "zai"],
+    ["openai.gpt-oss-20b-1-0", "OpenAI", "openai"],
+    ["gemma-4-27b-it", "Google", "google"],
+    ["llama3.1-8b", "Meta", "meta"],
+    ["nemotron-3-super-free", "NVIDIA", "nvidia"],
+    ["nvidia-nemotron-3-super-120b-a12b-nvfp4", "NVIDIA", "nvidia"],
+    ["mimo-v2.5-pro", "Xiaomi", "xiaomi"],
+    ["composer-2.5-fast", "Cursor", "cursor"],
+    ["step-3.5-flash-free", "StepFun", "stepfun"],
+    ["longcat-2.5-preview-free", "Meituan", "meituan"],
+    ["solar-pro4", "Upstage", "upstage"],
+    ["seed-2.0-lite", "ByteDance", "bytedance"],
+    ["seed-oss-36b-instruct", "ByteDance", "bytedance"],
+    ["kat-coder-pro", "Kwaipilot", "kwaipilot"],
+    ["mercury-2", "Inception", "inception"],
+    ["trinity-large-preview-free", "Arcee AI", "arcee-ai"],
   ])("%s -> %s", (key, name, slug) => {
     expect(labForModel(key)).toEqual({ name, slug });
   });
 
-  it.each(["k3", "big-pickle", "muse-spark-1.3", "unknown", "openclaw", "glamour-1", "grokky"])("does not guess a lab for %s", (key) => {
+  it.each(["k3", "big-pickle", "muse-spark-1.3", "unknown", "openclaw", "glamour-1", "grokky", "stepper-1", "seedling", "composer"])("does not guess a lab for %s", (key) => {
     expect(labForModel(key)).toBeNull();
   });
 });
@@ -58,8 +74,14 @@ describe("modelDisplayName", () => {
   });
 
   it("builds a full ModelRef", () => {
-    expect(modelRef("claude-sonnet-5")).toEqual({ key: "claude-sonnet-5", name: "Claude Sonnet 5", lab: "Anthropic", labSlug: "anthropic" });
-    expect(modelRef("k3")).toEqual({ key: "k3", name: "K3", lab: null, labSlug: null });
+    expect(modelRef("claude-sonnet-5")).toEqual({
+      key: "claude-sonnet-5",
+      name: "Claude Sonnet 5",
+      lab: "Anthropic",
+      labSlug: "anthropic",
+      logoUrl: "/assets/v2/models/claude.svg",
+    });
+    expect(modelRef("k3")).toEqual({ key: "k3", name: "K3", lab: null, labSlug: null, logoUrl: null });
   });
 });
 
@@ -77,5 +99,31 @@ describe("agentRef", () => {
   it("keeps unknown clients without guessing", () => {
     expect(agentRef("some-new-agent")).toEqual({ key: "some-new-agent", name: "some-new-agent", logoUrl: null });
     expect(agentRef("constructor")).toEqual({ key: "constructor", name: "constructor", logoUrl: null });
+  });
+});
+
+describe("modelLogoUrl", () => {
+  it.each([
+    ["claude-opus-5-5", "claude"],
+    ["gpt-6.1-sol", "openai"],
+    ["o4-mini", "openai"],
+    ["gemini-3-pro", "gemini"],
+    ["gemma-4-27b-it", "gemma"],
+    ["antigravity-gemini-3.8-flash", "gemini"],
+    ["cursor-grok-4.6-xhigh", "grok"],
+    ["glm-5.3-flash", "zai"],
+    ["devstral-2512-free", "mistral"],
+    ["mimo-v2.5", "xiaomimimo"],
+  ])("%s -> %s", (key, logo) => {
+    expect(modelLogoUrl(key)).toBe(`/assets/v2/models/${logo}.svg`);
+  });
+
+  it("returns null for an unknown family", () => {
+    expect(modelLogoUrl("muse-spark-1.3")).toBeNull();
+  });
+
+  it("is carried on modelRef", () => {
+    expect(modelRef("qwen3.6-max-preview").logoUrl).toBe("/assets/v2/models/qwen.svg");
+    expect(modelRef("big-pickle").logoUrl).toBeNull();
   });
 });

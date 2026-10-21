@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import styled from "styled-components";
 import type { Coverage, HumanRow } from "@/lib/explore";
 import { ModelMark } from "@/components/explore/ModelMark";
@@ -52,7 +53,7 @@ function FeaturedProfile({ human, coverage }: { human: HumanRow; coverage: Cover
 
   return (
     <Card aria-labelledby="featured-human-name">
-      <Identity>
+      <Identity href={profileHref}>
         <Avatar
           src={human.avatarUrl || `https://github.com/${encodeURIComponent(human.username)}.png?size=128`}
           alt=""
@@ -137,12 +138,6 @@ function FeaturedProfile({ human, coverage }: { human: HumanRow; coverage: Cover
         </StackList>
       </Block>
 
-      <CardFooter>
-        <TextLink href={profileHref}>
-          View @{human.username}&apos;s profile <Arrow />
-        </TextLink>
-        <Note>Est. cost uses public list prices, not what they paid.</Note>
-      </CardFooter>
     </Card>
   );
 }
@@ -165,16 +160,30 @@ const Card = styled.article`
   background: var(--v2-surface);
 `;
 
-const Identity = styled.div`
+/* The header row is the link to the profile. */
+const Identity = styled(Link)`
   display: flex;
   align-items: center;
   gap: 16px;
   padding: 20px 24px;
+  border-radius: 11px 11px 0 0;
+  color: inherit;
+  text-decoration: none;
+  transition: background-color 120ms ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--v2-focus);
+    outline-offset: -2px;
+  }
 
   @media (max-width: 520px) {
     padding: 16px;
   }
-`;
+`
 
 const Avatar = styled.img`
   flex-shrink: 0;
@@ -324,24 +333,4 @@ const ChipLogo = styled.img`
   height: 16px;
   border-radius: 3px;
   object-fit: contain;
-`;
-
-const CardFooter = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px 16px;
-  padding: 16px 24px;
-  border-top: 1px solid var(--v2-rule);
-
-  @media (max-width: 520px) {
-    padding: 16px;
-  }
-`;
-
-const Note = styled.p`
-  margin: 0;
-  color: var(--v2-text-subtle);
-  font-size: 12px;
 `;

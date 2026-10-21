@@ -17,7 +17,6 @@ export function PublicFooter() {
           <Link href="/" aria-label="Tokscale home">
             <Image src="/assets/hero-logo.svg" alt="" width={84} height={16} />
           </Link>
-          <span>Open source under the MIT license.</span>
         </Brand>
         <Links aria-label="Footer">
           <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">

@@ -76,7 +76,6 @@ export interface BenchmarkDefinition {
 
 const CC_BY: License = { name: "CC BY 4.0", url: "https://creativecommons.org/licenses/by/4.0/" };
 
-const EPOCH_HUB = "https://epoch.ai/benchmarks";
 const EPOCH_CREDIT = "Epoch AI, \u2018Capabilities & benchmarking\u2019, epoch.ai/benchmarks (CC BY 4.0)";
 
 export const BENCHMARKS: readonly BenchmarkDefinition[] = [

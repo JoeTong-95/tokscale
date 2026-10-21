@@ -36,11 +36,14 @@ describe("labForModel", () => {
     ["kat-coder-pro", "Kwaipilot", "kwaipilot"],
     ["mercury-2", "Inception", "inception"],
     ["trinity-large-preview-free", "Arcee AI", "arcee-ai"],
+    ["muse-spark-1.3", "Meta", "meta"],
+    ["muse-spark-1.3-contributor-free", "Meta", "meta"],
+    ["muse-wonder-1.0", "Meta", "meta"],
   ])("%s -> %s", (key, name, slug) => {
     expect(labForModel(key)).toEqual({ name, slug });
   });
 
-  it.each(["k3", "big-pickle", "muse-spark-1.3", "unknown", "openclaw", "glamour-1", "grokky", "stepper-1", "seedling", "composer"])("does not guess a lab for %s", (key) => {
+  it.each(["k3", "big-pickle", "muse-code", "museum-1", "unknown", "openclaw", "glamour-1", "grokky", "stepper-1", "seedling", "composer"])("does not guess a lab for %s", (key) => {
     expect(labForModel(key)).toBeNull();
   });
 });
@@ -119,7 +122,11 @@ describe("modelLogoUrl", () => {
   });
 
   it("returns null for an unknown family", () => {
-    expect(modelLogoUrl("muse-spark-1.3")).toBeNull();
+    expect(modelLogoUrl("big-pickle")).toBeNull();
+  });
+
+  it("gives Meta's Muse models the Meta mark", () => {
+    expect(modelLogoUrl("muse-spark-1.3-max")).toBe("/assets/v2/models/meta.svg");
   });
 
   it("is carried on modelRef", () => {

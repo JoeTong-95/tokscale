@@ -88,6 +88,8 @@ const FAMILY_RULES: FamilyRule[] = [
   { pattern: /^(?:mistral|devstral|codestral|magistral)(?:-|$)/, lab: LABS.mistral, logo: "mistral" },
   { pattern: /^minimax(?:-|$)/, lab: LABS.minimax, logo: "minimax" },
   { pattern: /^llama[\d-]/, lab: LABS.meta, logo: "meta" },
+  // Meta's Muse models (models.dev lists them under the Meta provider; Epoch lists "Meta AI").
+  { pattern: /^muse-(?:spark|wonder)(?:-|$)/, lab: LABS.meta, logo: "meta" },
   { pattern: /^(?:nvidia-)?nemotron(?:-|$)/, lab: LABS.nvidia, logo: "nvidia" },
   { pattern: /^mimo(?:-|$)/, lab: LABS.xiaomi, logo: "xiaomimimo" },
   { pattern: /^composer-\d/, lab: LABS.cursor, logo: "cursor" },

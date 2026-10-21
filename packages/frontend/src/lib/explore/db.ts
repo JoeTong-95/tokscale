@@ -28,8 +28,8 @@ import type { ExplorePeriod, ModelDetail } from "./types";
 import { maxAnchorDate, queryStart, resolveWindow, toIsoDate, type ExploreWindow } from "./window";
 
 export const EXPLORE_REVALIDATE_SECONDS = 600;
-// v2: ModelRef gained logoUrl and more families got a lab.
-const CACHE_VERSION = "v2";
+// v2: ModelRef gained logoUrl and more families got a lab. v3: Muse models attributed to Meta.
+const CACHE_VERSION = "v3";
 const TAGS = ["explore"];
 
 /** Visible (not leaderboard-hidden) day rows. */

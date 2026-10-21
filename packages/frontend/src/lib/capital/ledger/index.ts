@@ -18,6 +18,7 @@ export type {
   SectorView,
 } from "./model";
 export { total, totalsByCurrency, tryTotal, tryQuantityTotal, basisFamily, LedgerTotalError, type LedgerTotal } from "./total";
+export { MEASURE_DISPLAY_ORDER, displayRank, sortForDisplay } from "./display";
 export * from "./format";
 export * from "./labels";
 export type * from "./schema";

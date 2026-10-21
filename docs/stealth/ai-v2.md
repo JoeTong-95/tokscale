@@ -20,4 +20,4 @@ Shared contract: `src/lib/explore/types.ts`. Change it only by asking the parent
 - Monochrome engraving-style art (observatory / instruments) only as backdrop/frame, never beside the hero title.
 - Black canvas, one accent blue (#0073FF); cyan only for numbers that need emphasis.
 - Every number shows its period and data time; cost is labelled "Est. cost".
-- No claims Tokscale cannot back (no customer logos, no skill scores, no "LIVE" unless live).
+- No claims Tokscale cannot back (no skill scores, no "LIVE" unless live). Company logos appear only in the home "Trusted by professionals at" row (owner decision, 2026-10-21; the logos come from community reports).

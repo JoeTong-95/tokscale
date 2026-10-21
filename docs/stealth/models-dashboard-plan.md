@@ -202,3 +202,75 @@ Every page that shows a source shows its attribution line.
 6. Do we want our own evaluations later (phase 3)?
 7. Should we create a free OpenRouter API key for its CC BY usage datasets (a second usage sample, and cost per session by
    harness and model)? It would be stored as a secret.
+
+## 10. Phase 1 build notes (2026-10-21)
+
+Built on branch `stealth/ai-v2-models2`. Local only.
+
+### Data pipeline
+
+- Run `bun scripts/benchmarks/sync.ts` from `packages/frontend` (add `--offline` to reuse cached downloads). With a local
+  `DATABASE_URL`, Tokscale usage keys join the match set and coverage by tokens and users is printed.
+- Raw downloads are cached in `packages/frontend/.stealth-cache/benchmarks/` (gitignored). Committed files in
+  `src/content/benchmarks/` hold normalized rows only: `epoch.json`, `lmarena.json`, `tbench.json`, `models-dev.json`,
+  `aliases.json` and `report.json` (unmapped ids and match counts).
+- LMArena is read through the Hugging Face datasets-server JSON API (no parquet reader). The text board is fetched for
+  coverage only and is not published.
+- Terminal-Bench 4.0 rows come from the JSON embedded in the tbench.ai page. Only result rows are stored; every cell links to
+  the leaderboard. A reported cost of $0 is stored as "not reported".
+- If a source fails, its last snapshot is kept and the report marks it.
+
+### Matching
+
+- Keys: Tokscale usage keys plus models.dev keys. A result maps only to a key that exists; nothing is guessed.
+- Methods in `aliases.json`: exact 294, normalized 166, manual 2. All 462 rules are unreviewed. The two manual rules
+  (LMArena "Muse Wonder", "Muse Wonder Full") carry a note with the evidence.
+- Results matched: Epoch 872 of 1,064 rows, LMArena 181 of 201, Terminal-Bench 35 of 35. 200 external models stay
+  unmapped; most are older or niche models.
+
+### Coverage against the local seed (last 30 days, 149 models, 60 with 5+ users)
+
+| Data | Models with 5+ users covered | Share of tokens | Share of user-model pairs |
+|---|---|---|---|
+| models.dev specs | 37 of 60 | 98.5% | 78.0% |
+| First-party list price | 35 of 60 | 98.2% | 75.2% |
+| Epoch Capabilities Index | 35 of 60 | 98.4% | 75.8% |
+| Terminal-Bench 4.0 | 20 of 60 | 97.5% | 62.8% |
+| WebDev Arena | 38 of 60 | 98.6% | 77.7% |
+| Agent Arena | 30 of 60 | 98.4% | 70.9% |
+
+The uncovered models with 5+ users are mostly free or routed variants (`*-free`, `space-bunny-*`), internal ids
+(`codex-auto-review`) and short ids (`k3`). Measure again on production data before publishing.
+
+### Price at real agent usage
+
+- Community mix in the local seed (last 30 days): cache reads are 97.7% of tokens. Claude Opus 5.5 at list prices: $0.35
+  per 1M tokens at the community mix and $0.32 at its own mix (checked by hand against the database).
+- The list price is the lab's own API on models.dev when listed; otherwise the first listed provider, named on the page.
+  Reasoning tokens are priced as output. Long-context tiers, batch prices and discounts are not applied.
+
+### Dashboard decisions
+
+- `/models` opens on an overview (active users, top agent, ECI, Terminal-Bench 4.0, WebDev Arena, $/1M at agent mix).
+  Group chips switch to full column sets; `?cols=` and `?sort=` keep the state.
+- A score cell shows the best result the source reports for the model, with its effort and agent or harness, and a popover
+  with the source name, interval, date and link.
+- Still open: review the alias map; confirm Terminal-Bench and SWE-Bench Pro V2 terms; phase 2 items (compare page,
+  model x agent matrix, adoption chart, speed data).
+
+### Other pages
+
+- `/models/all`: the full catalog, grouped by lab. Each lab lists its top 5 models and folds the rest behind "Show N more".
+  A search or one lab lists every match; `?lab=` server-renders the whole lab.
+- `/models/[key]`: Benchmarks (best result per benchmark, rank among matched models, conditions, date, source, other
+  results behind a disclosure, Terminal-Bench rows next to the model's token share through that agent), Pricing (list
+  prices per provider, price at real agent usage at this model's mix and the community mix, the 3:1 blend, assumptions)
+  and Specs.
+- A model with benchmark results or a models.dev entry but no Tokscale usage gets a page with a "No public Tokscale usage
+  yet" note. It is not indexed and not in the sitemap.
+- `/benchmarks`: index by category. `/benchmarks/[slug]`: results with conditions, cost, date and a source link per row,
+  active Tokscale users in the last 30 days, best result per model by default (all results on request, 50 rows before
+  "Show all"), a score by release date chart with a data table, and method, matching and license notes. SWE-Bench Pro V2
+  is link-only and has no page.
+- Sitemap: `benchmarksSitemapEntries()` and `modelsCatalogSitemapEntry(lastModified)` in `src/lib/benchmarks/sitemap.ts`
+  are ready; the integration branch wires them into `src/app/sitemap.ts`.

@@ -293,7 +293,9 @@ export interface ModelContext {
 /**
  * Join keys with Tokscale data. `recent` is the 30-day model leaderboard and
  * `allTime` the all-time one (either can be null when usage failed to load).
- * A model page exists for a key with a spec or with any Tokscale usage.
+ * A model page exists for a key with any Tokscale usage, a models.dev entry
+ * or a matched benchmark result (pages without usage show benchmarks, prices
+ * and specs only).
  */
 export function buildModelContext(
   model: BenchmarkModel,
@@ -305,6 +307,7 @@ export function buildModelContext(
     if (!refs.has(row.key)) refs.set(row.key, { name: row.name, logoUrl: row.logoUrl });
   }
   const activeUsers = recent ? new Map(recent.filter((row) => row.activeUsers > 0).map((row) => [row.key, row.activeUsers] as const)) : null;
+  const researched = model.modelKeys();
   return {
     activeUsers,
     ref: (key) => {
@@ -313,7 +316,7 @@ export function buildModelContext(
       const fallback = modelRef(key);
       return { name: fallback.name, logoUrl: fallback.logoUrl };
     },
-    href: (key) => (model.spec(key) || refs.has(key) ? modelPath(key) : null),
+    href: (key) => (refs.has(key) || researched.has(key) ? modelPath(key) : null),
     catalogRelease: (key) => model.spec(key)?.releaseDate ?? null,
   };
 }

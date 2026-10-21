@@ -318,10 +318,11 @@ describe("usage context", () => {
     expect(ctx.activeUsers?.has("idle")).toBe(false);
   });
 
-  it("links models with a spec or any Tokscale usage", () => {
+  it("links models with Tokscale usage, a spec or a matched result", () => {
     expect(ctx.href("gpt-6-astra")).toBe("/models/gpt-6-astra");
     expect(ctx.href("old-only")).toBe("/models/old-only");
-    expect(ctx.href("no-date-model")).toBeNull();
+    expect(ctx.href("no-date-model")).toBe("/models/no-date-model");
+    expect(ctx.href("never-seen")).toBeNull();
   });
 
   it("names models from usage rows, else from the key", () => {

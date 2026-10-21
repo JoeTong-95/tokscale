@@ -13,7 +13,7 @@ import {
   userChange,
   wholeNumber,
 } from "./format";
-import { Arrow, Container, Eyebrow, focusRing, Lead, Section, SectionHeader, SectionTitle, TextLink } from "./primitives";
+import { Arrow, Container, Eyebrow, Lead, Section, SectionHeader, SectionTitle, TextLink } from "./primitives";
 
 interface ModelsSectionProps {
   models: ModelUsageRow[];
@@ -63,7 +63,7 @@ function ModelColumn({ model, accounts, period }: { model: ModelUsageRow; accoun
   const titleId = `home-model-${model.key.replace(/[^a-z0-9-]/gi, "-")}`;
   return (
     <Column aria-labelledby={titleId}>
-      <ModelHead>
+      <ModelHead href={`/models/${encodeURIComponent(model.key)}`}>
         <MarkSlot>
           <ModelMark model={model} size={40} />
         </MarkSlot>
@@ -134,11 +134,6 @@ function ModelColumn({ model, accounts, period }: { model: ModelUsageRow; accoun
           </dd>
         </Fact>
       </Facts>
-      <ColumnFooter>
-        <ModelLink href={`/models/${encodeURIComponent(model.key)}`}>
-          {model.name} details <Arrow />
-        </ModelLink>
-      </ColumnFooter>
     </Column>
   );
 }
@@ -147,7 +142,9 @@ const Head = styled.div`
   margin-bottom: 40px;
 `;
 
+/* Clips the header rows' hover background to the rounded corners. */
 const Comparison = styled.div`
+  overflow: hidden;
   border: 1px solid var(--v2-rule-strong);
   border-radius: 12px;
   background: var(--v2-surface);
@@ -179,16 +176,29 @@ const Column = styled.section`
   }
 `;
 
-const ModelHead = styled.header`
+/* The header row is the link to the model page. */
+const ModelHead = styled(Link)`
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   column-gap: 12px;
   padding: 24px 24px 16px;
+  color: inherit;
+  text-decoration: none;
+  transition: background-color 120ms ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--v2-focus);
+    outline-offset: -2px;
+  }
 
   @media (max-width: 520px) {
     padding: 20px 16px 12px;
   }
-`;
+`
 
 const MarkSlot = styled.span`
   display: flex;
@@ -305,29 +315,4 @@ const AgentLogo = styled.img`
   height: 16px;
   border-radius: 3px;
   object-fit: contain;
-`;
-
-const ColumnFooter = styled.div`
-  padding: 16px 24px 20px;
-  border-top: 1px solid var(--v2-rule);
-
-  @media (max-width: 520px) {
-    padding: 16px;
-  }
-`;
-
-const ModelLink = styled(Link)`
-  display: inline-flex;
-  gap: 6px;
-  align-items: center;
-  border-radius: 4px;
-  color: var(--v2-text);
-  font-size: 14px;
-  font-weight: 600;
-  text-decoration: none;
-  ${focusRing}
-
-  span[aria-hidden] {
-    color: var(--v2-accent);
-  }
 `;

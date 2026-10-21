@@ -9,7 +9,7 @@ import { CopyCommand } from "./CopyCommand";
 import { HumansSection } from "./HumansSection";
 import { ModelsSection } from "./ModelsSection";
 import { TrustedBy } from "./TrustedBy";
-import { Container, DisplayTitle, Eyebrow, Lead, PageShell, PrimaryButton, SecondaryButton, SectionTitle } from "./primitives";
+import { Container, DisplayTitle, Lead, PageShell, PrimaryButton, SecondaryButton, SectionTitle } from "./primitives";
 
 export interface HomePageProps {
   snapshot: Snapshot | null;
@@ -27,10 +27,7 @@ export function HomePage({ snapshot, featuredHuman, humansCoverage, models, mode
         <Hero aria-labelledby="home-title">
           <Container>
             <HeroCopy>
-              <Eyebrow>AI, in practice</Eyebrow>
-              <DisplayTitle id="home-title">
-                See how people build <Line>with AI.</Line>
-              </DisplayTitle>
+              <HeroTitle id="home-title">See how people build with AI.</HeroTitle>
               <HeroLead>
                 Discover what builders use, compare AI models, and follow the companies and capital behind them.
               </HeroLead>
@@ -96,6 +93,17 @@ export function HomePage({ snapshot, featuredHuman, humansCoverage, models, mode
 const Line = styled.span`
   @media (min-width: 721px) {
     display: block;
+  }
+`;
+
+/* One line at 40px; narrow screens scale the size down so it never wraps (the line is ~9.6 em wide). */
+const HeroTitle = styled(DisplayTitle)`
+  font-size: 40px;
+  line-height: 1.1;
+  white-space: nowrap;
+
+  @media (max-width: 520px) {
+    font-size: min(40px, calc((100vw - 32px) * 0.104));
   }
 `;
 

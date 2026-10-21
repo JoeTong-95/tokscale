@@ -85,10 +85,4 @@ describe("home capital", () => {
       expect(e.source?.url).toMatch(/^https?:\/\//);
     }
   });
-
-  it("links the Inside the 13F stories under investors", () => {
-    const home = buildHomeCapital({ snapshot: null });
-    expect(home.stories.length).toBeGreaterThan(0);
-    for (const story of home.stories) expect(story.href).toMatch(/^\/capital\/investors\/[^/]+\/13f\//);
-  });
 });

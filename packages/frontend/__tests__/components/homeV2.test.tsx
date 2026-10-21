@@ -204,10 +204,10 @@ describe("capital preview", () => {
     expect(markup).toContain("Not market share.");
   });
 
-  it("lists the latest events and the Inside the 13F stories", () => {
+  it("lists the latest events and no 13F line", () => {
     const markup = renderToStaticMarkup(<CapitalPreview data={data} />);
     for (const event of data.events) expect(markup).toContain(`href="${event.href}"`);
-    for (const story of data.stories) expect(markup).toContain(`href="${story.href}"`);
+    expect(markup).not.toContain("Inside the 13F");
   });
 
   it("renders an empty state without capital data", () => {

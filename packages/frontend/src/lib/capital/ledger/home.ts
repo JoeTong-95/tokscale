@@ -1,13 +1,12 @@
 /**
  * Data for the Capital section on the home page: the four money types (the same
  * functions the /capital overview uses), the AI labs behind the models Tokscale
- * users run, the latest events, and the Inside the 13F stories.
+ * users run, and the latest events.
  *
  * Everything is plain, preformatted data so the client component only renders it.
  * Money types are never added together; lab usage is labelled as Tokscale usage,
  * not market share.
  */
-import { getFeaturedCapital, type FeaturedCapitalItem } from "../model";
 import { computePath, roundsPath, spendingPath } from "../urls";
 import { formatMonthYear, formatPartialDate, formatTotal, sourceShortLabel } from "./format";
 import { ledger as defaultLedger, type LedgerModel } from "./model";
@@ -57,7 +56,6 @@ export interface HomeCapital {
   /** Window of the lab usage, e.g. "Sep 20 – Oct 19, 2026"; null without usage data. */
   labsWindow: { start: string; end: string; accounts: number } | null;
   events: HomeCapitalEvent[];
-  stories: Array<Pick<FeaturedCapitalItem, "title" | "fund" | "quarter" | "href">>;
   reviewedAt: string;
 }
 
@@ -190,7 +188,6 @@ function events(ledger: LedgerModel): HomeCapitalEvent[] {
 export function buildHomeCapital(input: {
   ledger?: LedgerModel;
   snapshot: UsageSnapshot | null;
-  stories?: FeaturedCapitalItem[];
 }): HomeCapital {
   const ledger = input.ledger ?? defaultLedger;
   const reviewedAt = ledger.reviewedAt();
@@ -201,7 +198,6 @@ export function buildHomeCapital(input: {
     labs: labs(ledger, snapshot),
     labsWindow: snapshot ? { start: snapshot.coverage.start, end: snapshot.coverage.end, accounts: snapshot.coverage.accounts } : null,
     events: events(ledger),
-    stories: (input.stories ?? getFeaturedCapital()).map(({ title, fund, quarter, href }) => ({ title, fund, quarter, href })),
     reviewedAt,
   };
 }

@@ -120,19 +120,6 @@ export function CapitalPreview({ data }: CapitalPreviewProps) {
               </Panel>
             </Panels>
 
-            {data.stories.length > 0 ? (
-              <Stories>
-                <span>Inside the 13F:</span>
-                {data.stories.map((story, index) => (
-                  <span key={story.href}>
-                    {index > 0 ? <Dot aria-hidden="true">·</Dot> : null}
-                    <InlineLink href={story.href}>
-                      {story.fund} {story.quarter}
-                    </InlineLink>
-                  </span>
-                ))}
-              </Stories>
-            ) : null}
           </>
         ) : (
           <Empty>Capital data is not available right now.</Empty>
@@ -697,19 +684,6 @@ const SourceLink = styled.a`
   &:hover {
     color: var(--v2-text);
   }
-`;
-
-const Stories = styled.p`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 8px;
-  margin: 20px 0 0;
-  color: var(--v2-text-subtle);
-  font-size: 13px;
-`;
-
-const Dot = styled.span`
-  margin-right: 8px;
 `;
 
 const Empty = styled.p`

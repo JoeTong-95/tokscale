@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams, usePathname } from "next/navigation";
 import styled from "styled-components";
 import { CopyIcon, CheckIcon, SearchIcon, XIcon } from "@/components/ui/Icons";
+import { InstantTooltip } from "@/components/ui/InstantTooltip";
 import {
   MetricItem,
   MetricLabel,
@@ -752,37 +753,6 @@ const DateApplyButton = styled.button`
   }
 `;
 
-const HoverTooltip = styled.span`
-  position: relative;
-  cursor: default;
-
-  &::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    bottom: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #111B2C;
-    color: #e5e5e5;
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0;
-    white-space: nowrap;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.06);
-    z-index: 1000;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.15s ease;
-  }
-
-  &:hover::after {
-    opacity: 1;
-  }
-`;
-
 const PaginationNav = styled.nav`
   display: flex;
   align-items: center;
@@ -891,19 +861,19 @@ const LeaderboardRow = memo(function LeaderboardRow({
         </UserContainer>
       </TableCell>
       <TableCell className="text-right hidden-cost-mobile">
-        <StatSpan title={formattedCost}>
+        <InstantTooltip as={StatSpan} content={formattedCost}>
           {formatCurrency(user.totalCost)}
-        </StatSpan>
+        </InstantTooltip>
       </TableCell>
       <TableCell className="text-right">
         <CombinedValueContainer>
-          <TokenValue title={formattedTokens}>
+          <InstantTooltip as={TokenValue} content={formattedTokens}>
             <TokenValueFull>{formattedTokens}</TokenValueFull>
             <TokenValueAbbrev>{formatNumber(user.totalTokens)}</TokenValueAbbrev>
-          </TokenValue>
-          <CostValue title={formattedCost}>
+          </InstantTooltip>
+          <InstantTooltip as={CostValue} content={formattedCost}>
             {formatCurrency(user.totalCost)}
-          </CostValue>
+          </InstantTooltip>
         </CombinedValueContainer>
       </TableCell>
     </TableRow>
@@ -1168,25 +1138,23 @@ export default function LeaderboardClient({ initialData, currentUser, initialSor
           </MetricItem>
           <MetricItem>
             <MetricLabel>Tokens</MetricLabel>
-            <MetricValue
-              $accent
-              aria-label={`Tokens ${data.stats.totalTokens.toLocaleString("en-US")}`}
-              title={data.stats.totalTokens.toLocaleString("en-US")}
-            >
-              <HoverTooltip data-tooltip={data.stats.totalTokens.toLocaleString('en-US')}>
+            <MetricValue $accent aria-label={`Tokens ${data.stats.totalTokens.toLocaleString("en-US")}`}>
+              <InstantTooltip content={data.stats.totalTokens.toLocaleString("en-US")} describe={false}>
                 {formatNumber(data.stats.totalTokens)}
-              </HoverTooltip>
+              </InstantTooltip>
             </MetricValue>
           </MetricItem>
           <MetricItem>
             <MetricLabel>Est. cost</MetricLabel>
             <MetricValue
               aria-label={`Estimated cost ${data.stats.totalCost.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2 })}`}
-              title={data.stats.totalCost.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2 })}
             >
-              <HoverTooltip data-tooltip={data.stats.totalCost.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 })}>
+              <InstantTooltip
+                content={data.stats.totalCost.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2 })}
+                describe={false}
+              >
                 {formatCurrency(data.stats.totalCost)}
-              </HoverTooltip>
+              </InstantTooltip>
             </MetricValue>
           </MetricItem>
         </MetricStrip>
@@ -1222,17 +1190,19 @@ export default function LeaderboardClient({ initialData, currentUser, initialSor
             <CurrentUserStat>
               <CurrentUserStatLabel>Tokens</CurrentUserStatLabel>
               <CurrentUserStatValue>
-                <HoverTooltip data-tooltip={currentUserRank.totalTokens.toLocaleString('en-US')}>
+                <InstantTooltip content={currentUserRank.totalTokens.toLocaleString("en-US")}>
                   {formatNumber(currentUserRank.totalTokens)}
-                </HoverTooltip>
+                </InstantTooltip>
               </CurrentUserStatValue>
             </CurrentUserStat>
             <CurrentUserStat>
               <CurrentUserStatLabel>Est. cost</CurrentUserStatLabel>
               <CurrentUserStatValue>
-                <HoverTooltip data-tooltip={currentUserRank.totalCost.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 })}>
+                <InstantTooltip
+                  content={currentUserRank.totalCost.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2 })}
+                >
                   {formatCurrency(currentUserRank.totalCost)}
-                </HoverTooltip>
+                </InstantTooltip>
               </CurrentUserStatValue>
             </CurrentUserStat>
           </CurrentUserStats>

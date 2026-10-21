@@ -85,13 +85,6 @@ export function HomePage({ snapshot, featuredHuman, humansCoverage, models, mode
               </Lead>
               <CopyCommand command="bunx tokscale@latest" label="Copy the command to run Tokscale" />
               <PrimaryButton href="/tracker">Start tracking</PrimaryButton>
-              <TeamsLine>
-                Bringing AI to your team?{" "}
-                <a href="https://tokscale.io" target="_blank" rel="noopener noreferrer">
-                  Explore Tokscale for teams <span aria-hidden="true">↗</span>
-                  <span className="sr-only"> (opens in a new tab)</span>
-                </a>
-              </TeamsLine>
             </ClosingInner>
           </Container>
         </Closing>
@@ -270,38 +263,5 @@ const ClosingInner = styled.div`
     background: radial-gradient(closest-side, rgba(0, 0, 0, 0.92) 55%, rgba(0, 0, 0, 0) 100%);
     content: "";
     pointer-events: none;
-  }
-`;
-
-const TeamsLine = styled.p`
-  margin: 24px 0 0;
-  color: var(--v2-text-subtle);
-  font-size: 14px;
-
-  a {
-    border-radius: 4px;
-    color: var(--v2-text-muted);
-    text-decoration: underline;
-    text-decoration-color: var(--v2-rule-strong);
-    text-underline-offset: 3px;
-  }
-
-  a:hover {
-    color: var(--v2-text);
-    text-decoration-color: currentColor;
-  }
-
-  a:focus-visible {
-    outline: 2px solid var(--v2-focus);
-    outline-offset: 3px;
-  }
-
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-    white-space: nowrap;
   }
 `;

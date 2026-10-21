@@ -18,8 +18,8 @@ import { ButtonSegments, ModelMark, PageLead, PageTitle, Section, SectionNote, S
 import { ScoreTimeline } from "./ScoreTimeline";
 import { SourcesFooter } from "./SourcesFooter";
 
-/** Rows rendered before "Show all". */
-const PAGE_SIZE = 100;
+/** Rows rendered before "Show all": enough for the leaders, short enough to reach the chart on a phone. */
+const PAGE_SIZE = 50;
 /** Below this width the results table stacks each row. */
 const STACK_BELOW = "959px";
 

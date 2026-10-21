@@ -6,6 +6,7 @@ import { useRouter } from "nextjs-toploader/app";
 import styled from "styled-components";
 import { GroupManagement } from "@/components/leaderboard/GroupManagement";
 import { CheckIcon, CopyIcon, SearchIcon, XIcon } from "@/components/ui/Icons";
+import { Select } from "@/components/ui/Select";
 import {
   CompactBadge,
   GroupMark,
@@ -184,24 +185,16 @@ const Input = styled.input`
   }
 `;
 
-const Select = styled.select`
-  min-height: 36px;
-  padding: 0 12px;
-  border: 1px solid var(--service-border-strong);
-  border-radius: 8px;
-  background: var(--service-surface);
-  color: var(--service-text);
-  font: inherit;
-
-  &:focus-visible {
-    border-color: var(--service-focus);
-    outline: 2px solid var(--service-focus);
-    outline-offset: -1px;
-  }
+const InviteRoleSelect = styled(Select)`
+  --select-width: 100%;
+  --select-height: 36px;
+  --select-padding-x: 12px;
+  --select-font-size: 1rem;
+  --select-background: var(--service-surface);
+  --select-border-color: var(--service-border-strong);
 
   @media (max-width: 640px) {
-    min-height: 44px;
-    font-size: 1rem;
+    --select-height: 44px;
   }
 `;
 
@@ -806,15 +799,16 @@ export default function GroupDetailClient({
               onChange={(event) => setInviteUsername(event.target.value)}
               placeholder="GitHub username (optional)"
             />
-            <Select
+            <InviteRoleSelect
               name="invite-role"
               aria-label="Invite role"
               value={group.membership?.role === "owner" ? inviteRole : "member"}
-              onChange={(event) => setInviteRole(event.target.value as Exclude<GroupRole, "owner">)}
-            >
-              <option value="member">Member</option>
-              {group.membership?.role === "owner" && <option value="admin">Admin</option>}
-            </Select>
+              options={[
+                { value: "member", label: "Member" },
+                ...(group.membership?.role === "owner" ? [{ value: "admin", label: "Admin" }] : []),
+              ]}
+              onChange={(next) => setInviteRole(next as Exclude<GroupRole, "owner">)}
+            />
             <Button type="button" onClick={createInvite}>Create invite</Button>
           </InviteForm>
           {inviteError && <ErrorText role="alert">{inviteError}</ErrorText>}

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "nextjs-toploader/app";
 import styled from "styled-components";
 import { KeyIcon } from "@/components/ui/Icons";
+import { Select } from "@/components/ui/Select";
 import { Navigation } from "@/components/layout/Navigation";
 import { Footer } from "@/components/layout/Footer";
 import { deviceDisplayLabel } from "@/lib/devices/shared";
@@ -166,15 +167,14 @@ const TextInput = styled.input`
   font-size: 14px;
 `;
 
-const SelectInput = styled.select`
-  height: 40px;
-  max-width: 360px;
-  padding: 0 12px;
-  border-radius: 6px;
-  border: 1px solid var(--service-border-strong);
-  background: var(--service-canvas);
-  color: var(--service-text);
-  font-size: 14px;
+const TimezoneSelect = styled(Select)`
+  --select-height: 40px;
+  --select-max-width: 360px;
+  --select-padding-x: 12px;
+  --select-radius: 6px;
+  --select-background: var(--service-canvas);
+  --select-border-color: var(--service-border-strong);
+  --select-font-size: 14px;
 `;
 
 const PrimaryButton = styled.button`
@@ -976,35 +976,34 @@ export default function SettingsClient() {
           </Description>
 
           <FieldLabel
+            id="timezone-select-label"
             htmlFor="timezone-select"
             style={{ color: "var(--service-text)" }}
           >
             Display timezone
           </FieldLabel>
-          <SelectInput
+          <TimezoneSelect
             id="timezone-select"
+            aria-labelledby="timezone-select-label"
             value={timezone}
-            onChange={(event) => setTimezone(event.target.value)}
-          >
-            <option value="auto">
-              Auto (browser) — {browserTimeZone}
-            </option>
-            {COMMON_TIMEZONE_GROUPS.map((group) => (
-              <optgroup key={group.region} label={group.region}>
-                {group.zones.map((zone) => (
-                  <option key={zone} value={zone}>
-                    {zone.replace(/_/g, " ")}
-                  </option>
-                ))}
-              </optgroup>
-            ))}
-            {timezone !== "auto" &&
+            options={[
+              { value: "auto", label: `Auto (browser) — ${browserTimeZone}` },
+              ...COMMON_TIMEZONE_GROUPS.map((group) => ({
+                label: group.region,
+                options: group.zones.map((zone) => ({
+                  value: zone,
+                  label: zone.replace(/_/g, " "),
+                })),
+              })),
+              ...(timezone !== "auto" &&
               !COMMON_TIMEZONE_GROUPS.some((group) =>
                 group.zones.includes(timezone),
-              ) && (
-                <option value={timezone}>{timezone.replace(/_/g, " ")}</option>
-              )}
-          </SelectInput>
+              )
+                ? [{ value: timezone, label: timezone.replace(/_/g, " ") }]
+                : []),
+            ]}
+            onChange={setTimezone}
+          />
         </Section>
 
         <Section

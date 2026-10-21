@@ -41,6 +41,7 @@ import { ControlBar, CoverageLine, InlineLink, LinkSegments, ModelMark, TouchSeg
 import { DEFAULT_EXPLORE_PERIOD, EXPLORE_PERIODS, formatCount, formatShare, periodShortLabel } from "./format";
 import { ScoreValue } from "./ScoreValue";
 import { SegmentedGroup } from "@/components/leaderboard/RankingUI";
+import { Select } from "@/components/ui/Select";
 
 interface Column {
   id: string;
@@ -388,26 +389,23 @@ const MoreButton = styled.button`
   }
 `;
 
-const SortSelect = styled.label`
+const SortSelect = styled.div`
+  --select-height: 44px;
+  --select-font-size: 1rem;
+  --select-padding-x: 10px;
+  --select-background: var(--service-surface);
+  --select-border-color: var(--service-border-strong);
+
   display: inline-flex;
+  min-width: 0;
+  max-width: 100%;
   align-items: center;
   gap: 8px;
   color: var(--service-text-muted);
   font-size: 0.875rem;
 
-  select {
-    min-height: 44px;
-    padding: 0 10px;
-    border: 1px solid var(--service-border-strong);
-    border-radius: 8px;
-    background: var(--service-surface);
-    color: var(--service-text);
-    font-size: 1rem;
-  }
-
-  select:focus-visible {
-    outline: 2px solid var(--service-focus);
-    outline-offset: 1px;
+  label {
+    flex: 0 0 auto;
   }
 
   @media (min-width: 960px) {
@@ -652,14 +650,16 @@ export function ModelsDashboard({
           ))}
         </Chips>
         <SortSelect>
-          Sort by
-          <select value={sort} onChange={(event) => setSortChoice(event.target.value)}>
-            {sortable.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.label}
-              </option>
-            ))}
-          </select>
+          <label htmlFor="models-sort" id="models-sort-label">
+            Sort by
+          </label>
+          <Select
+            id="models-sort"
+            aria-labelledby="models-sort-label"
+            value={sort}
+            options={sortable.map((c) => ({ value: c.id, label: c.label }))}
+            onChange={setSortChoice}
+          />
         </SortSelect>
       </ChipRow>
 

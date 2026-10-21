@@ -1,6 +1,7 @@
 "use client";
 
-import { useRef } from "react";
+import { useId, useRef } from "react";
+import { Select } from "@/components/ui/Select";
 
 export interface FilterOption {
   value: string;
@@ -52,6 +53,7 @@ export function DirectoryFilters({
   hidden: Record<string, string>;
 }) {
   const formRef = useRef<HTMLFormElement>(null);
+  const idBase = useId();
 
   const go = () => {
     const form = formRef.current;
@@ -76,18 +78,25 @@ export function DirectoryFilters({
         Search
         <input className={classes.input} type="search" name="q" defaultValue={q} placeholder="Name, alias or ticker" />
       </label>
-      {selects.map((select) => (
-        <label className={classes.field} key={select.name}>
-          {select.label}
-          <select className={classes.select} name={select.name} defaultValue={select.value} onChange={go}>
-            {select.options.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </label>
-      ))}
+      {selects.map((select) => {
+        const selectId = `${idBase}${select.name}`;
+        return (
+          <div className={classes.field} key={select.name}>
+            <label htmlFor={selectId} id={`${selectId}-label`}>
+              {select.label}
+            </label>
+            <Select
+              id={selectId}
+              aria-labelledby={`${selectId}-label`}
+              className={classes.select}
+              name={select.name}
+              defaultValue={select.value}
+              options={select.options}
+              onChange={go}
+            />
+          </div>
+        );
+      })}
       {checks.map((check) => (
         <label className={classes.check} key={`${check.name}-${check.value}`}>
           <input type="checkbox" name={check.name} value={check.value} defaultChecked={check.checked} onChange={go} />

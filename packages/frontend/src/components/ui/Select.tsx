@@ -191,8 +191,9 @@ export function Select({
   "aria-describedby": ariaDescribedby,
 }: SelectProps) {
   const { flat, sections } = useMemo(() => flattenItems(options), [options]);
+  // Ids from useId appear only while the list is open, so they never reach server HTML: a page whose
+  // server and client trees drift would otherwise leave stale ids that React does not patch.
   const reactId = useId();
-  const triggerId = id ?? `${reactId}trigger`;
   const listboxId = `${reactId}listbox`;
   const optionId = (index: number) => `${reactId}option-${index}`;
 
@@ -488,12 +489,12 @@ export function Select({
       <Trigger
         ref={triggerRef}
         type="button"
-        id={triggerId}
+        id={id}
         className={className}
         role="combobox"
         aria-haspopup="listbox"
         aria-expanded={open}
-        aria-controls={listboxId}
+        aria-controls={open ? listboxId : undefined}
         aria-activedescendant={open && active >= 0 ? optionId(active) : undefined}
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledby}

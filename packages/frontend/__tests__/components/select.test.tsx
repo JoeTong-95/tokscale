@@ -1,6 +1,7 @@
 /** @vitest-environment jsdom */
 
 import React, { useState } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { Select, type SelectItem } from "@/components/ui/Select";
@@ -53,10 +54,20 @@ describe("Select", () => {
     expect(trigger.getAttribute("type")).toBe("button");
     expect(trigger.getAttribute("aria-haspopup")).toBe("listbox");
     expect(trigger.getAttribute("aria-expanded")).toBe("false");
-    expect(trigger.getAttribute("aria-controls")).toBeTruthy();
+    // The listbox exists only while open, so the closed trigger does not point at it.
+    expect(trigger.hasAttribute("aria-controls")).toBe(false);
     expect(trigger.hasAttribute("aria-activedescendant")).toBe(false);
     expect(trigger.textContent).toContain("China");
     expect(screen.queryByRole("listbox")).toBeNull();
+  });
+
+  it("keeps generated ids out of server HTML", () => {
+    const markup = renderToStaticMarkup(<Select aria-label="Country" name="country" options={COUNTRIES} defaultValue="CN" />);
+    expect(markup).toContain('role="combobox"');
+    expect(markup).toContain('<input type="hidden" name="country" value="CN"/>');
+    expect(markup).not.toMatch(/\sid="/);
+    expect(markup).not.toContain("aria-controls");
+    expect(markup).not.toContain("aria-activedescendant");
   });
 
   it("opens with ArrowDown on the selected option and keeps focus on the trigger", () => {

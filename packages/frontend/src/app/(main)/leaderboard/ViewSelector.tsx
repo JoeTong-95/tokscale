@@ -43,6 +43,16 @@ const HeadingGroup = styled.div`
   min-width: 0;
 `;
 
+/* Same treatment as the eyebrows on the home and tracker pages. */
+const Eyebrow = styled.p`
+  margin: 0 0 8px;
+  color: var(--v2-text-subtle);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+`;
+
 const Title = styled.h1`
   margin: 0;
   color: var(--service-text);
@@ -79,7 +89,7 @@ const VIEW_DESCRIPTIONS: Record<LeaderboardView, string> = {
 };
 
 const VIEW_TITLES: Record<LeaderboardView, string> = {
-  humans: "Leaderboard",
+  humans: "Human leaderboard",
   models: "Model leaderboard",
   agents: "Agent leaderboard",
   groups: "Groups",
@@ -112,6 +122,7 @@ export default function ViewSelector({ current, searchParams }: ViewSelectorProp
   return (
     <Header>
       <HeadingGroup>
+        <Eyebrow>Leaderboards</Eyebrow>
         <Title>{VIEW_TITLES[current]}</Title>
         <Description>{VIEW_DESCRIPTIONS[current]}</Description>
       </HeadingGroup>

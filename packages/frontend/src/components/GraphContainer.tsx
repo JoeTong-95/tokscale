@@ -189,9 +189,9 @@ export function GraphContainer({ data, totalActiveTimeMs, sessionCount, mcpServe
         </GraphWrapper>
       </GraphCard>
 
-      {selectedDay && <BreakdownPanel day={selectedDay} onClose={() => setSelectedDate(null)} palette={palette} />}
-      {view === "2d" && <StatsPanel data={filteredByClient} palette={palette} totalActiveTimeMs={clientFilter.length === 0 ? totalActiveTimeMs : null} sessionCount={clientFilter.length === 0 ? sessionCount : null} mcpServers={mcpServers} />}
-      <Tooltip day={hoveredDay} position={tooltipPosition} visible={hoveredDay !== null} palette={palette} />
+      {selectedDay && <BreakdownPanel day={selectedDay} onClose={() => setSelectedDate(null)} />}
+      {view === "2d" && <StatsPanel data={filteredByClient} totalActiveTimeMs={clientFilter.length === 0 ? totalActiveTimeMs : null} sessionCount={clientFilter.length === 0 ? sessionCount : null} mcpServers={mcpServers} />}
+      <Tooltip day={hoveredDay} position={tooltipPosition} visible={hoveredDay !== null} />
     </Container>
   );
 }

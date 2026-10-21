@@ -572,7 +572,7 @@ const Trigger = styled.button<{ $variant: "field" | "inline" }>`
   align-items: center;
   gap: 6px;
   margin: 0;
-  padding: 0 30px 0 var(--select-padding-x, 12px);
+  padding: 0 28px 0 var(--select-padding-x, 12px);
   border: 1px solid var(--select-border-color, var(--v2-rule-strong));
   border-radius: var(--select-radius, 8px);
   background: var(--select-background, var(--v2-surface));

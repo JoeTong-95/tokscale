@@ -225,7 +225,7 @@ export function TrackerPageClient({ agents, stats }: { agents: SupportedAgent[];
                   Delete submitted data or your whole account in <Link href="/settings">Settings</Link>.
                 </li>
                 <li>
-                  MIT licensed.{" "}
+                  The CLI is MIT licensed and the web app is AGPL-3.0.{" "}
                   <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
                     Read the source
                   </a>{" "}

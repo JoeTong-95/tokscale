@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Navigation } from "@/components/layout/Navigation";
-import { ServiceFooter } from "@/components/layout/ServiceFooter";
+import { PublicFooter } from "@/components/layout/PublicFooter";
 import { BenchmarkIndex } from "@/components/explore/BenchmarkIndex";
 import { PageHeader, PageLead, PageTitle } from "@/components/explore/ExploreUI";
 import { benchmarkData, benchmarksUrl } from "@/lib/benchmarks";
@@ -49,7 +49,7 @@ export default function BenchmarksPage() {
           sources={sourceNotes(benchmarkData)}
         />
       </main>
-      <ServiceFooter />
+      <PublicFooter />
     </div>
   );
 }

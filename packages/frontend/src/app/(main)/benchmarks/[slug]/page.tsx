@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Navigation } from "@/components/layout/Navigation";
-import { ServiceFooter } from "@/components/layout/ServiceFooter";
+import { PublicFooter } from "@/components/layout/PublicFooter";
 import { BenchmarkDetailView } from "@/components/explore/BenchmarkDetailView";
 import { benchmarkData, benchmarksUrl, benchmarkUrl, type ResolvedBenchmark } from "@/lib/benchmarks";
 import { sourceNotes } from "@/lib/benchmarks/attribution";
@@ -90,7 +90,7 @@ export default async function BenchmarkPage({ params }: PageProps) {
           sources={sourceNotes(benchmarkData, { slugs: [key], includeCatalog: timeline.catalogDates > 0 })}
         />
       </main>
-      <ServiceFooter />
+      <PublicFooter />
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { Navigation } from "@/components/layout/Navigation";
-import { ServiceFooter } from "@/components/layout/ServiceFooter";
+import { PublicFooter } from "@/components/layout/PublicFooter";
 import { ModelNotFound } from "@/components/explore/ModelNotFound";
 
 export default function ModelNotFoundPage() {
@@ -9,7 +9,7 @@ export default function ModelNotFoundPage() {
       <main className="service-main" id="main-content">
         <ModelNotFound />
       </main>
-      <ServiceFooter />
+      <PublicFooter />
     </div>
   );
 }

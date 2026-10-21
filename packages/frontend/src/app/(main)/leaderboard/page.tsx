@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { Navigation } from "@/components/layout/Navigation";
-import { ServiceFooter } from "@/components/layout/ServiceFooter";
+import { PublicFooter } from "@/components/layout/PublicFooter";
 import { LeaderboardSkeleton } from "@/components/Skeleton";
 import { getLeaderboardData } from "@/lib/leaderboard/getLeaderboard";
 import type { LeaderboardData, Period, SortBy } from "@/lib/leaderboard/types";
@@ -141,7 +141,7 @@ export default function LeaderboardPage({ searchParams }: PageProps) {
         </Suspense>
       </main>
 
-      <ServiceFooter />
+      <PublicFooter />
     </div>
   );
 }

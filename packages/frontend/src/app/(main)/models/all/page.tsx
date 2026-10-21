@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Navigation } from "@/components/layout/Navigation";
-import { ServiceFooter } from "@/components/layout/ServiceFooter";
+import { PublicFooter } from "@/components/layout/PublicFooter";
 import { getModelLeaderboard } from "@/lib/explore";
 import { modelsAllPath, modelsAllUrl } from "@/lib/benchmarks/urls";
 import { TOKSCALE_X_HANDLE } from "@/lib/community";
@@ -96,7 +96,7 @@ export default async function AllModelsPage({ searchParams }: PageProps) {
           companySlugs={companySlugs}
         />
       </main>
-      <ServiceFooter />
+      <PublicFooter />
     </div>
   );
 }

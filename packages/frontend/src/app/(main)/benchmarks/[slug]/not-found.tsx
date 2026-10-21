@@ -1,5 +1,5 @@
 import { Navigation } from "@/components/layout/Navigation";
-import { ServiceFooter } from "@/components/layout/ServiceFooter";
+import { PublicFooter } from "@/components/layout/PublicFooter";
 import { BenchmarkNotFound } from "@/components/explore/BenchmarkDetailView";
 
 export default function BenchmarkNotFoundPage() {
@@ -9,7 +9,7 @@ export default function BenchmarkNotFoundPage() {
       <main className="service-main" id="main-content">
         <BenchmarkNotFound />
       </main>
-      <ServiceFooter />
+      <PublicFooter />
     </div>
   );
 }

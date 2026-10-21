@@ -4,7 +4,7 @@ import { useId, useMemo, useState } from "react";
 import Link from "next/link";
 import styled from "styled-components";
 import { Navigation } from "@/components/layout/Navigation";
-import { ServiceFooter } from "@/components/layout/ServiceFooter";
+import { PublicFooter } from "@/components/layout/PublicFooter";
 import {
   createContributionRangeOptions,
   getContributionDayForDate,
@@ -436,7 +436,7 @@ export default function ProfilePageClient({
         </ContentWrapper>
       </MainContent>
 
-      <ServiceFooter />
+      <PublicFooter />
     </PageContainer>
   );
 }

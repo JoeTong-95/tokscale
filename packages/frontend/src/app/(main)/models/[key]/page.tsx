@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Navigation } from "@/components/layout/Navigation";
-import { ServiceFooter } from "@/components/layout/ServiceFooter";
+import { PublicFooter } from "@/components/layout/PublicFooter";
 import { getModelDetail, type ExplorePeriod, type ModelDetail, type ModelRef } from "@/lib/explore";
 import { modelKey } from "@/lib/explore/modelKey";
 import { modelRef } from "@/lib/explore/modelMeta";
@@ -163,7 +163,7 @@ export default async function ModelPage({ params, searchParams }: PageProps) {
             shows={researchLabel(researchParts(benchmarkData, researchKey)).phrase}
           />
         </main>
-        <ServiceFooter />
+        <PublicFooter />
       </div>
     );
   }
@@ -202,7 +202,7 @@ export default async function ModelPage({ params, searchParams }: PageProps) {
           research={research}
         />
       </main>
-      <ServiceFooter />
+      <PublicFooter />
     </div>
   );
 }

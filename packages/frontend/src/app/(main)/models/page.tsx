@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Navigation } from "@/components/layout/Navigation";
-import { ServiceFooter } from "@/components/layout/ServiceFooter";
+import { PublicFooter } from "@/components/layout/PublicFooter";
 import { getModelLeaderboard } from "@/lib/explore";
 import { TOKSCALE_X_HANDLE } from "@/lib/community";
 import { homeUrl } from "@/lib/seo/urls";
@@ -117,7 +117,7 @@ export default async function ModelsPage({ searchParams }: PageProps) {
           <SourcesFooter notes={sourceNotes(benchmarkData, { slugs: DASHBOARD_BENCHMARKS, includeCatalog: true })} />
         </div>
       </main>
-      <ServiceFooter />
+      <PublicFooter />
     </div>
   );
 }

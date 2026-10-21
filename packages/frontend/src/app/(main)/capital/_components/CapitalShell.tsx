@@ -1,5 +1,5 @@
 import { Navigation } from "@/components/layout/Navigation";
-import { ServiceFooter } from "@/components/layout/ServiceFooter";
+import { PublicFooter } from "@/components/layout/PublicFooter";
 import { SubNav, type CapitalSection } from "./SubNav";
 import styles from "./capital.module.css";
 
@@ -14,7 +14,7 @@ export function CapitalShell({ children, section }: { children: React.ReactNode;
           {children}
         </div>
       </main>
-      <ServiceFooter />
+      <PublicFooter />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Navigation } from "@/components/layout/Navigation";
-import { ServiceFooter } from "@/components/layout/ServiceFooter";
+import { PublicFooter } from "@/components/layout/PublicFooter";
 import { MIN_PERCENT_BASE } from "@/components/explore/format";
 import { methodologyUrl } from "@/lib/seo/explore";
 import styles from "./methodology.module.css";
@@ -191,7 +191,7 @@ export default function MethodologyPage() {
           </p>
         </article>
       </main>
-      <ServiceFooter />
+      <PublicFooter />
     </div>
   );
 }

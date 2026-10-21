@@ -6,6 +6,8 @@ import { listSupportedAgents, agentLogoUrl } from "../../src/components/home/age
 import { AGENT_ICONS } from "../../src/lib/agentIcons";
 import { SOURCE_DISPLAY_NAMES } from "../../src/lib/constants";
 import { CapitalPreview } from "../../src/components/home/CapitalPreview";
+import { buildHomeCapital } from "../../src/lib/capital/ledger/home";
+import { modelRef } from "../../src/lib/explore/modelMeta";
 import { CommunitySnapshot } from "../../src/components/home/CommunitySnapshot";
 import { TrustedBy } from "../../src/components/home/TrustedBy";
 import {
@@ -182,23 +184,40 @@ describe("trusted by", () => {
 });
 
 describe("capital preview", () => {
-  it("renders each item as a link with its fund and quarter", () => {
-    const markup = renderToStaticMarkup(
-      <CapitalPreview
-        items={[
-          {
-            title: "Fund holdings, Q2 2026",
-            fund: "Example Fund",
-            quarter: "Q2 2026",
-            href: "/capital/funds/example/holdings/2026-q2",
-            summary: "Summary.",
-          },
-        ]}
-      />,
-    );
-    expect(markup).toContain('href="/capital/funds/example/holdings/2026-q2"');
-    expect(markup).toContain("Example Fund");
-    expect(markup).toContain("Q2 2026");
+  const data = buildHomeCapital({
+    snapshot: {
+      rows: [
+        { ...modelRef("claude-opus-5-5"), rank: 1, activeUsers: 165, previousActiveUsers: null, adoption: 0.66, tokens: 800, estimatedCost: 0, isNew: false, topAgents: [] },
+        { ...modelRef("gpt-6.1-sol"), rank: 2, activeUsers: 141, previousActiveUsers: null, adoption: 0.56, tokens: 200, estimatedCost: 0, isNew: false, topAgents: [] },
+      ],
+      coverage: { period: "30d", start: "2026-09-20", end: "2026-10-19", accounts: 250, modelIdentifiedShare: 1, lastDataAt: null },
+      totalTokens: 1000,
+    },
+  });
+
+  it("shows the four money types and says they are never added together", () => {
+    const markup = renderToStaticMarkup(<CapitalPreview data={data} />);
+    for (const stat of data.stats) expect(markup).toContain(stat.label);
+    expect(markup).toContain("They are never added together.");
+  });
+
+  it("links each lab to its profile and top model and labels usage as Tokscale usage", () => {
+    const markup = renderToStaticMarkup(<CapitalPreview data={data} />);
+    expect(markup).toContain('href="/capital/companies/anthropic"');
+    expect(markup).toContain('href="/models/claude-opus-5-5"');
+    expect(markup).toContain("80.0%");
+    expect(markup).toContain("Not market share.");
+  });
+
+  it("lists the latest events and the Inside the 13F stories", () => {
+    const markup = renderToStaticMarkup(<CapitalPreview data={data} />);
+    for (const event of data.events) expect(markup).toContain(`href="${event.href}"`);
+    for (const story of data.stories) expect(markup).toContain(`href="${story.href}"`);
+  });
+
+  it("renders an empty state without capital data", () => {
+    const markup = renderToStaticMarkup(<CapitalPreview data={null} />);
+    expect(markup).toContain("Capital data is not available right now.");
   });
 });
 

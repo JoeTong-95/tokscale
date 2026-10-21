@@ -3,7 +3,8 @@
 import styled from "styled-components";
 import type { CommunitySnapshot as Snapshot, Coverage, HumanRow, ModelUsageRow } from "@/lib/explore";
 import { PublicFooter } from "@/components/layout/PublicFooter";
-import { CapitalPreview, type CapitalPreviewItem } from "./CapitalPreview";
+import { CapitalPreview } from "./CapitalPreview";
+import type { HomeCapital } from "@/lib/capital/ledger/home";
 import { CommunitySnapshot } from "./CommunitySnapshot";
 import { CopyCommand } from "./CopyCommand";
 import { HumansSection } from "./HumansSection";
@@ -17,7 +18,7 @@ export interface HomePageProps {
   humansCoverage: Coverage | null;
   models: ModelUsageRow[];
   modelsCoverage: Coverage | null;
-  capital: CapitalPreviewItem[];
+  capital: HomeCapital | null;
 }
 
 export function HomePage({ snapshot, featuredHuman, humansCoverage, models, modelsCoverage, capital }: HomePageProps) {
@@ -54,7 +55,7 @@ export function HomePage({ snapshot, featuredHuman, humansCoverage, models, mode
 
         <HumansSection human={featuredHuman} coverage={humansCoverage} />
         <ModelsSection models={models} coverage={modelsCoverage} />
-        <CapitalPreview items={capital} />
+        <CapitalPreview data={capital} />
 
         <Closing aria-labelledby="home-closing-title">
           <ClosingArt aria-hidden="true">

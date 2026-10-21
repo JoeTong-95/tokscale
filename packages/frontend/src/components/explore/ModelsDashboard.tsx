@@ -122,7 +122,9 @@ const ScrollArea = styled.div`
   position: relative;
 `;
 
+/* Positioned, so absolutely positioned cell content (screen-reader text) is clipped and scrolls with the table. */
 const Scroller = styled.div`
+  position: relative;
   overflow-x: auto;
   overscroll-behavior-x: contain;
 

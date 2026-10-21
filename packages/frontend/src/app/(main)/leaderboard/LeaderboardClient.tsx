@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef, useMemo, memo, useCallback } from "react";
 import Link from "next/link";
-import { useRouter } from "nextjs-toploader/app";
 import { useSearchParams, usePathname } from "next/navigation";
 import styled from "styled-components";
 import { CopyIcon, CheckIcon, SearchIcon, XIcon } from "@/components/ui/Icons";
@@ -102,7 +101,10 @@ const TableWrapper = styled.div`
   }
 `;
 
+/* Rows are row links (globals.css); the cells have padding, so the focus ring sits inside. */
 const Table = styled.table`
+  --row-focus-offset: -2px;
+
   width: 100%;
 `;
 
@@ -152,13 +154,6 @@ const TableHeaderCell = styled.th`
 const TableBody = styled.tbody``;
 
 const TableRow = styled.tr`
-  cursor: pointer;
-  position: relative;
-  
-  &:hover {
-    background: var(--service-surface);
-  }
-
   &:not(:last-child) td {
     border-bottom: 1px solid var(--service-border);
   }
@@ -220,6 +215,7 @@ const RankBadge = styled.span`
   &[data-rank="3"] { color: #d99a68; }
 `;
 
+/* The row's primary link: the whole row opens the profile (row links, globals.css). */
 const UserContainer = styled(Link)`
   display: flex;
   align-items: center;
@@ -227,11 +223,6 @@ const UserContainer = styled(Link)`
   min-width: 0;
   color: inherit;
   text-decoration: none;
-
-  &:focus-visible {
-    outline: 2px solid var(--service-focus);
-    outline-offset: 3px;
-  }
 `;
 
 const DesktopAvatar = styled.img`
@@ -473,12 +464,14 @@ const CopyIconButton = styled.button`
   }
 `;
 
-const CurrentUserCard = styled.div`
+const CurrentUserCard = styled(Link)`
   margin-bottom: 24px;
   padding: 16px;
   border-radius: 12px;
   border: 1px solid var(--service-accent);
   background: var(--service-accent-soft);
+  color: inherit;
+  text-decoration: none;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -489,6 +482,11 @@ const CurrentUserCard = styled.div`
     background: var(--service-accent-soft);
     border-color: var(--service-accent);
     opacity: 0.9;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--service-focus);
+    outline-offset: 2px;
   }
 
   @media (max-width: 640px) {
@@ -856,22 +854,17 @@ function isValidLeaderboardData(data: unknown): data is LeaderboardData {
 interface LeaderboardRowProps {
   user: LeaderboardUser;
   isCurrentUser: boolean;
-  onRowClick: (username: string) => void;
 }
 
 const LeaderboardRow = memo(function LeaderboardRow({
   user,
   isCurrentUser,
-  onRowClick,
 }: LeaderboardRowProps) {
   const formattedTokens = useMemo(() => user.totalTokens.toLocaleString('en-US'), [user.totalTokens]);
   const formattedCost = useMemo(() => user.totalCost.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 }), [user.totalCost]);
   
   return (
-    <TableRow
-      onClick={() => onRowClick(user.username)}
-      data-current-user={isCurrentUser}
-    >
+    <TableRow data-row-link="" data-current-user={isCurrentUser}>
       <TableCell className="rank-cell">
         <RankBadge data-rank={user.rank <= 3 ? user.rank : undefined}>
           #{user.rank}
@@ -880,7 +873,7 @@ const LeaderboardRow = memo(function LeaderboardRow({
       <TableCell>
         <UserContainer
           href={`/u/${user.username}`}
-          onClick={(event) => event.stopPropagation()}
+          data-row-primary=""
           aria-current={isCurrentUser ? "true" : undefined}
         >
           <DesktopAvatar
@@ -956,7 +949,6 @@ function parsePeriodParam(value: string | null): Period | null {
 }
 
 export default function LeaderboardClient({ initialData, currentUser, initialSortBy }: LeaderboardClientProps) {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
 
@@ -1162,10 +1154,6 @@ export default function LeaderboardClient({ initialData, currentUser, initialSor
     setTimeout(() => setCopiedCommand(null), 2000);
   };
 
-  const handleRowClick = useCallback((username: string) => {
-    router.push(`/u/${username}`);
-  }, [router]);
-
   return (
     <>
       <Section>
@@ -1211,17 +1199,7 @@ export default function LeaderboardClient({ initialData, currentUser, initialSor
       )}
 
       {currentUser && currentUserRank && (
-        <CurrentUserCard
-          role="link"
-          tabIndex={0}
-          onClick={() => handleRowClick(currentUser.username)}
-          onKeyDown={(event) => {
-            if (event.key === "Enter" || event.key === " ") {
-              event.preventDefault();
-              handleRowClick(currentUser.username);
-            }
-          }}
-        >
+        <CurrentUserCard href={`/u/${currentUser.username}`}>
           <CurrentUserInfo>
             <CurrentUserAvatar
               src={currentUser.avatarUrl || `https://github.com/${currentUser.username}.png`}
@@ -1410,7 +1388,6 @@ export default function LeaderboardClient({ initialData, currentUser, initialSor
                         key={user.userId}
                         user={user}
                         isCurrentUser={!!(currentUser && user.username === currentUser.username)}
-                        onRowClick={handleRowClick}
                       />
                     ))}
                   </TableBody>

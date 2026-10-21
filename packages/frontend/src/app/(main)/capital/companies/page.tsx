@@ -289,9 +289,6 @@ export default async function CompaniesPage({ searchParams }: PageProps) {
                   <th scope="col" className={styles.right}>
                     Last 4 quarters
                   </th>
-                  <th scope="col" className={styles.right}>
-                    13F holders tracked
-                  </th>
                 </>
               ) : null}
               {view === "models" ? (
@@ -438,9 +435,6 @@ export default async function CompaniesPage({ searchParams }: PageProps) {
                       ) : (
                         <Missing />
                       )}
-                    </td>
-                    <td className={`${styles.right} ${styles.num}`} data-label="13F holders">
-                      {row.holders13f > 0 ? row.holders13f : <Missing reason="Not held by a tracked 13F manager" />}
                     </td>
                   </>
                 ) : null}

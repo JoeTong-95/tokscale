@@ -269,7 +269,7 @@ The uncovered models with 5+ users are mostly free or routed variants (`*-free`,
 - A model with benchmark results or a models.dev entry but no Tokscale usage gets a page with a "No public Tokscale usage
   yet" note. It is not indexed and not in the sitemap.
 - `/benchmarks`: index by category. `/benchmarks/[slug]`: results with conditions, cost, date and a source link per row,
-  active Tokscale users in the last 30 days, best result per model by default (all results on request, 100 rows before
+  active Tokscale users in the last 30 days, best result per model by default (all results on request, 50 rows before
   "Show all"), a score by release date chart with a data table, and method, matching and license notes. SWE-Bench Pro V2
   is link-only and has no page.
 - Sitemap: `benchmarksSitemapEntries()` and `modelsCatalogSitemapEntry(lastModified)` in `src/lib/benchmarks/sitemap.ts`

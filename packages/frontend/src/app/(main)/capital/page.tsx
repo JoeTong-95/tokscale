@@ -4,22 +4,32 @@ import { TOKSCALE_X_HANDLE } from "@/lib/community";
 import {
   capital,
   capitalUrl,
-  formatDate,
-  formatUsd,
+  companiesPath,
+  computePath,
   formatUsdCompact,
   formatWeight,
+  methodologyPath,
   portfoliosPath,
-  quarterLabel,
-  quarterKeyForPeriod,
+  roundsPath,
+  spendingPath,
 } from "@/lib/capital";
-import { AllocationBar } from "./_components/AllocationBar";
+import {
+  formatMoney,
+  formatPartialDate,
+  formatTotal,
+  ledger,
+} from "@/lib/capital/ledger";
+import { calendarSpanLabel, fiscalLabel } from "@/lib/capital/ledger/capex";
+import { Amount } from "./_components/Amount";
+import { CapexBars } from "./_components/CapexBars";
 import { CapitalShell } from "./_components/CapitalShell";
-import { Stats } from "./_components/Stats";
+import { EventFeed } from "./_components/EventFeed";
+import { JsonLd } from "./_components/JsonLd";
 import styles from "./_components/capital.module.css";
 
-const TITLE = "Capital: 13F Research on the AI Economy | Tokscale";
+const TITLE = "Capital: Funding, Compute Deals and AI Spending | Tokscale";
 const DESCRIPTION =
-  "Follow capital across the AI economy. Quarter-end 13F holdings of tracked managers, checked line by line against SEC filings, with changes, sources and methodology.";
+  "Where money moves in the AI economy: funding rounds, compute contracts and cash capex across AI labs, clouds, chips and power. Every number has a source, a date and a status.";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -30,104 +40,288 @@ export const metadata: Metadata = {
 };
 
 export default function CapitalPage() {
+  const reviewed = ledger.reviewedAt();
+  const year = reviewed.slice(0, 4);
+  const events = ledger.getEvents();
+  const companies = ledger.getCompanies();
+  const investors = ledger.getInvestors();
+  const equity = ledger.equityYtd(year);
+  const usdEquity = equity.find((t) => t.currency === "USD") ?? null;
+  const otherEquity = equity.filter((t) => t.currency !== "USD");
+  const compute = ledger.computeYear(year);
+  const capexQuarter = ledger.capexCalendarQuarter();
+  const valuation = ledger.largestValuation();
+  const capex = ledger.getCapex();
+  const sectors = ledger.getSectors();
   const series = capital.getSeries()[0];
-  const funds = capital.getPublishedFunds();
-  const latestPeriod = capital.getLatestPeriod();
-  const featured = series.entries[0];
-  const q = featured.quarter;
-  const filings = capital.getRecentFilings(5);
-  const themes = capital.getThemes();
+
+  const labRounds = ledger
+    .getRounds()
+    .filter((e) => e.event.types.includes("equity_round") && e.issuer?.org.categories.includes("ai-lab"));
+  const labCompute = ledger
+    .getComputeDeals()
+    .filter((e) => e.participants.some((p) => p.org.org.categories.includes("ai-lab") && p.roles.some((r) => r === "buyer" || r === "lessee")));
+  const leases = ledger.getEvents().filter((e) => e.event.types.some((t) => t === "datacenter_lease" || t === "ppa"));
 
   return (
-    <CapitalShell>
+    <CapitalShell section="overview">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: "Capital",
+          description: DESCRIPTION,
+          url: capitalUrl(),
+          dateModified: reviewed,
+        }}
+      />
       <header className={styles.hero}>
         <p className={styles.eyebrow}>Capital</p>
-        <h1 className={`${styles.display} ${styles.heroTitle}`}>Follow capital across the AI economy.</h1>
+        <h1 className={`${styles.display} ${styles.heroTitle}`}>Where money moves in the AI economy.</h1>
         <p className={styles.heroLede}>
-          What tracked managers reported holding at quarter end, from cloud platforms to the power plants that feed them.
-          Every number comes from an SEC filing and links back to it.
+          Funding rounds, compute contracts and capital spending across AI labs, clouds, chips and power. Every number has a
+          source, a date and a status.
         </p>
         <p className={styles.heroMeta}>
-          {funds.length} managers tracked · Latest period {quarterLabel(quarterKeyForPeriod(latestPeriod))} (
-          {formatDate(latestPeriod)})
+          {companies.length} companies · {investors.length} investors · {events.length} events · Reviewed {formatPartialDate(reviewed)}
         </p>
       </header>
 
-      <section className={styles.section} aria-label="Featured portfolio and recent filings">
-        <div className={styles.grid}>
-          <article aria-labelledby="featured-title">
-            <p className={styles.eyebrow}>
-              Featured portfolio · {q.fundRecord.shortName} · {q.label}
+      <section aria-labelledby="money-types">
+        <h2 id="money-types" className={styles.srOnly}>
+          Four money types
+        </h2>
+        <div className={styles.moneyCards}>
+          <div className={styles.moneyCard}>
+            <p className={styles.eyebrow}>Equity · {year} so far</p>
+            <p className={styles.moneyValue}>{usdEquity ? formatTotal(usdEquity) : "—"}</p>
+            <p className={styles.cellSub}>
+              {usdEquity
+                ? `${usdEquity.counted.length} closed equity ${usdEquity.counted.length === 1 ? "round" : "rounds"} by AI labs Tokscale tracks`
+                : "No closed AI-lab rounds tracked this year"}
+              {otherEquity.map((t) => ` · plus ${formatTotal(t)} in ${t.currency} (not converted)`).join("")}
             </p>
-            <h2 id="featured-title" className={`${styles.display} ${styles.featuredTitle}`}>
-              <Link href={q.href}>{featured.story.headline}</Link>
-            </h2>
-            <p className={styles.dek}>{featured.story.dek}</p>
-            <Stats
-              label={`${q.fundRecord.shortName} ${q.label} snapshot`}
-              items={[
-                { label: "Reported 13F value", value: formatUsdCompact(q.reportedValueUsd), sub: formatUsd(q.reportedValueUsd) },
-                { label: "Holdings", value: String(q.holdings.length), sub: `as of ${formatDate(q.periodOfReport)}` },
-                { label: "Top-5 concentration", value: formatWeight(q.topFiveWeight), sub: `filed ${formatDate(q.filedAt)}` },
-              ]}
-            />
-            <AllocationBar holdings={q.holdings} label={`Weights in ${q.fundRecord.shortName}’s ${q.label} 13F`} />
-            <p className={styles.note}>
-              <Link className={styles.link} href={q.href}>
-                Read the story, the full table and the sources →
+            <p className={styles.more}>
+              <Link className={styles.link} href={roundsPath()}>
+                Rounds →
               </Link>
             </p>
-          </article>
+          </div>
+          <div className={styles.moneyCard}>
+            <p className={styles.eyebrow}>Compute deals · {year}</p>
+            {compute.summed.ok && compute.summed.total.value !== null ? (
+              <>
+                <p className={styles.moneyValue}>{formatTotal(compute.summed.total)}</p>
+                <p className={styles.cellSub}>
+                  {compute.summed.total.counted.length} stated contract values, multi-year totals, not annual spend
+                </p>
+              </>
+            ) : (
+              <>
+                <p className={styles.moneyValue}>{compute.deals.length} deals</p>
+                <p className={styles.cellSub}>
+                  {compute.largest ? (
+                    <>
+                      Largest stated value <Amount view={compute.largest} />
+                      {compute.largest.event ? ` (${ledger.eventView(compute.largest.event).partiesText})` : ""}. Values use
+                      different measures and bases, so they are not added.
+                    </>
+                  ) : (
+                    "No stated contract values this year"
+                  )}
+                </p>
+              </>
+            )}
+            <p className={styles.more}>
+              <Link className={styles.link} href={computePath()}>
+                Compute →
+              </Link>
+            </p>
+          </div>
+          <div className={styles.moneyCard}>
+            <p className={styles.eyebrow}>Cash capex · {capexQuarter ? capexQuarter.label : "latest quarter"}</p>
+            <p className={styles.moneyValue}>{capexQuarter ? formatTotal(capexQuarter.total) : "—"}</p>
+            <p className={styles.cellSub}>
+              {capexQuarter
+                ? `${capexQuarter.entries.length} companies, cash paid for property and equipment, ${calendarSpanLabel(capexQuarter.entries[0].quarter.start, capexQuarter.entries[0].quarter.end)}${capexQuarter.derivedCount > 0 ? `; ${capexQuarter.derivedCount} derived from year-to-date filings` : ""}`
+                : "Not enough companies have reported the same calendar quarter yet"}
+            </p>
+            <p className={styles.more}>
+              <Link className={styles.link} href={spendingPath()}>
+                Spending →
+              </Link>
+            </p>
+          </div>
+          <div className={styles.moneyCard}>
+            <p className={styles.eyebrow}>Largest valuation</p>
+            <p className={styles.moneyValue}>{valuation ? valuation.amount.short : "—"}</p>
+            <p className={styles.cellSub}>
+              {valuation
+                ? `${valuation.event.issuer?.name ?? valuation.event.partiesText}, post-money, ${formatPartialDate(valuation.event.date)} (${valuation.amount.statusLabel.toLowerCase()} by the company)`
+                : "No valuation tracked"}
+            </p>
+            <p className={styles.more}>
+              {valuation ? (
+                <Link className={styles.link} href={valuation.event.href}>
+                  {valuation.event.title} →
+                </Link>
+              ) : null}
+            </p>
+          </div>
+        </div>
+        <p className={styles.moneyNote}>
+          These four numbers are different money types. They are never added together.{" "}
+          <Link className={styles.link} href={methodologyPath()}>
+            How we count →
+          </Link>
+        </p>
+      </section>
 
-          <aside aria-labelledby="recent-filings">
-            <p id="recent-filings" className={styles.eyebrow} style={{ marginBottom: 16 }}>
-              Recent filings
-            </p>
-            <ul className={styles.rows}>
-              {filings.map(({ fund, quarter, filing }) => (
-                <li className={styles.row} key={filing.accession}>
-                  <p className={styles.rowTitle}>
-                    {quarter.holdings.length > 0 ? (
-                      <Link href={quarter.href}>
-                        {fund.shortName} · {filing.form}
-                      </Link>
-                    ) : (
-                      <>
-                        {fund.shortName} · {filing.form}
-                      </>
-                    )}
-                  </p>
-                  <p className={styles.rowMeta}>
-                    {filing.filerName} · {quarter.label} · filed {formatDate(filing.filedAt)}
-                  </p>
-                  <p className={styles.rowMeta}>
-                    {filing.form === "13F-NT"
-                      ? "Notice: holdings reported in another manager’s filing"
-                      : `${formatUsdCompact(filing.declaredTotalUsd)} on the cover page · `}
-                    {filing.form === "13F-NT" ? null : (
-                      <a className={styles.link} href={filing.urls.index} target="_blank" rel="noopener noreferrer">
-                        SEC
-                      </a>
-                    )}
-                  </p>
-                </li>
-              ))}
+      <section className={styles.section} style={{ marginTop: 40 }} aria-labelledby="latest-events">
+        <div className={styles.sectionHead}>
+          <h2 id="latest-events" className={`${styles.display} ${styles.sectionTitle}`}>
+            Latest events
+          </h2>
+          <p className={styles.sectionNote}>
+            <Link className={styles.link} href={roundsPath()}>
+              All rounds →
+            </Link>{" "}
+            ·{" "}
+            <Link className={styles.link} href={computePath()}>
+              All compute deals →
+            </Link>
+          </p>
+        </div>
+        <EventFeed events={events.slice(0, 8)} />
+      </section>
+
+      <section className={styles.section} aria-label="The stack and capital spending">
+        <div className={`${styles.grid} ${styles.gridEven}`}>
+          <div>
+            <h2 className={`${styles.display} ${styles.sectionTitle}`} style={{ marginBottom: 16 }}>
+              Follow the money down the stack
+            </h2>
+            <ul className={styles.stack2}>
+              <li>
+                <span>
+                  Investors <span className={styles.flowArrow}>→ equity →</span> AI labs
+                </span>
+                <Link className={styles.link} href={roundsPath()}>
+                  {labRounds.length} rounds
+                </Link>
+              </li>
+              <li>
+                <span>
+                  AI labs <span className={styles.flowArrow}>→ contracts →</span> clouds and chips
+                </span>
+                <Link className={styles.link} href={computePath()}>
+                  {labCompute.length} deals
+                </Link>
+              </li>
+              <li>
+                <span>
+                  Clouds <span className={styles.flowArrow}>→ capex →</span> chips and data centers
+                </span>
+                <Link className={styles.link} href={spendingPath()}>
+                  {capex.length} companies
+                </Link>
+              </li>
+              <li>
+                <span>
+                  Data centers <span className={styles.flowArrow}>→ leases and power →</span> landlords and utilities
+                </span>
+                <Link className={styles.link} href={computePath()}>
+                  {leases.length} {leases.length === 1 ? "lease" : "leases"}
+                </Link>
+              </li>
             </ul>
-            <p className={styles.note}>
-              <Link className={styles.link} href={portfoliosPath()}>
-                All tracked portfolios →
-              </Link>
-            </p>
-          </aside>
+            <p className={styles.note}>Counts of events and companies Tokscale tracks, not market totals.</p>
+          </div>
+          <div>
+            <h2 className={`${styles.display} ${styles.sectionTitle}`} style={{ marginBottom: 16 }}>
+              Cash paid for property and equipment
+            </h2>
+            {capex.length > 0 ? (
+              <>
+                <ul className={`${styles.multiples} ${styles.multiplesTight}`}>
+                  {capex
+                    .filter(({ view }) => view.quarters.length > 0)
+                    .slice(0, 6)
+                    .map(({ org, view }) => {
+                      const last = view.quarters.at(-1)!;
+                      return (
+                        <li className={styles.multiple} key={org.id}>
+                          <p className={styles.multipleHead}>
+                            {org.companyHref ? <Link href={`${org.companyHref}#spending`}>{org.displayName}</Link> : <span>{org.displayName}</span>}
+                            <span className={styles.num}>{formatMoney(last.value, last.currency)}</span>
+                          </p>
+                          <CapexBars quarters={view.quarters} label={`${org.name} quarterly cash capex`} />
+                          <p className={styles.multipleFoot}>
+                            <span>{fiscalLabel(last)}</span>
+                            <span>
+                              {calendarSpanLabel(last.start, last.end)}
+                              {last.derived ? " · derived" : ""}
+                            </span>
+                          </p>
+                        </li>
+                      );
+                    })}
+                </ul>
+                <p className={`${styles.note} ${styles.legendRow}`}>
+                  <span className={styles.legendKey}>
+                    <span className={styles.keySolid} aria-hidden="true" /> Reported quarter
+                  </span>
+                  <span className={styles.legendKey}>
+                    <span className={styles.keyHollow} aria-hidden="true" /> Derived: year to date minus the earlier year to date
+                  </span>
+                </p>
+                <p className={styles.note} style={{ marginTop: 8 }}>
+                  <Link className={styles.link} href={spendingPath()}>
+                    All companies, fiscal labels and filings →
+                  </Link>
+                </p>
+              </>
+            ) : (
+              <p className={styles.empty}>Capex data is not loaded yet.</p>
+            )}
+          </div>
         </div>
       </section>
 
-      <section className={styles.section} aria-labelledby="series">
+      <section className={styles.section} aria-labelledby="sectors">
         <div className={styles.sectionHead}>
-          <h2 id="series" className={`${styles.display} ${styles.sectionTitle}`}>{series.name}</h2>
-          <p className={styles.sectionNote}>{series.summary}</p>
+          <h2 id="sectors" className={`${styles.display} ${styles.sectionTitle}`}>
+            Sectors
+          </h2>
+          <p className={styles.sectionNote}>
+            <Link className={styles.link} href={companiesPath()}>
+              All {companies.length} companies →
+            </Link>
+          </p>
         </div>
-        <div className={styles.cards} style={{ "--cols": series.entries.length + series.inReview.length } as React.CSSProperties}>
+        <ul className={styles.chips}>
+          {sectors.map((sector) => (
+            <li key={sector.slug}>
+              <Link href={sector.href}>
+                {sector.name} <span className={styles.muted}>{sector.companies.length}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className={styles.section} aria-labelledby="public-investors">
+        <div className={styles.sectionHead}>
+          <h2 id="public-investors" className={`${styles.display} ${styles.sectionTitle}`}>
+            Public investors · {series.name}
+          </h2>
+          <p className={styles.sectionNote}>
+            <Link className={styles.link} href={portfoliosPath()}>
+              All public investors →
+            </Link>
+          </p>
+        </div>
+        <div className={styles.cards} style={{ "--cols": 2 } as React.CSSProperties}>
           {series.entries.map(({ quarter, story }) => (
             <Link className={styles.card} href={quarter.href} key={story.slug}>
               <span className={styles.eyebrow}>
@@ -136,85 +330,29 @@ export default function CapitalPage() {
               <h3 className={`${styles.display} ${styles.cardTitle}`}>{story.headline}</h3>
               <p className={styles.cardBody}>{story.cardSummary}</p>
               <span className={styles.cardFoot}>
-                {formatUsdCompact(quarter.reportedValueUsd)} reported 13F value · {quarter.holdings.length} holdings ·
-                largest {quarter.holdings[0].company.ticker} {formatWeight(quarter.holdings[0].weight)}
+                {formatUsdCompact(quarter.reportedValueUsd)} reported 13F value · {quarter.holdings.length} holdings · largest{" "}
+                {quarter.holdings[0].company.ticker} {formatWeight(quarter.holdings[0].weight)}
               </span>
             </Link>
           ))}
-          {series.inReview.map((entry) => (
-            <div className={`${styles.card} ${styles.cardDisabled}`} key={entry.fund.slug}>
-              <span className={styles.eyebrow}>
-                {entry.fund.shortName} · {entry.label}
-              </span>
-              <h3 className={`${styles.display} ${styles.cardTitle}`}>{entry.fund.name}</h3>
-              <span className={styles.pill}>In review</span>
-              <p className={styles.cardBody}>{entry.fund.status === "in-review" ? entry.fund.reviewNote : null}</p>
-            </div>
-          ))}
         </div>
       </section>
 
-      <section className={styles.section} aria-labelledby="themes">
+      <section className={styles.section} aria-labelledby="method">
         <div className={styles.sectionHead}>
-          <h2 id="themes" className={`${styles.display} ${styles.sectionTitle}`}>Explore by theme</h2>
+          <h2 id="method" className={`${styles.display} ${styles.sectionTitle}`}>
+            How we count
+          </h2>
           <p className={styles.sectionNote}>
-            Combined reported 13F value among managers Tokscale tracks, {quarterLabel(quarterKeyForPeriod(latestPeriod))}
+            <Link className={styles.link} href={methodologyPath()}>
+              Money types, statuses, coverage and corrections →
+            </Link>
           </p>
         </div>
-        <div className={styles.cards} style={{ "--cols": themes.length } as React.CSSProperties}>
-          {themes.map((theme) => (
-            <div className={styles.card} key={theme.slug}>
-              <h3 className={`${styles.display} ${styles.cardTitle}`}>{theme.name}</h3>
-              <p className={styles.cardBody}>{theme.summary}</p>
-              <ul className={styles.chips}>
-                {theme.companies.map(({ company }) => (
-                  <li key={company.slug}>
-                    <Link href={company.href}>{company.ticker}</Link>
-                  </li>
-                ))}
-              </ul>
-              <span className={styles.cardFoot}>
-                {theme.valueUsd > 0
-                  ? `${formatUsdCompact(theme.valueUsd)} held by ${theme.funds.join(" and ")}`
-                  : "Not held in the latest quarter"}
-              </span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className={styles.section} aria-labelledby="about-13f">
-        <div className={styles.grid}>
-          <div className={styles.prose}>
-            <h2 id="about-13f" className={`${styles.display} ${styles.sectionTitle}`}>What a 13F shows</h2>
-            <p>
-              Investment managers with at least $100 million in U.S.-listed securities file Form 13F with the SEC every
-              quarter. It lists their long positions at quarter end and arrives up to 45 days later.
-            </p>
-            <p>
-              It does not show short positions, cash, private companies or trades made since the quarter ended. Tokscale
-              calls its total the “reported 13F value”, never assets under management.
-            </p>
-          </div>
-          <div>
-            <p className={styles.eyebrow} style={{ marginBottom: 16 }}>
-              Tracked managers
-            </p>
-            <ul className={styles.rows}>
-              {funds.map((view) => (
-                <li className={styles.row} key={view.fund.slug}>
-                  <p className={styles.rowTitle}>
-                    <Link href={view.href}>{view.fund.shortName}</Link>
-                  </p>
-                  <p className={styles.rowMeta}>
-                    {view.fund.person} · {view.latest.label} · {formatUsdCompact(view.latest.reportedValueUsd)} ·{" "}
-                    {view.latest.holdings.length} holdings
-                  </p>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
+        <p className={styles.note} style={{ marginTop: 0 }}>
+          Totals exist only inside one money type, one currency and one basis. Money already counted in a later round is
+          linked to it and counted once. Press-reported numbers are labeled with the outlet and never enter totals.
+        </p>
       </section>
     </CapitalShell>
   );

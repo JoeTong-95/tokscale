@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 import styled from "styled-components";
 import type { DailyContribution, TooltipPosition } from "@/lib/types";
 import { formatCurrency, formatTokenCount } from "@/lib/utils";
@@ -73,40 +73,43 @@ const List = styled.div`
   gap: 6px;
 `;
 
-function useAdjustedPosition(
-  position: TooltipPosition | null,
-  visible: boolean,
-  tooltipRef: React.RefObject<HTMLDivElement | null>
-): TooltipPosition | null {
-  if (!visible || !position) return null;
-
-  const tooltip = tooltipRef.current;
-  if (!tooltip) {
-    return { x: position.x + 15, y: position.y + 15 };
-  }
-
-  const rect = tooltip.getBoundingClientRect();
-  const viewportWidth = typeof window !== "undefined" ? window.innerWidth : 1920;
-  const viewportHeight = typeof window !== "undefined" ? window.innerHeight : 1080;
-
+/**
+ * Where the card goes: 15px below and right of the point, flipped to the other side when it would cross
+ * the window edge, and never closer than 10px to the top or left.
+ */
+export function placeTooltip(
+  position: TooltipPosition,
+  size: { width: number; height: number },
+  viewportWidth: number,
+  viewportHeight: number,
+): { left: number; top: number } {
   let x = position.x + 15;
   let y = position.y + 15;
 
-  if (x + rect.width > viewportWidth - 10) {
-    x = position.x - rect.width - 15;
+  if (x + size.width > viewportWidth - 10) {
+    x = position.x - size.width - 15;
   }
-  if (y + rect.height > viewportHeight - 10) {
-    y = position.y - rect.height - 15;
+  if (y + size.height > viewportHeight - 10) {
+    y = position.y - size.height - 15;
   }
 
-  return { x: Math.max(10, x), y: Math.max(10, y) };
+  return { left: Math.max(10, x), top: Math.max(10, y) };
 }
 
 export function Tooltip({ day, position, visible }: TooltipProps) {
   const tooltipRef = useRef<HTMLDivElement>(null);
-  const adjustedPosition = useAdjustedPosition(position, visible, tooltipRef);
 
-  if (!visible || !day || !adjustedPosition) return null;
+  // Measure after each render, before paint, so the card stays inside the window from its first frame.
+  // (It used to read the previous frame's size, so a tooltip near an edge spilled over until the next move.)
+  useLayoutEffect(() => {
+    const tooltip = tooltipRef.current;
+    if (!tooltip || !visible || !position) return;
+    const { left, top } = placeTooltip(position, tooltip.getBoundingClientRect(), window.innerWidth, window.innerHeight);
+    tooltip.style.left = `${left}px`;
+    tooltip.style.top = `${top}px`;
+  });
+
+  if (!visible || !day || !position) return null;
 
   const { totals, tokenBreakdown } = day;
 
@@ -114,7 +117,7 @@ export function Tooltip({ day, position, visible }: TooltipProps) {
     <TooltipContainer
       ref={tooltipRef}
       role="tooltip"
-      style={{ left: adjustedPosition.x, top: adjustedPosition.y }}
+      style={{ left: position.x + 15, top: position.y + 15 }}
     >
       <TooltipCard>
         <DateText>{formatContributionDate(day)}</DateText>

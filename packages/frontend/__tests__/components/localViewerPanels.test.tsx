@@ -6,7 +6,7 @@ import { cleanup, fireEvent, render, screen, within } from "@testing-library/rea
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { BreakdownPanel } from "@/components/BreakdownPanel";
 import { StatsPanel } from "@/components/StatsPanel";
-import { Tooltip } from "@/components/Tooltip";
+import { Tooltip, placeTooltip } from "@/components/Tooltip";
 import { exportDay, localExport } from "../support/localExport";
 
 afterEach(() => {
@@ -25,6 +25,34 @@ describe("local viewer tooltip", () => {
     expect(html).toContain("$39.00");
     expect(html).toContain("184");
     expect(html).not.toContain("--color-");
+  });
+
+  it("stays inside the window, flipping to the other side of the pointer near an edge", () => {
+    const size = { width: 240, height: 300 };
+    expect(placeTooltip({ x: 100, y: 100 }, size, 1440, 900)).toEqual({ left: 115, top: 115 });
+    expect(placeTooltip({ x: 1300, y: 100 }, size, 1440, 900)).toEqual({ left: 1045, top: 115 });
+    expect(placeTooltip({ x: 100, y: 800 }, size, 1440, 900)).toEqual({ left: 115, top: 485 });
+    expect(placeTooltip({ x: 200, y: 200 }, size, 390, 400)).toEqual({ left: 10, top: 10 });
+  });
+
+  it("is placed with its measured size on the first frame", () => {
+    vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockReturnValue({
+      width: 240,
+      height: 300,
+      top: 0,
+      left: 0,
+      right: 240,
+      bottom: 300,
+      x: 0,
+      y: 0,
+      toJSON: () => ({}),
+    });
+    const day = localExport().contributions[1];
+    render(<Tooltip day={day} position={{ x: window.innerWidth - 20, y: window.innerHeight - 20 }} visible />);
+    const tooltip = screen.getByRole("tooltip");
+    expect(tooltip.style.left).toBe(`${window.innerWidth - 20 - 240 - 15}px`);
+    expect(tooltip.style.top).toBe(`${window.innerHeight - 20 - 300 - 15}px`);
+    vi.restoreAllMocks();
   });
 
   it("renders nothing while hidden", () => {

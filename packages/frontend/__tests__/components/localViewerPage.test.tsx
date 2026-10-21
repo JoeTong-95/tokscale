@@ -66,7 +66,8 @@ describe("bundled sample data", () => {
     vi.stubGlobal("fetch", vi.fn(async () => ({ ok: true, status: 200, json: async () => sample })));
     render(<LocalClient />);
     fireEvent.click(screen.getByRole("button", { name: "Load sample data" }));
-    await waitFor(() => expect(screen.getByLabelText("Loaded export")).toBeTruthy());
+    // Parsing and drawing the full sample export can take more than the default 1 s on a busy machine.
+    await waitFor(() => expect(screen.getByLabelText("Loaded export")).toBeTruthy(), { timeout: 5000 });
     expect(screen.getByRole("group", { name: "Client filters" })).toBeTruthy();
     expect(screen.getByRole("region", { name: "Day breakdown" })).toBeTruthy();
     vi.unstubAllGlobals();

@@ -2,13 +2,16 @@
 
 /**
  * Body of /models/[key]: identity, period, summary facts, trend, token mix,
- * agents, top public profiles, related models and coverage.
+ * agents, benchmarks, pricing, specs, top public profiles, related models,
+ * coverage and sources.
  */
 import Link from "next/link";
 import styled from "styled-components";
 import type { ExplorePeriod, ModelDetail, TokenMix } from "@/lib/explore";
+import type { ModelResearchView } from "@/lib/benchmarks/modelPage";
+import { modelsAllPath } from "@/lib/benchmarks/urls";
 import { MetricItem, MetricLabel, MetricStrip, MetricValue } from "@/components/leaderboard/RankingUI";
-import { companyPath, modelPath, profilePath } from "@/lib/seo/explore";
+import { modelPath, profilePath } from "@/lib/seo/explore";
 import {
   describeUsersChange,
   formatCount,
@@ -30,7 +33,6 @@ import {
   InlineLink,
   LinkSegments,
   ModelMark,
-  PageTitle,
   Section,
   SectionNote,
   SectionTitle,
@@ -38,90 +40,12 @@ import {
   VisuallyHidden,
   type LinkOption,
 } from "./ExploreUI";
+import { ModelBenchmarks } from "./ModelBenchmarks";
+import { ModelBreadcrumb, ModelIdentity, modelCrumbs } from "./ModelHeader";
+import { ModelPricing } from "./ModelPricing";
+import { ModelSpecs } from "./ModelSpecs";
+import { SourcesFooter } from "./SourcesFooter";
 import { TrendChart } from "./TrendChart";
-
-const Breadcrumb = styled.nav`
-  margin-bottom: 12px;
-
-  ol {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 4px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    color: var(--service-text-muted);
-    font-size: 0.8125rem;
-  }
-
-  li:not(:last-child)::after {
-    content: "/";
-    margin-left: 6px;
-    color: var(--service-border-strong);
-  }
-
-  @media (max-width: 640px) {
-    ol {
-      font-size: 0.875rem;
-    }
-  }
-`;
-
-const CrumbLink = styled(Link)`
-  color: var(--service-text-muted);
-  text-decoration: none;
-
-  &:hover {
-    color: var(--service-text);
-  }
-
-  &:focus-visible {
-    border-radius: 4px;
-    outline: 2px solid var(--service-focus);
-    outline-offset: 2px;
-  }
-
-  @media (pointer: coarse), (max-width: 640px) {
-    display: inline-flex;
-    min-height: 44px;
-    align-items: center;
-  }
-`;
-
-const Identity = styled.header`
-  display: grid;
-  gap: 8px;
-  margin-bottom: 20px;
-`;
-
-const TitleRow = styled.div`
-  display: flex;
-  min-width: 0;
-  align-items: center;
-  gap: 14px;
-`;
-
-const IdentityMeta = styled.p`
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 4px 0;
-  margin: 0;
-  color: var(--service-text-muted);
-  font-size: 0.875rem;
-
-  > span:not(:last-child)::after {
-    content: "·";
-    margin: 0 8px;
-    color: var(--service-border-strong);
-  }
-
-  code {
-    color: var(--service-text);
-    font-size: 0.8125rem;
-  }
-`;
 
 const Notice = styled.p`
   margin: 0 0 16px;
@@ -160,6 +84,16 @@ const Grid = styled.div`
 `;
 
 const Wide = styled(Section)`
+  @media (min-width: 1024px) {
+    grid-column: 1 / -1;
+  }
+`;
+
+/* Full-width grid cell for sections that render their own Section. */
+const FullRow = styled.div`
+  display: grid;
+  min-width: 0;
+
   @media (min-width: 1024px) {
     grid-column: 1 / -1;
   }
@@ -414,55 +348,77 @@ interface ModelDetailViewProps {
   periodOptions: LinkOption[];
   /** Set when the requested period had no usage and all time is shown instead. */
   fallbackFrom: ExplorePeriod | null;
+  /** Benchmarks, pricing, specs and sources for the model. Omit to show usage only. */
+  research?: ModelResearchView | null;
 }
 
-export function ModelDetailView({ detail, period, periodOptions, fallbackFrom }: ModelDetailViewProps) {
+/** Benchmarks, Pricing and Specs (or one note when no source knows the model). */
+function ResearchSections({
+  research,
+  modelName,
+  period,
+}: {
+  research: ModelResearchView;
+  modelName: string;
+  period: ExplorePeriod;
+}) {
+  if (research.benchmarks.rows.length === 0 && !research.pricing && !research.specs) {
+    return (
+      <Wide aria-labelledby="research-title">
+        <div>
+          <SectionTitle id="research-title">Benchmarks, pricing and specs</SectionTitle>
+          <SectionNote>
+            No benchmark result and no models.dev entry match this model key yet, so there are no scores, list prices or
+            specs to show.
+          </SectionNote>
+        </div>
+      </Wide>
+    );
+  }
+  return (
+    <>
+      <FullRow>
+        <ModelBenchmarks benchmarks={research.benchmarks} modelName={modelName} period={period} />
+      </FullRow>
+      <FullRow>
+        <ModelPricing
+          pricing={research.pricing}
+          modelName={modelName}
+          period={period}
+          retrievedAt={research.specs?.retrievedAt ?? null}
+        />
+      </FullRow>
+      <FullRow>
+        <ModelSpecs specs={research.specs} modelName={modelName} />
+      </FullRow>
+    </>
+  );
+}
+
+export function ModelDetailView({ detail, period, periodOptions, fallbackFrom, research = null }: ModelDetailViewProps) {
   const { model, summary, coverage } = detail;
   const change = describeUsersChange(summary.activeUsers, summary.previousActiveUsers, summary.previousActiveUsers === 0, period);
   const previousLabel = previousWindowLabel(period);
   const labName = model.lab ?? UNKNOWN_LAB_NAME;
+  const hasResearch = research !== null && (research.benchmarks.rows.length > 0 || research.pricing !== null || research.specs !== null);
 
   return (
     <>
-      <Breadcrumb aria-label="Breadcrumb">
-        <ol>
-          <li>
-            <CrumbLink href="/models">Models</CrumbLink>
-          </li>
-          {model.labSlug ? (
-            <li>
-              <CrumbLink href={companyPath(model.labSlug)}>{labName}</CrumbLink>
-            </li>
-          ) : null}
-          <li aria-current="page">{model.name}</li>
-        </ol>
-      </Breadcrumb>
+      <ModelBreadcrumb items={modelCrumbs(model)} />
 
-      <Identity>
-        <TitleRow>
-          <ModelMark model={model} size={44} />
-          <PageTitle>{model.name}</PageTitle>
-        </TitleRow>
-        <IdentityMeta>
+      <ModelIdentity model={model}>
+        {model.aliases.length > 0 ? (
           <span>
-            {model.labSlug ? <InlineLink href={companyPath(model.labSlug)}>{labName}</InlineLink> : labName}
+            Also reported as{" "}
+            {model.aliases.map((alias, index) => (
+              <span key={alias}>
+                {index > 0 ? ", " : null}
+                <code>{alias}</code>
+              </span>
+            ))}
           </span>
-          <span>
-            Key <code>{model.key}</code>
-          </span>
-          {model.aliases.length > 0 ? (
-            <span>
-              Also reported as{" "}
-              {model.aliases.map((alias, index) => (
-                <span key={alias}>
-                  {index > 0 ? ", " : null}
-                  <code>{alias}</code>
-                </span>
-              ))}
-            </span>
-          ) : null}
-        </IdentityMeta>
-      </Identity>
+        ) : null}
+      </ModelIdentity>
 
       <ControlBar>
         <LinkSegments label="Period" visibleLabel="Period" options={periodOptions} />
@@ -546,6 +502,8 @@ export function ModelDetailView({ detail, period, periodOptions, fallbackFrom }:
           )}
         </Section>
 
+        {research ? <ResearchSections research={research} modelName={model.name} period={period} /> : null}
+
         <Section aria-labelledby="humans-title">
           <div>
             <SectionTitle id="humans-title">Top public profiles</SectionTitle>
@@ -612,8 +570,14 @@ export function ModelDetailView({ detail, period, periodOptions, fallbackFrom }:
           ) : (
             <Empty>No other {labName} models with data in this period.</Empty>
           )}
-          <SmallLink href="/models">All models</SmallLink>
+          <SmallLink href={modelsAllPath()}>All models</SmallLink>
         </Section>
+
+        {research && hasResearch ? (
+          <FullRow>
+            <SourcesFooter notes={research.sources} />
+          </FullRow>
+        ) : null}
       </Grid>
     </>
   );

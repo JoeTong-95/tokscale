@@ -3,6 +3,9 @@ import { notFound } from "next/navigation";
 import { Navigation } from "@/components/layout/Navigation";
 import { ServiceFooter } from "@/components/layout/ServiceFooter";
 import { getModelDetail, type ExplorePeriod, type ModelDetail } from "@/lib/explore";
+import { benchmarkData } from "@/lib/benchmarks";
+import { buildModelResearch } from "@/lib/benchmarks/modelPage";
+import { getModelMixes } from "@/lib/benchmarks/usage";
 import { TOKSCALE_X_HANDLE } from "@/lib/community";
 import { homeUrl } from "@/lib/seo/urls";
 import { breadcrumbJsonLd, modelUrl, modelsIndexUrl, serializeJsonLd } from "@/lib/seo/explore";
@@ -54,6 +57,16 @@ async function loadDetail(key: string, period: ExplorePeriod): Promise<LoadedDet
   return allTime ? { detail: allTime, period: "all", fallbackFrom: period } : null;
 }
 
+/** Token mixes for the price estimate. A failure shows the estimate as unavailable instead of failing the page. */
+async function loadMixes(period: ExplorePeriod) {
+  try {
+    return await getModelMixes(period);
+  } catch (error) {
+    console.error("[models] token mixes unavailable", error);
+    return null;
+  }
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { key: rawKey } = await params;
   const key = decodeKey(rawKey);
@@ -65,8 +78,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { model, summary } = loaded.detail;
   const canonical = modelUrl(model.key);
   const by = model.lab ? ` by ${model.lab}` : "";
+  const benchmarks = benchmarkData.forModel(model.key).length > 0 ? ", benchmark results" : "";
   const title = `${model.name}${by} - Usage, Active Users, Est. Cost | Tokscale`;
-  const description = `${model.name}${by}: ${formatCount(summary.activeUsers)} active users and ${formatTokens(summary.tokens)} tokens in public Tokscale submissions, with daily trend, token mix, estimated cost, and the coding agents that use it.`;
+  const description = `${model.name}${by}: ${formatCount(summary.activeUsers)} active users and ${formatTokens(summary.tokens)} tokens in public Tokscale submissions, with daily trend, token mix, estimated cost${benchmarks}, and the coding agents that use it.`;
 
   return {
     title,
@@ -83,6 +97,8 @@ export default async function ModelPage({ params, searchParams }: PageProps) {
   if (!key) notFound();
 
   const requested = resolveExplorePeriod(query.period);
+  // Mixes for the requested period load alongside the detail; most pages show that period.
+  const requestedMixes = loadMixes(requested);
   const loaded = await loadDetail(key, requested);
   if (!loaded) notFound();
 
@@ -92,6 +108,8 @@ export default async function ModelPage({ params, searchParams }: PageProps) {
     ...loaded.detail,
     model: { ...loaded.detail.model, labSlug: companySlugForLab(loaded.detail.model.labSlug) },
   };
+  const mixes = period === requested ? await requestedMixes : await loadMixes(period);
+  const research = buildModelResearch(benchmarkData, detail.model.key, { usage: { agents: detail.agents }, mixes });
   const path = `/models/${encodeURIComponent(detail.model.key)}`;
   const periodOptions = EXPLORE_PERIODS.map((value) => ({
     href: buildExploreHref(path, { period: requested }, { period: value }, { period: DEFAULT_EXPLORE_PERIOD }),
@@ -110,7 +128,13 @@ export default async function ModelPage({ params, searchParams }: PageProps) {
       <Navigation />
       <main className="service-main" id="main-content">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd(crumbs)) }} />
-        <ModelDetailView detail={detail} period={period} periodOptions={periodOptions} fallbackFrom={fallbackFrom} />
+        <ModelDetailView
+          detail={detail}
+          period={period}
+          periodOptions={periodOptions}
+          fallbackFrom={fallbackFrom}
+          research={research}
+        />
       </main>
       <ServiceFooter />
     </div>

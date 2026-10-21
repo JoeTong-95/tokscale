@@ -10,6 +10,7 @@ export const dynamic = "force-dynamic";
 import { listModelKeys, getCommunitySnapshot } from "@/lib/explore";
 import { capitalSitemapEntries } from "@/lib/capital/sitemap";
 import { buildExploreSitemapEntries } from "@/lib/seo/explore";
+import { benchmarksSitemapEntries, modelsCatalogSitemapEntry } from "@/lib/benchmarks/sitemap";
 import { getPublicOrigin } from "@/lib/seo/urls";
 import {
   SITEMAP_GROUP_LIMIT,
@@ -98,6 +99,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...buildCoreEntries(coreLastModified),
     { url: `${getPublicOrigin()}/tracker`, changeFrequency: "monthly", priority: 0.6 },
     ...buildExploreSitemapEntries(modelKeys, exploreLastModified),
+    modelsCatalogSitemapEntry(exploreLastModified),
+    ...benchmarksSitemapEntries(),
     ...capitalSitemapEntries(),
     ...buildUserEntries(userRows, now),
     ...buildGroupEntries(groupRows, now),

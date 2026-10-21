@@ -6,6 +6,7 @@ import {
   clampShare,
   describeCoverage,
   describeUsersChange,
+  estimatedCostPhrase,
   formatCount,
   formatDateRange,
   formatDay,
@@ -57,6 +58,14 @@ describe("explore number formatting", () => {
     expect(formatEstimatedCost(0.4)).toBe("<$1");
     expect(formatEstimatedCost(512.6)).toBe("$513");
     expect(formatEstimatedCost(3_500_000)).toBe("$3.5M");
+  });
+
+  it("shows no price instead of $0 when there is usage but no cost", () => {
+    expect(formatEstimatedCost(0, 1_200_000)).toBe("—");
+    expect(formatEstimatedCost(0, 0)).toBe("$0");
+    expect(formatEstimatedCost(42, 1_200_000)).toBe("$42");
+    expect(estimatedCostPhrase(0, 1_200_000)).toBe("no price");
+    expect(estimatedCostPhrase(1_500, 1_200_000)).toBe("$1.5K est. cost");
   });
 
   it("formats shares with sensible precision", () => {

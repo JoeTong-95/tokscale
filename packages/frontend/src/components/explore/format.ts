@@ -86,12 +86,25 @@ export function formatTokens(value: number): string {
  * Compact estimated cost. The "Est." wording belongs to the label next to the
  * number, so this returns the amount only: 3_500_000 -> "$3.5M".
  */
-export function formatEstimatedCost(value: number): string {
+/**
+ * Estimated cost at public list prices. When there is usage (`tokens` > 0) but no
+ * cost, the submitted usage carried no price (a free model, or one without a
+ * list price), so it reads "—" instead of claiming "$0".
+ */
+export function formatEstimatedCost(value: number, tokens?: number): string {
   const safe = Math.max(0, finite(value));
-  if (safe === 0) return "$0";
+  if (safe === 0) return tokens !== undefined && finite(tokens) > 0 ? NO_PRICE : "$0";
   if (safe < 1) return "<$1";
   if (safe < 1000) return `$${Math.round(safe)}`;
   return `$${new Intl.NumberFormat("en-US", { notation: "compact", maximumFractionDigits: 1 }).format(safe)}`;
+}
+
+export const NO_PRICE = "—";
+
+/** "$1.2K est. cost", or "no price" when the usage carried no cost. */
+export function estimatedCostPhrase(value: number, tokens: number): string {
+  const text = formatEstimatedCost(value, tokens);
+  return text === NO_PRICE ? "no price" : `${text} est. cost`;
 }
 
 /** Clamp a share to 0..1. NaN and negative values become 0. */

@@ -17,7 +17,7 @@ import styled from "styled-components";
 import type { Coverage, ExploreSort } from "@/lib/explore";
 import { SearchIcon, XIcon } from "@/components/ui/Icons";
 import { companyPath, modelPath } from "@/lib/seo/explore";
-import { formatCount, formatEstimatedCost, formatShare, formatTokens } from "./format";
+import { formatCount, estimatedCostPhrase, formatEstimatedCost, formatShare, formatTokens } from "./format";
 import {
   groupModelsByLab,
   isCatalogFiltered,
@@ -536,7 +536,7 @@ export function ModelCatalog({
                     </MobilePrimary>
                     <MobileMeta>
                       {usersSorted ? `${formatTokens(model.tokens)} tokens` : `${formatCount(model.activeUsers)} active users`}
-                      {` · ${formatShare(model.adoption)} adoption · ${formatEstimatedCost(model.estimatedCost)} est. cost`}
+                      {` · ${formatShare(model.adoption)} adoption · ${estimatedCostPhrase(model.estimatedCost, model.tokens)}`}
                     </MobileMeta>
                     <Value>
                       {formatCount(model.activeUsers)}
@@ -551,7 +551,7 @@ export function ModelCatalog({
                       <VisuallyHidden> tokens</VisuallyHidden>
                     </Value>
                     <Value>
-                      {formatEstimatedCost(model.estimatedCost)}
+                      {formatEstimatedCost(model.estimatedCost, model.tokens)}
                       <VisuallyHidden> estimated cost</VisuallyHidden>
                     </Value>
                   </Item>

@@ -11,6 +11,7 @@ import { modelPath } from "@/lib/seo/explore";
 import {
   describeUsersChange,
   formatCount,
+  estimatedCostPhrase,
   formatEstimatedCost,
   formatShare,
   formatTokens,
@@ -438,7 +439,7 @@ export function ModelBoard({ rows, coverage, period, sort }: BoardProps<ModelUsa
                     </MeterCell>
                   </Td>
                   <Td $align="right">{formatTokens(row.tokens)}</Td>
-                  <Td $align="right">{formatEstimatedCost(row.estimatedCost)}</Td>
+                  <Td $align="right">{formatEstimatedCost(row.estimatedCost, row.tokens)}</Td>
                   <Td>
                     <TopList aria-label={`Top agents for ${row.name}`}>
                       {row.topAgents.map((agent) => (
@@ -490,7 +491,7 @@ export function ModelBoard({ rows, coverage, period, sort }: BoardProps<ModelUsa
                     ? `${formatTokens(row.tokens)} tokens`
                     : `${formatCount(row.activeUsers)} active users`}
                   {" · "}
-                  {formatEstimatedCost(row.estimatedCost)} est. cost
+                  {estimatedCostPhrase(row.estimatedCost, row.tokens)}
                 </MobileWide>
                 {row.topAgents.length > 0 ? (
                   <MobileWide>
@@ -566,7 +567,7 @@ export function AgentBoard({ rows, coverage, period, sort }: BoardProps<AgentUsa
                     </MeterCell>
                   </Td>
                   <Td $align="right">{formatTokens(row.tokens)}</Td>
-                  <Td $align="right">{formatEstimatedCost(row.estimatedCost)}</Td>
+                  <Td $align="right">{formatEstimatedCost(row.estimatedCost, row.tokens)}</Td>
                   <Td>
                     <TopList aria-label={`Top models in ${row.name}`}>
                       {row.topModels.map((model) => (
@@ -617,7 +618,7 @@ export function AgentBoard({ rows, coverage, period, sort }: BoardProps<AgentUsa
                     ? `${formatTokens(row.tokens)} tokens`
                     : `${formatCount(row.activeUsers)} active users`}
                   {" · "}
-                  {formatEstimatedCost(row.estimatedCost)} est. cost
+                  {estimatedCostPhrase(row.estimatedCost, row.tokens)}
                 </MobileWide>
                 {row.topModels.length > 0 ? (
                   <MobileWide>

@@ -7,7 +7,7 @@ import { AgentMark } from "@/components/explore/ExploreUI";
 import { ModelMark } from "@/components/explore/ModelMark";
 import { Arrow, focusRing, VisuallyHidden } from "./primitives";
 import {
-  compactCurrency,
+  compactCost,
   compactNumber,
   coverageRangeLabel,
   periodLabel,
@@ -138,7 +138,7 @@ function HumanItem({ human }: { human: HumanRow }) {
         </Value>
         <Cost>
           <VisuallyHidden>Estimated cost: </VisuallyHidden>
-          {compactCurrency(human.estimatedCost)}
+          {compactCost(human.estimatedCost, human.tokens)}
         </Cost>
       </RowLink>
     </li>
@@ -166,7 +166,7 @@ function ModelItem({ model }: { model: ModelUsageRow }) {
         </Change>
         <Cost>
           <VisuallyHidden>Estimated cost: </VisuallyHidden>
-          {compactCurrency(model.estimatedCost)}
+          {compactCost(model.estimatedCost, model.tokens)}
         </Cost>
       </RowLink>
     </li>

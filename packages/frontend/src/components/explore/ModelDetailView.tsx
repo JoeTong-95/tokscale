@@ -16,6 +16,7 @@ import {
   describeUsersChange,
   formatCount,
   formatDay,
+  estimatedCostPhrase,
   formatEstimatedCost,
   formatShare,
   formatTokens,
@@ -456,7 +457,7 @@ export function ModelDetailView({ detail, period, periodOptions, fallbackFrom, r
         </MetricItem>
         <MetricItem>
           <MetricLabel>Est. cost</MetricLabel>
-          <MetricValue>{formatEstimatedCost(summary.estimatedCost)}</MetricValue>
+          <MetricValue>{formatEstimatedCost(summary.estimatedCost, summary.tokens)}</MetricValue>
           <FactSub>at public list prices</FactSub>
         </MetricItem>
         <MetricItem>
@@ -526,7 +527,7 @@ export function ModelDetailView({ detail, period, periodOptions, fallbackFrom, r
                     <span>tokens</span>
                   </RowValue>
                   <HideOnNarrow>
-                    {formatEstimatedCost(human.estimatedCost)}
+                    {formatEstimatedCost(human.estimatedCost, human.tokens)}
                     <span>est. cost</span>
                   </HideOnNarrow>
                   <HideOnNarrow>
@@ -534,7 +535,7 @@ export function ModelDetailView({ detail, period, periodOptions, fallbackFrom, r
                     <span>active days</span>
                   </HideOnNarrow>
                   <ShowOnNarrow>
-                    {formatEstimatedCost(human.estimatedCost)} est. cost · {formatCount(human.activeDays)} active days
+                    {estimatedCostPhrase(human.estimatedCost, human.tokens)} · {formatCount(human.activeDays)} active days
                   </ShowOnNarrow>
                 </PersonRow>
               ))}

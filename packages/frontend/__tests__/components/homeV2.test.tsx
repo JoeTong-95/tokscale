@@ -13,6 +13,7 @@ import {
   updatedLabel,
   updatedShortLabel,
   userChange,
+  compactCost,
 } from "../../src/components/home/format";
 import { NAV_ITEMS, isNavItemActive } from "../../src/components/layout/Navigation";
 import { PublicFooter, SPONSOR_URL } from "../../src/components/layout/PublicFooter";
@@ -22,6 +23,12 @@ import { fixtureSnapshot } from "../../src/lib/explore/fixtures";
 import { TOKSCALE_DISCORD_URL, TOKSCALE_X_URL } from "../../src/lib/community";
 
 describe("home format helpers", () => {
+  it("shows no price instead of $0 when there is usage but no cost", () => {
+    expect(compactCost(0, 5_000)).toBe("—");
+    expect(compactCost(0, 0)).toBe("$0");
+    expect(compactCost(1_500, 5_000)).not.toBe("—");
+  });
+
   it("shortens the data time for the snapshot header", () => {
     expect(updatedShortLabel("2026-10-19T09:24:00.000Z", "2026-10-19")).toBe("09:24 UTC");
     expect(updatedShortLabel("2026-10-20T01:05:00.000Z", "2026-10-19")).toBe("Oct 20, 01:05 UTC");

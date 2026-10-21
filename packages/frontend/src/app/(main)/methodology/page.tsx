@@ -118,6 +118,10 @@ export default function MethodologyPage() {
                   visible to Tokscale, and usage of a model with no public price adds no cost. That is why cost is always
                   labelled &ldquo;Est. cost&rdquo;.
                 </p>
+                <p>
+                  When a model has usage but its submitted usage carries no cost (a free model, or one with no public
+                  price), the cost shows as &ldquo;&mdash;&rdquo; instead of $0.
+                </p>
               </dd>
             </div>
             <div className={styles.metric} id="periods">

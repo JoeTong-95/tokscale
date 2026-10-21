@@ -4,7 +4,15 @@ import styled from "styled-components";
 import type { Coverage, HumanRow } from "@/lib/explore";
 import { ModelMark } from "@/components/explore/ModelMark";
 import { agentLogoUrl } from "./agents";
-import { compactCurrency, compactNumber, coverageDays, coverageRangeLabel, periodLabel, uniqueByKey, wholeNumber } from "./format";
+import {
+  compactCost,
+  compactNumber,
+  coverageDays,
+  coverageRangeLabel,
+  periodLabel,
+  uniqueByKey,
+  wholeNumber,
+} from "./format";
 import { Arrow, Container, Eyebrow, Lead, Section, SectionHeader, SectionTitle, TextLink } from "./primitives";
 
 interface HumansSectionProps {
@@ -73,7 +81,7 @@ function FeaturedProfile({ human, coverage }: { human: HumanRow; coverage: Cover
           </div>
           <div>
             <dt>Est. cost</dt>
-            <dd>{compactCurrency(human.estimatedCost)}</dd>
+            <dd>{compactCost(human.estimatedCost, human.tokens)}</dd>
           </div>
           <div>
             <dt>Active days</dt>

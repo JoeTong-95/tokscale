@@ -5,7 +5,15 @@ import styled from "styled-components";
 import type { Coverage, ModelUsageRow } from "@/lib/explore";
 import { ModelMark } from "@/components/explore/ModelMark";
 import { agentLogoUrl } from "./agents";
-import { compactCurrency, compactNumber, coverageRangeLabel, percent, periodLabel, userChange, wholeNumber } from "./format";
+import {
+  compactCost,
+  compactNumber,
+  coverageRangeLabel,
+  percent,
+  periodLabel,
+  userChange,
+  wholeNumber,
+} from "./format";
 import { Arrow, Container, Eyebrow, focusRing, Lead, Section, SectionHeader, SectionTitle, TextLink } from "./primitives";
 
 interface ModelsSectionProps {
@@ -101,7 +109,7 @@ function ModelColumn({ model, accounts }: { model: ModelUsageRow; accounts: numb
             Est. cost
             <small>At public list prices, not what people paid</small>
           </dt>
-          <dd>{compactCurrency(model.estimatedCost)}</dd>
+          <dd>{compactCost(model.estimatedCost, model.tokens)}</dd>
         </Fact>
         <Fact $stack>
           <dt>

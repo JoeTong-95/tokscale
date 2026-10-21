@@ -78,6 +78,12 @@ export function compactCurrency(value: number): string {
   return formatCompact(value, "currency");
 }
 
+/** Estimated cost, or "—" when there is usage but the submission carried no price. */
+export function compactCost(value: number, tokens: number): string {
+  if (!(Number.isFinite(value) && value > 0) && Number.isFinite(tokens) && tokens > 0) return "—";
+  return compactCurrency(value);
+}
+
 export function wholeNumber(value: number): string {
   return new Intl.NumberFormat("en-US").format(Math.max(0, Math.round(Number.isFinite(value) ? value : 0)));
 }

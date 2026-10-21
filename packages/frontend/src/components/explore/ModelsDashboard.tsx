@@ -137,7 +137,7 @@ const Fade = styled.div<{ $visible: boolean }>`
   right: 0;
   bottom: 0;
   width: 48px;
-  background: linear-gradient(to right, rgba(13, 16, 24, 0), var(--service-canvas));
+  background: linear-gradient(to right, transparent, var(--service-canvas));
   opacity: ${({ $visible }) => ($visible ? 1 : 0)};
   pointer-events: none;
 `;

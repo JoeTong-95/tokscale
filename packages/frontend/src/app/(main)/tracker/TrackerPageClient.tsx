@@ -264,6 +264,8 @@ const Line = styled.span`
 
 const Hero = styled.section`
   padding: 128px 0 40px;
+  /* The same faint blue glow as the home hero. */
+  background: var(--v2-glow);
 
   @media (max-width: 720px) {
     padding: 112px 0 32px;

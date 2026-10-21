@@ -124,7 +124,7 @@ const Hero = styled.section`
   z-index: 1;
   padding: 128px 0 56px;
   /* A faint blue glow behind the title, matching the blue backdrop below. */
-  background: radial-gradient(52% 70% at 50% 0%, rgba(22, 64, 160, 0.26), rgba(22, 64, 160, 0) 72%);
+  background: var(--v2-glow);
 
   @media (max-width: 720px) {
     padding: 112px 0 48px;

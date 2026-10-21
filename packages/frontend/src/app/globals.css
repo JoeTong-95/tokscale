@@ -40,13 +40,14 @@
   --color-badge-bg: rgba(133, 202, 255, 0.15);
   --color-badge-text: #85caff;
 
-  /* Compact service UI. These are additive so the landing page and the
-     shared local visualizer can keep their existing theme contract. */
-  --service-canvas: #0d1018;
-  --service-surface: #131822;
-  --service-surface-muted: #191f2b;
-  --service-border: rgba(255, 255, 255, 0.09);
-  --service-border-strong: rgba(255, 255, 255, 0.16);
+  /* Compact service UI (leaderboard, models, capital, profiles, benchmarks).
+     Same black canvas, dark cards and thin rules as the v2 landing below; the
+     names stay separate so the shared local visualizer keeps its own theme. */
+  --service-canvas: var(--v2-canvas);
+  --service-surface: var(--v2-surface);
+  --service-surface-muted: var(--v2-surface-raised);
+  --service-border: var(--v2-rule);
+  --service-border-strong: var(--v2-rule-strong);
   --service-text: #f4f7fb;
   --service-text-muted: #a8b3c5;
   --service-accent: #2f8fff;
@@ -77,6 +78,9 @@
   --v2-font-display: var(--font-display), "Iowan Old Style", Georgia, serif;
   --v2-font-ui: var(--font-figtree), system-ui, -apple-system, sans-serif;
   --v2-font-mono: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  /* Faint blue light from the top edge, as behind the home hero. Paint it in
+     the hero itself or in a 720px band at the top of a page shell. */
+  --v2-glow: radial-gradient(52% 70% at 50% 0%, rgba(22, 64, 160, 0.26), rgba(22, 64, 160, 0) 72%);
 }
 
 /* react-toastify loads after this file and sets --toastify-font-family to
@@ -165,7 +169,7 @@ a:hover {
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  background: var(--service-canvas);
+  background: var(--v2-glow) center top / 100% 720px no-repeat var(--service-canvas);
   color: var(--service-text);
 }
 

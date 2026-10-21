@@ -229,6 +229,11 @@
   .statValue {
     font-size: 1.375rem;
   }
+
+  /* Half a phone is too narrow for a long quantity ("≤387,051 shares") on one line. */
+  .statValue .num {
+    white-space: normal;
+  }
 }
 
 /* ---------- lists of filings / rows ---------- */
@@ -634,6 +639,13 @@
   padding-top: 0;
   color: var(--cap-muted);
   font-size: 0.75rem;
+}
+
+/* Just above the stacked layout a wide table can run past the page: let its headers wrap. */
+@media (max-width: 900px) {
+  .ledgerTable thead th {
+    white-space: normal;
+  }
 }
 
 /* On phones the ledger table becomes stacked rows: first cell full width, the rest labelled. */

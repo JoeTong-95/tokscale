@@ -17,7 +17,6 @@ import {
   uniqueByKey,
   uniqueNames,
   updatedLabel,
-  updatedShortLabel,
   userChange,
   compactCost,
 } from "../../src/components/home/format";
@@ -35,11 +34,6 @@ describe("home format helpers", () => {
     expect(compactCost(1_500, 5_000)).not.toBe("—");
   });
 
-  it("shortens the data time for the snapshot header", () => {
-    expect(updatedShortLabel("2026-10-19T09:24:00.000Z", "2026-10-19")).toBe("09:24 UTC");
-    expect(updatedShortLabel("2026-10-20T01:05:00.000Z", "2026-10-19")).toBe("Oct 20, 01:05 UTC");
-    expect(updatedShortLabel(null, "2026-10-19")).toBeNull();
-  });
 
   it("labels the coverage window in UTC", () => {
     expect(coverageRangeLabel({ start: "2026-09-19", end: "2026-10-18" })).toBe("Sep 19 – Oct 18, 2026");
@@ -144,14 +138,15 @@ describe("public footer", () => {
 });
 
 describe("community snapshot", () => {
-  it("links five humans and five models, labels the period, and shows estimated cost", () => {
+  it("links five humans and five models and shows estimated cost, without a header row", () => {
     const snapshot = fixtureSnapshot("30d");
     const markup = renderToStaticMarkup(<CommunitySnapshot snapshot={snapshot} />);
     expect(markup.match(/href="\/u\//g)).toHaveLength(5);
     expect(markup.match(/href="\/models\/[^"]+"/g)).toHaveLength(5);
-    expect(markup).toContain("Last 30 days");
     expect(markup).toContain("Est. cost");
-    expect(markup).toMatch(/Updated (<!-- -->)?Oct 19, 04:12 UTC/);
+    expect(markup).toContain('aria-label="Community snapshot"');
+    expect(markup).not.toContain("Last 30 days");
+    expect(markup).not.toContain("Updated");
     expect(markup).not.toContain("Based on public usage submissions");
   });
 

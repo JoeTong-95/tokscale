@@ -49,19 +49,6 @@ export function updatedLabel(iso: string | null | undefined): string | null {
   return `${UPDATED.format(date)} UTC`;
 }
 
-const SHORT_TIME = new Intl.DateTimeFormat("en-US", { hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZone: "UTC" });
-
-/**
- * Short data time for a panel header: "09:24 UTC" when the data time falls on the
- * window's last day, otherwise "Oct 19, 09:24 UTC". Null when there is no data time.
- */
-export function updatedShortLabel(iso: string | null | undefined, windowEnd: string | null | undefined): string | null {
-  const date = parseIsoDate(iso);
-  if (!date) return null;
-  const time = `${SHORT_TIME.format(date)} UTC`;
-  return windowEnd && date.toISOString().slice(0, 10) === windowEnd ? time : `${MONTH_DAY.format(date)}, ${time}`;
-}
-
 /** Number of days in the coverage window, inclusive. */
 export function coverageDays(coverage: Pick<Coverage, "start" | "end">): number | null {
   const start = parseIsoDate(coverage.start);

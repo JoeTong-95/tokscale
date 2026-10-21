@@ -6,15 +6,7 @@ import type { CommunitySnapshot as Snapshot, HumanRow, ModelUsageRow } from "@/l
 import { AgentMark } from "@/components/explore/ExploreUI";
 import { ModelMark } from "@/components/explore/ModelMark";
 import { Arrow, focusRing, VisuallyHidden } from "./primitives";
-import {
-  compactCost,
-  compactNumber,
-  coverageRangeLabel,
-  periodLabel,
-  updatedShortLabel,
-  userChange,
-  wholeNumber,
-} from "./format";
+import { compactCost, compactNumber, userChange, wholeNumber } from "./format";
 
 interface CommunitySnapshotProps {
   snapshot: Snapshot | null;
@@ -23,22 +15,9 @@ interface CommunitySnapshotProps {
 export function CommunitySnapshot({ snapshot }: CommunitySnapshotProps) {
   const humans = snapshot?.humans.slice(0, 5) ?? [];
   const models = snapshot?.models.slice(0, 5) ?? [];
-  const coverage = snapshot?.coverage ?? null;
-  const range = coverage ? coverageRangeLabel(coverage) : null;
-  const period = coverage ? periodLabel(coverage.period) : "Last 30 days";
-  const updated = coverage ? updatedShortLabel(coverage.lastDataAt, coverage.end) : null;
 
   return (
-    <Panel aria-labelledby="community-snapshot-title">
-      <PanelHeader>
-        <PanelTitle id="community-snapshot-title">Community snapshot</PanelTitle>
-        <PeriodMeta>
-          <strong>{period}</strong>
-          {range ? <span>{range}</span> : null}
-          {updated ? <span>Updated {updated}</span> : null}
-        </PeriodMeta>
-      </PanelHeader>
-
+    <Panel aria-label="Community snapshot">
       <Columns>
         <Column aria-labelledby="snapshot-humans-title">
           <ColumnHead>
@@ -180,41 +159,6 @@ const Panel = styled.section`
   background: rgba(4, 5, 8, 0.86);
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
-`;
-
-const PanelHeader = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 6px 16px;
-  padding: 14px 20px;
-  border-bottom: 1px solid var(--v2-rule);
-
-  @media (max-width: 520px) {
-    padding: 12px 16px;
-  }
-`;
-
-const PanelTitle = styled.h2`
-  margin: 0;
-  color: var(--v2-text);
-  font-size: 15px;
-  font-weight: 600;
-`;
-
-const PeriodMeta = styled.p`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 10px;
-  margin: 0;
-  color: var(--v2-text-subtle);
-  font-size: 13px;
-
-  strong {
-    color: var(--v2-text);
-    font-weight: 500;
-  }
 `;
 
 const Columns = styled.div`

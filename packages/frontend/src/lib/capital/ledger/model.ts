@@ -440,18 +440,28 @@ export function createLedgerModel(content: LedgerContent) {
         investors.set(p.org.id, entry);
       }
     }
-    // Strategic investors also appear through deals (Amazon's April 2026 investment).
+    // Strategic investors also appear through deals where this company receives the money (Amazon's
+    // April 2026 investment in Anthropic). Investors in someone else's round are not this company's investors.
     for (const deal of timeline) {
+      if (rounds.includes(deal)) continue;
+      const receives = deal.event.participants.some((p) => p.org === org.id && p.roles.includes("issuer"));
+      if (!receives) continue;
       for (const p of deal.participants) {
-        if (p.org.id === org.id || !p.roles.includes("strategic_investor") || investors.has(p.org.id)) continue;
-        investors.set(p.org.id, { org: p.org, roles: new Set<Role>(["strategic_investor"]), events: [deal] });
+        if (p.org.id === org.id || !p.roles.includes("strategic_investor")) continue;
+        const entry = investors.get(p.org.id) ?? { org: p.org, roles: new Set<Role>(), events: [] };
+        entry.roles.add("strategic_investor");
+        if (!entry.events.includes(deal)) entry.events.push(deal);
+        investors.set(p.org.id, entry);
       }
     }
     const metricStatements = statementsOf(org.id);
     const capex = capexViews.get(org.id) ?? null;
     const holdings = thirteenF.getCompany(slug);
+    // Parties to deals (compute, leases, acquisitions). Round investors are listed in their own section.
     const counterparties = new Map<string, OrgView>();
-    for (const e of timeline) for (const p of e.participants) if (p.org.id !== org.id) counterparties.set(p.org.id, p.org);
+    for (const e of timeline.filter((x) => x.route === "deals")) {
+      for (const p of e.participants) if (p.org.id !== org.id) counterparties.set(p.org.id, p.org);
+    }
     const related = [...orgs.values()]
       .filter((o) => o.id !== org.id && o.kinds.includes("company") && view.primaryCategory && o.categories.includes(view.primaryCategory))
       .map((o) => orgView(o.id));

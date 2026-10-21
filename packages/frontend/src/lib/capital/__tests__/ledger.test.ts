@@ -186,3 +186,28 @@ describe("Tokscale usage on lab profiles", () => {
     expect(usageForLabs(snapshot, [])).toBeNull();
   });
 });
+
+describe("event and profile display", () => {
+  it("leads a Form D with the amount sold, not the total offering size", () => {
+    const crusoe = ledger.getEvent("crusoe-form-d-2026")!;
+    expect(crusoe.headline?.amount?.amount.measure).toBe("form_d_amount_sold");
+    expect(crusoe.headline?.amount?.amount.value).toBe(3_108_543_889);
+  });
+
+  it("lists deal counterparties on a profile, not the investors of its rounds", () => {
+    const anthropic = ledger.getCompany("anthropic")!;
+    const names = anthropic.counterparties.map((o) => o.slug);
+    expect(names).toContain("akamai");
+    expect(names).toContain("terawulf");
+    expect(names).not.toContain("altimeter-capital");
+    expect(anthropic.investors.some((i) => i.org.slug === "altimeter-capital")).toBe(true);
+  });
+
+  it("lists only investors in the company's own rounds and deals", () => {
+    const anthropic = ledger.getCompany("anthropic")!;
+    expect(anthropic.investors.find((i) => i.org.slug === "amazon")?.roles).toContain("strategic_investor");
+    const microsoft = ledger.getCompany("microsoft")!;
+    // SoftBank, NVIDIA and Amazon invested in OpenAI rounds that Microsoft also joined; they are not Microsoft's investors.
+    for (const slug of ["softbank-group", "nvidia", "amazon"]) expect(microsoft.investors.some((i) => i.org.slug === slug)).toBe(false);
+  });
+});

@@ -10,6 +10,7 @@ import { CopyCommand } from "./CopyCommand";
 import { HumansSection } from "./HumansSection";
 import { ModelsSection } from "./ModelsSection";
 import { TrustedBy } from "./TrustedBy";
+import { TwinkleArt } from "./TwinkleArt";
 import { Container, DisplayTitle, Lead, PageShell, PrimaryButton, SecondaryButton, SectionTitle } from "./primitives";
 
 export interface HomePageProps {
@@ -42,10 +43,14 @@ export function HomePage({ snapshot, featuredHuman, humansCoverage, models, mode
 
         <SnapshotStage>
           <Backdrop aria-hidden="true">
-            <picture>
-              <source media="(max-width: 720px)" srcSet="/assets/v2/observatory-blue-960.webp" width={1356} height={768} />
-              <img src="/assets/v2/observatory-blue.webp" alt="" width={2472} height={1392} decoding="async" />
-            </picture>
+            <TwinkleArt
+              src="/assets/v2/observatory-blue.webp"
+              width={2472}
+              height={1392}
+              mobileSrc="/assets/v2/observatory-blue-960.webp"
+              mobileWidth={1356}
+              mobileHeight={768}
+            />
           </Backdrop>
           <Container>
             <CommunitySnapshot snapshot={snapshot} />
@@ -59,10 +64,15 @@ export function HomePage({ snapshot, featuredHuman, humansCoverage, models, mode
 
         <Closing aria-labelledby="home-closing-title">
           <ClosingArt aria-hidden="true">
-            <picture>
-              <source media="(max-width: 720px)" srcSet="/assets/v2/instruments-960.webp" />
-              <img src="/assets/v2/instruments.webp" alt="" width={1672} height={941} loading="lazy" decoding="async" />
-            </picture>
+            <ClosingArtImage
+              src="/assets/v2/instruments-blue.webp"
+              width={2880}
+              height={1620}
+              mobileSrc="/assets/v2/instruments-blue-960.webp"
+              mobileWidth={1248}
+              mobileHeight={696}
+              loading="lazy"
+            />
           </ClosingArt>
           <Container>
             <ClosingInner>
@@ -227,16 +237,15 @@ const ClosingArt = styled.div`
   justify-content: center;
   overflow: hidden;
   pointer-events: none;
-  opacity: 0.42;
+  opacity: 0.85;
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 55%);
   mask-image: linear-gradient(to bottom, transparent 0%, #000 55%);
+`;
 
-  img {
-    display: block;
-    width: min(1440px, 160vw);
-    max-width: none;
-    height: auto;
-  }
+/* Blue dot-matrix rendering of the instruments engraving, with twinkling dots. */
+const ClosingArtImage = styled(TwinkleArt)`
+  flex-shrink: 0;
+  width: min(1440px, 160vw);
 `;
 
 const ClosingInner = styled.div`

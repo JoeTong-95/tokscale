@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useMemo, useState } from "react";
+import { useId, useMemo, useState, type ReactNode } from "react";
 import styled from "styled-components";
 import { CopyCommand } from "@/components/home/CopyCommand";
 
@@ -29,7 +29,8 @@ export function embedMarkdown(username: string, template: EmbedShowcaseTemplate)
   return `[![Tokscale Stats](${embedImageUrl(username, template)})](${ORIGIN}/u/${encodeURIComponent(username)})`;
 }
 
-export function EmbedShowcase() {
+/** `intro` is the section heading and lead; it sits above the controls, beside the live card. */
+export function EmbedShowcase({ intro }: { intro?: ReactNode } = {}) {
   const [template, setTemplate] = useState<EmbedShowcaseTemplate>("classic");
   const [username, setUsername] = useState("");
   const inputId = useId();
@@ -42,6 +43,7 @@ export function EmbedShowcase() {
   return (
     <Layout>
       <Controls>
+        {intro}
         <fieldset>
           <legend>Template</legend>
           <Options>
@@ -103,7 +105,7 @@ export function EmbedShowcase() {
 const Layout = styled.div`
   display: grid;
   grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-  gap: 40px;
+  gap: 56px;
   align-items: start;
 
   @media (max-width: 960px) {
@@ -217,11 +219,18 @@ const Field = styled.div`
   }
 `;
 
+/* The live card stays in view while the controls scroll past on wide screens. */
 const Preview = styled.div`
+  position: sticky;
+  top: 96px;
   display: flex;
   flex-direction: column;
   gap: 12px;
   min-width: 0;
+
+  @media (max-width: 960px) {
+    position: static;
+  }
 `;
 
 const PreviewMeta = styled.p`
@@ -234,8 +243,8 @@ const PreviewFrame = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 280px;
-  padding: 32px;
+  min-height: 360px;
+  padding: 40px;
   border: 1px solid var(--v2-rule);
   border-radius: 12px;
   background:

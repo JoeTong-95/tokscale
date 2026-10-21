@@ -9,6 +9,7 @@ import { CommunitySnapshot } from "./CommunitySnapshot";
 import { CopyCommand } from "./CopyCommand";
 import { HumansSection } from "./HumansSection";
 import { ModelsSection } from "./ModelsSection";
+import { InstagramSection } from "./InstagramSection";
 import { TrustedBy } from "./TrustedBy";
 import { TwinkleArt } from "./TwinkleArt";
 import { Container, DisplayTitle, Lead, PageShell, PrimaryButton, SecondaryButton, SectionTitle } from "./primitives";
@@ -61,6 +62,7 @@ export function HomePage({ snapshot, featuredHuman, humansCoverage, models, mode
         <HumansSection human={featuredHuman} coverage={humansCoverage} />
         <ModelsSection models={models} coverage={modelsCoverage} />
         <CapitalPreview data={capital} />
+        <InstagramSection />
 
         <Closing aria-labelledby="home-closing-title">
           <ClosingArt aria-hidden="true">

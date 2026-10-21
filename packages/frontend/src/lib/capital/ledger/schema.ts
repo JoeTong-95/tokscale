@@ -89,7 +89,6 @@ export const INVESTOR_TYPES = [
   "corporate",
   "asset-manager",
   "registered-fund",
-  "public-fund-manager",
 ] as const;
 export type InvestorType = (typeof INVESTOR_TYPES)[number];
 
@@ -155,8 +154,6 @@ export const orgSchema = z
      * is no `logo`.
      */
     avatar: z.string().regex(/^\/assets\/v2\/orgs\/[a-z0-9-]+\.webp$/).optional(),
-    /** Slug in funds.json for a 13F manager. */
-    fund: slug.optional(),
     /** Part of the owner-approved seed list (33 companies, 16 investors). */
     seed: z.boolean().default(false),
     reviewedAt: isoDate,
@@ -185,7 +182,6 @@ export const MEASURES = [
   "form_d_amount_sold",
   "form_d_offering_amount",
   "fund_mark",
-  "reported_13f_value",
   "estimated_capital_cost",
   "price_per_share",
 ] as const;
@@ -210,7 +206,6 @@ export const SUMMABLE_MEASURES: ReadonlySet<Measure> = new Set<Measure>([
   "revenue_reported",
   "form_d_amount_sold",
   "form_d_offering_amount",
-  "reported_13f_value",
 ]);
 
 export const BASES = [

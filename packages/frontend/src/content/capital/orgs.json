@@ -332,15 +332,6 @@
       "license": "CC0"
     },
     {
-      "id": "src_wikidata_q7170181",
-      "url": "https://www.wikidata.org/wiki/Q7170181",
-      "publisher": "Wikidata",
-      "type": "dataset",
-      "title": "Wikidata item Q7170181 (Pershing Square Capital Management)",
-      "retrievedAt": "2026-10-21",
-      "license": "CC0"
-    },
-    {
       "id": "src_wikidata_q790060",
       "url": "https://www.wikidata.org/wiki/Q790060",
       "publisher": "Wikidata",
@@ -2069,7 +2060,7 @@
         "sourceId": "src_wikidata_q1439864"
       },
       "website": "https://foundersfund.com",
-      "description": "Venture capital firm. It is a separate organization from the Thiel Macro 13F filer.",
+      "description": "Venture capital firm.",
       "ids": {
         "wikidata": "Q1439864",
         "secCik": [],
@@ -2213,78 +2204,6 @@
       "nportIssuerNames": [],
       "avatar": "/assets/v2/orgs/ark-venture-fund.webp",
       "seed": true,
-      "reviewedAt": "2026-10-21"
-    },
-    {
-      "id": "org_thiel_macro",
-      "slug": "thiel-macro",
-      "name": "Thiel Macro",
-      "legalNames": [
-        "Thiel Macro LLC"
-      ],
-      "aliases": [],
-      "kinds": [
-        "investor"
-      ],
-      "categories": [],
-      "investorTypes": [
-        "public-fund-manager"
-      ],
-      "status": "private",
-      "hq": {
-        "country": "US"
-      },
-      "description": "The 13F filer associated with Peter Thiel. It reports a small number of U.S.-listed stocks.",
-      "ids": {
-        "secCik": [
-          "0001562087"
-        ],
-        "tickers": []
-      },
-      "labSlugs": [],
-      "nportIssuerNames": [],
-      "fund": "thiel-macro",
-      "seed": false,
-      "reviewedAt": "2026-10-21"
-    },
-    {
-      "id": "org_pershing_square",
-      "slug": "pershing-square",
-      "name": "Pershing Square",
-      "legalNames": [
-        "Pershing Square Inc.",
-        "Pershing Square Capital Management, L.P."
-      ],
-      "aliases": [],
-      "kinds": [
-        "investor"
-      ],
-      "categories": [],
-      "investorTypes": [
-        "public-fund-manager"
-      ],
-      "status": "private",
-      "hq": {
-        "country": "US"
-      },
-      "founded": {
-        "date": "2004",
-        "sourceId": "src_wikidata_q7170181"
-      },
-      "description": "Bill Ackman's investment firm. It holds a concentrated set of large U.S.-listed companies.",
-      "ids": {
-        "wikidata": "Q7170181",
-        "secCik": [
-          "0002026053",
-          "0001336528"
-        ],
-        "tickers": []
-      },
-      "labSlugs": [],
-      "nportIssuerNames": [],
-      "avatar": "/assets/v2/orgs/pershing-square.webp",
-      "fund": "pershing-square",
-      "seed": false,
       "reviewedAt": "2026-10-21"
     }
   ]

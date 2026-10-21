@@ -43,7 +43,6 @@ export const INVESTOR_TYPE_LABELS: Record<InvestorType, string> = {
   corporate: "Corporate",
   "asset-manager": "Asset manager",
   "registered-fund": "Registered fund",
-  "public-fund-manager": "13F manager",
 };
 
 export const ORG_STATUS_LABELS: Record<OrgStatus, string> = {
@@ -74,7 +73,6 @@ export const MEASURE_LABELS: Record<Measure, string> = {
   form_d_amount_sold: "Amount sold (Form D)",
   form_d_offering_amount: "Offering amount (Form D)",
   fund_mark: "Fund mark",
-  reported_13f_value: "Reported 13F value",
   estimated_capital_cost: "Estimated capital cost",
   price_per_share: "Price per share",
 };

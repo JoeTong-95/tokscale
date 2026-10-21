@@ -26,7 +26,6 @@ export const MEASURE_DISPLAY_ORDER: readonly Measure[] = [
   "capex_actual",
   "capex_guidance",
   "fund_mark",
-  "reported_13f_value",
   "estimated_capital_cost",
   "cumulative_investment",
   "form_d_offering_amount",

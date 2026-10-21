@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", site: TOKSCALE_X_HANDLE, title: TITLE, description: DESCRIPTION },
 };
 
-/** URL keys for the type filter. "13f" is the public-fund-manager type. */
+/** URL keys for the type filter. */
 const TYPE_KEYS: Record<string, InvestorType> = {
   vc: "vc",
   growth: "growth",
@@ -30,7 +30,6 @@ const TYPE_KEYS: Record<string, InvestorType> = {
   corporate: "corporate",
   "asset-manager": "asset-manager",
   "registered-fund": "registered-fund",
-  "13f": "public-fund-manager",
 };
 const keyOf = (type: InvestorType) => Object.entries(TYPE_KEYS).find(([, t]) => t === type)![0];
 

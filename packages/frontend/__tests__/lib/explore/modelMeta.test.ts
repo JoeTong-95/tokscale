@@ -64,6 +64,7 @@ describe("modelDisplayName", () => {
     ["kimi-k3", "Kimi K3"],
     ["qwen-4-coder", "Qwen 4 Coder"],
     ["qwen3.6-max-preview", "Qwen3.6 Max Preview"],
+    ["qwq-32b", "QwQ 32B"],
     ["deepseek-v4-pro", "DeepSeek V4 Pro"],
     ["glm-5.3-flash", "GLM-5.3 Flash"],
     ["minimax-m2.7", "MiniMax M2.7"],

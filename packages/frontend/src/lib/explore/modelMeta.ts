@@ -148,6 +148,7 @@ const BRAND_TOKENS: Record<string, string> = {
   mimo: "MiMo",
   longcat: "LongCat",
   kat: "KAT",
+  qwq: "QwQ",
 };
 
 const UPPER_TOKENS = new Set(["oss", "vl", "it", "mlx", "gguf", "bf16", "fp8", "nvfp4"]);

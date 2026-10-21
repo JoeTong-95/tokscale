@@ -1,18 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { TOKSCALE_X_HANDLE } from "@/lib/community";
-import {
-  capital,
-  capitalUrl,
-  companiesPath,
-  computePath,
-  formatUsdCompact,
-  formatWeight,
-  methodologyPath,
-  portfoliosPath,
-  roundsPath,
-  spendingPath,
-} from "@/lib/capital";
+import { capitalUrl, companiesPath, computePath, methodologyPath, roundsPath, spendingPath } from "@/lib/capital";
 import {
   formatMoney,
   formatPartialDate,
@@ -53,7 +42,6 @@ export default function CapitalPage() {
   const valuation = ledger.largestValuation();
   const capex = ledger.getCapex();
   const sectors = ledger.getSectors();
-  const series = capital.getSeries()[0];
 
   const labRounds = ledger
     .getRounds()
@@ -308,34 +296,6 @@ export default function CapitalPage() {
             </li>
           ))}
         </ul>
-      </section>
-
-      <section className={styles.section} aria-labelledby="public-investors">
-        <div className={styles.sectionHead}>
-          <h2 id="public-investors" className={`${styles.display} ${styles.sectionTitle}`}>
-            Public investors · {series.name}
-          </h2>
-          <p className={styles.sectionNote}>
-            <Link className={styles.link} href={portfoliosPath()}>
-              All public investors →
-            </Link>
-          </p>
-        </div>
-        <div className={styles.cards} style={{ "--cols": 2 } as React.CSSProperties}>
-          {series.entries.map(({ quarter, story }) => (
-            <Link className={styles.card} href={quarter.href} key={story.slug}>
-              <span className={styles.eyebrow}>
-                {quarter.fundRecord.shortName} · {quarter.label}
-              </span>
-              <h3 className={`${styles.display} ${styles.cardTitle}`}>{story.headline}</h3>
-              <p className={styles.cardBody}>{story.cardSummary}</p>
-              <span className={styles.cardFoot}>
-                {formatUsdCompact(quarter.reportedValueUsd)} reported 13F value · {quarter.holdings.length} holdings · largest{" "}
-                {quarter.holdings[0].company.ticker} {formatWeight(quarter.holdings[0].weight)}
-              </span>
-            </Link>
-          ))}
-        </div>
       </section>
 
       <section className={styles.section} aria-labelledby="method">

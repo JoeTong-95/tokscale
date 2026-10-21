@@ -9,7 +9,7 @@ const LOGOS = [
   { name: "Amazon", src: "/assets/v2/trusted/amazon.svg", width: 73, height: 24, display: 22 },
   { name: "Google", src: "/assets/v2/trusted/google.svg", width: 76, height: 26, display: 23 },
   { name: "ByteDance", src: "/assets/v2/trusted/bytedance.svg", width: 251, height: 43.3, display: 20 },
-  { name: "Tencent", src: "/assets/v2/trusted/tencent.svg", width: 105.18, height: 20, display: 18 },
+  { name: "Tencent", src: "/assets/v2/trusted/tencent.png", width: 400, height: 54, display: 18 },
   { name: "Alibaba", src: "/assets/v2/trusted/alibaba.png", width: 902, height: 116, display: 18 },
   { name: "Intel", src: "/assets/v2/trusted/intel.svg", width: 24, height: 9.31, display: 18 },
   { name: "Toss", src: "/assets/v2/trusted/toss.png", width: 173, height: 52, display: 23 },
@@ -66,7 +66,7 @@ const Logos = styled.ul`
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 18px 40px;
+  gap: 18px 36px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -78,13 +78,13 @@ const Logos = styled.ul`
     opacity: 0.85;
   }
 
-  /* Keep all logos on one line down to about 1080px. */
+  /* Keep all logos on one line down to about 1120px. */
   @media (max-width: 1180px) {
     column-gap: 28px;
   }
 
   /* Two balanced rows (5 + 4) between phones and small laptops. */
-  @media (max-width: 1080px) and (min-width: 721px) {
+  @media (max-width: 1120px) and (min-width: 721px) {
     max-width: 640px;
     margin: 0 auto;
   }

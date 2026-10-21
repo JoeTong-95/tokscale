@@ -6,8 +6,9 @@ Logo sources for the home "Trusted by professionals at" row.
   (inline SVG, retrieved 2026-10-21), cropped to the artwork and recolored to #A3ADBD.
 - alibaba.png: the full logo (symbol and wordmark) from https://www.alibabagroup.com/en-US/
   (902x116 PNG, retrieved 2026-10-21), recolored to #A3ADBD with its transparency kept.
-- tencent.svg: wordmark from LobeHub Icons (@lobehub/icons-static-svg 1.95.1,
-  https://github.com/lobehub/lobe-icons, MIT License), cropped to the glyphs and recolored to #A3ADBD.
+- tencent.png: the "Tencent 腾讯" logo from the header of the Chinese site https://www.tencent.com/zh-cn/
+  (wp-content/uploads/2022/12/logo@2x.png, 401x54 PNG, retrieved 2026-10-21), recolored to #A3ADBD with
+  its transparency kept.
 - intel.svg: from Simple Icons 16.35.0 (https://github.com/simple-icons/simple-icons, CC0 1.0),
   cropped to the glyphs and recolored to #A3ADBD.
 

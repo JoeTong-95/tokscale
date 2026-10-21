@@ -154,6 +154,29 @@ export function hasModelResearch(model: BenchmarkModel, key: string): boolean {
   return model.spec(key) !== null || model.forModel(key).length > 0;
 }
 
+/** What a page for a model without Tokscale usage can show. */
+export interface ResearchParts {
+  /** At least one tracked benchmark has a result for the model. */
+  benchmarks: boolean;
+  /** models.dev lists the model (list prices and specs). */
+  catalog: boolean;
+}
+
+export function researchParts(model: BenchmarkModel, key: string): ResearchParts {
+  return { benchmarks: model.forModel(key).length > 0, catalog: model.spec(key) !== null };
+}
+
+/**
+ * Names for what the page shows, so titles and notes never promise a
+ * section that is empty: a title part ("Benchmarks, List Prices, Specs")
+ * and a phrase ("benchmark results, list prices and specs").
+ */
+export function researchLabel(parts: ResearchParts): { title: string; phrase: string } {
+  if (parts.benchmarks && parts.catalog) return { title: "Benchmarks, List Prices, Specs", phrase: "benchmark results, list prices and specs" };
+  if (parts.benchmarks) return { title: "Benchmarks", phrase: "benchmark results" };
+  return { title: "List Prices, Specs", phrase: "list prices and specs" };
+}
+
 function cellDate(r: BenchmarkResult): Pick<ScoreCell, "date" | "dateKind"> {
   if (r.runDate) return { date: r.runDate, dateKind: "run" };
   if (r.publishedDate) return { date: r.publishedDate, dateKind: "published" };

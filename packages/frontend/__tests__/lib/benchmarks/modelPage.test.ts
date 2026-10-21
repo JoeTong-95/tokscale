@@ -13,6 +13,8 @@ import {
   hasModelResearch,
   mixEstimate,
   PRICE_ASSUMPTIONS,
+  researchLabel,
+  researchParts,
   resultScoreCell,
   type AgentTokenShare,
 } from "@/lib/benchmarks/modelPage";
@@ -167,6 +169,20 @@ describe("hasModelResearch", () => {
     expect(hasModelResearch(model, "spec-only")).toBe(true);
     expect(hasModelResearch(model, "bench-only")).toBe(true);
     expect(hasModelResearch(model, "nobody")).toBe(false);
+  });
+});
+
+describe("researchParts and researchLabel", () => {
+  it("names only what the page can show", () => {
+    expect(researchParts(model, "opus")).toEqual({ benchmarks: true, catalog: true });
+    expect(researchParts(model, "bench-only")).toEqual({ benchmarks: true, catalog: false });
+    expect(researchParts(model, "spec-only")).toEqual({ benchmarks: false, catalog: true });
+    expect(researchLabel({ benchmarks: true, catalog: true })).toEqual({
+      title: "Benchmarks, List Prices, Specs",
+      phrase: "benchmark results, list prices and specs",
+    });
+    expect(researchLabel({ benchmarks: true, catalog: false })).toEqual({ title: "Benchmarks", phrase: "benchmark results" });
+    expect(researchLabel({ benchmarks: false, catalog: true })).toEqual({ title: "List Prices, Specs", phrase: "list prices and specs" });
   });
 });
 

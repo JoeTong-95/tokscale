@@ -53,12 +53,15 @@ export function ModelNoUsageView({
   model,
   research,
   period,
+  shows,
 }: {
   /** `labSlug` must already be a company page slug, or null. */
   model: ModelRef;
   research: ModelResearchView;
   /** Period of the community token mix used for the price estimate. */
   period: ExplorePeriod;
+  /** What the page has, e.g. "benchmark results, list prices and specs" (researchLabel). */
+  shows: string;
 }) {
   return (
     <>
@@ -69,7 +72,7 @@ export function ModelNoUsageView({
         <p>No public Tokscale usage yet</p>
         <p>
           No public Tokscale submission includes {model.name} yet, so this page has no active users, tokens or agent
-          shares. The benchmarks, list prices and specs below come from public sources.{" "}
+          shares. The {shows} below come from public sources.{" "}
           <InlineLink href={modelsAllPath()}>See models with usage</InlineLink>
         </p>
       </Notice>

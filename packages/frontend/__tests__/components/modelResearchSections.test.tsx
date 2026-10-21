@@ -1,11 +1,20 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { ModelBenchmarks, periodPhrase, sourceHost } from "@/components/explore/ModelBenchmarks";
+import { ModelNoUsageView } from "@/components/explore/ModelNoUsageView";
 import { ModelPricing } from "@/components/explore/ModelPricing";
 import { ModelSpecs } from "@/components/explore/ModelSpecs";
 import type { BenchmarkContent } from "@/lib/benchmarks/content";
 import { createBenchmarkModel } from "@/lib/benchmarks/model";
-import { buildModelBenchmarks, buildModelPricing, buildModelSpecs, type ModelSpecsView } from "@/lib/benchmarks/modelPage";
+import {
+  buildModelBenchmarks,
+  buildModelPricing,
+  buildModelResearch,
+  buildModelSpecs,
+  researchLabel,
+  researchParts,
+  type ModelSpecsView,
+} from "@/lib/benchmarks/modelPage";
 import type { BenchmarkResult, ModelSpec, SourceSnapshot } from "@/lib/benchmarks/schema";
 
 function text(markup: string): string {
@@ -186,5 +195,27 @@ describe("ModelSpecs", () => {
     expect(markup).toContain("Tool calling No");
     expect(markup).toContain("Release date Sep 22, 2026");
     expect(markup).not.toMatch(/\b0 tokens\b/);
+  });
+});
+
+describe("ModelNoUsageView", () => {
+  it("says there is no usage yet and names only the sections that have data", () => {
+    const research = buildModelResearch(model, "sol", { usage: null, mixes: MIXES });
+    const markup = text(
+      renderToStaticMarkup(
+        <ModelNoUsageView
+          model={{ key: "sol", name: "Sol", lab: null, labSlug: null, logoUrl: null }}
+          research={research}
+          period="30d"
+          shows={researchLabel(researchParts(model, "sol")).phrase}
+        />,
+      ),
+    );
+    expect(markup).toContain("No public Tokscale usage yet");
+    expect(markup).toContain("The benchmark results below come from public sources.");
+    expect(markup).toContain("70.0%");
+    expect(markup).toContain("models.dev does not list Sol");
+    expect(markup).not.toContain("Tokscale usage:");
+    expect(markup).toContain('Key sol');
   });
 });

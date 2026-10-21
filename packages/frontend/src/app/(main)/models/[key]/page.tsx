@@ -6,7 +6,7 @@ import { getModelDetail, type ExplorePeriod, type ModelDetail, type ModelRef } f
 import { modelKey } from "@/lib/explore/modelKey";
 import { modelRef } from "@/lib/explore/modelMeta";
 import { benchmarkData } from "@/lib/benchmarks";
-import { buildModelResearch, hasModelResearch } from "@/lib/benchmarks/modelPage";
+import { buildModelResearch, hasModelResearch, researchLabel, researchParts } from "@/lib/benchmarks/modelPage";
 import { getModelMixes } from "@/lib/benchmarks/usage";
 import { TOKSCALE_X_HANDLE } from "@/lib/community";
 import { homeUrl } from "@/lib/seo/urls";
@@ -94,8 +94,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     if (researchKey) {
       const model = modelRef(researchKey);
       const by = model.lab ? ` by ${model.lab}` : "";
-      const title = `${model.name}${by} - Benchmarks, List Prices, Specs | Tokscale`;
-      const description = `${model.name}${by}: benchmark results with run conditions and sources, list prices by provider, and specs. No public Tokscale usage yet.`;
+      const parts = researchParts(benchmarkData, researchKey);
+      const shows = [
+        parts.benchmarks ? "benchmark results with run conditions and sources" : null,
+        parts.catalog ? "list prices by provider and specs" : null,
+      ].filter(Boolean);
+      const title = `${model.name}${by} - ${researchLabel(parts).title} | Tokscale`;
+      const description = `${model.name}${by}: ${shows.join(", ")}. No public Tokscale usage yet.`;
       return {
         title,
         description,
@@ -151,7 +156,12 @@ export default async function ModelPage({ params, searchParams }: PageProps) {
         <Navigation />
         <main className="service-main" id="main-content">
           <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd(crumbs)) }} />
-          <ModelNoUsageView model={model} research={research} period={requested} />
+          <ModelNoUsageView
+            model={model}
+            research={research}
+            period={requested}
+            shows={researchLabel(researchParts(benchmarkData, researchKey)).phrase}
+          />
         </main>
         <ServiceFooter />
       </div>

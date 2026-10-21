@@ -74,12 +74,17 @@ const PageWrapper = styled.div`
   color: var(--service-text);
 `;
 
+/* Clears the fixed navigation, like .service-main on the other pages. */
 const MainContent = styled.main`
   flex: 1;
   max-width: 768px;
   margin: 0 auto;
-  padding: 40px 24px;
+  padding: 96px 24px 40px;
   width: 100%;
+
+  @media (max-width: 520px) {
+    padding: 88px 16px 40px;
+  }
 `;
 
 const LoadingMain = styled.main`

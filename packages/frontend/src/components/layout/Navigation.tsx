@@ -22,7 +22,7 @@ interface NavItem {
 }
 
 export const NAV_ITEMS: NavItem[] = [
-  { href: "/leaderboard", label: "Leaderboard", match: ["/leaderboard", "/groups"] },
+  { href: "/leaderboard", label: "Leaderboards", match: ["/leaderboard", "/groups"] },
   { href: "/models", label: "Models", match: ["/models", "/benchmarks"] },
   { href: "/capital", label: "Capital", match: ["/capital"] },
   { href: "/tracker", label: "Tracker", match: ["/tracker"] },

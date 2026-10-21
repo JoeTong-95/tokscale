@@ -110,7 +110,7 @@ describe("supported agents", () => {
 
 describe("navigation", () => {
   it("uses sentence-case labels in the agreed order", () => {
-    expect(NAV_ITEMS.map((item) => item.label)).toEqual(["Leaderboard", "Models", "Capital", "Tracker"]);
+    expect(NAV_ITEMS.map((item) => item.label)).toEqual(["Leaderboards", "Models", "Capital", "Tracker"]);
   });
 
   it("marks the section for nested routes only on path boundaries", () => {

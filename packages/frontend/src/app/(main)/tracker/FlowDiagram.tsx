@@ -79,7 +79,7 @@ export function FlowDiagram({ agents }: { agents: SupportedAgent[] }) {
           </Commands>
           <StepLinks>
             <TextLink href="/leaderboard">
-              Leaderboard <Arrow />
+              Leaderboards <Arrow />
             </TextLink>
             <TextLink href="/leaderboard?view=groups">
               Groups <Arrow />

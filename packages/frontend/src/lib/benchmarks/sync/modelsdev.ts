@@ -1,5 +1,5 @@
 /**
- * models.dev catalog (https://models.dev/api.json, MIT, github.com/sst/models.dev):
+ * models.dev catalog (https://models.dev/api.json, MIT, github.com/anomalyco/models.dev):
  * specs and list prices per provider. Only models that map to a key we
  * need are kept, and only the lab's own API plus a short list of large
  * providers, so the snapshot stays small and the prices stay comparable.

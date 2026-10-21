@@ -52,9 +52,6 @@ function FeaturedProfile({ human, coverage }: { human: HumanRow; coverage: Cover
 
   return (
     <Card aria-labelledby="featured-human-name">
-      <CardMeta>
-        Featured: #{human.rank} by tokens, {periodLabel(coverage.period).toLowerCase()}
-      </CardMeta>
       <Identity>
         <Avatar
           src={human.avatarUrl || `https://github.com/${encodeURIComponent(human.username)}.png?size=128`}
@@ -64,7 +61,10 @@ function FeaturedProfile({ human, coverage }: { human: HumanRow; coverage: Cover
           loading="lazy"
         />
         <div>
-          <Name id="featured-human-name">{name}</Name>
+          <Name id="featured-human-name">
+            {name}{" "}
+            <Rank title={`#${human.rank} by tokens, ${periodLabel(coverage.period).toLowerCase()}`}>#{human.rank}</Rank>
+          </Name>
           <Handle>@{human.username}</Handle>
         </div>
       </Identity>
@@ -165,18 +165,6 @@ const Card = styled.article`
   background: var(--v2-surface);
 `;
 
-const CardMeta = styled.p`
-  margin: 0;
-  padding: 12px 24px;
-  border-bottom: 1px solid var(--v2-rule);
-  color: var(--v2-text-subtle);
-  font-size: 13px;
-
-  @media (max-width: 520px) {
-    padding: 12px 16px;
-  }
-`;
-
 const Identity = styled.div`
   display: flex;
   align-items: center;
@@ -205,6 +193,12 @@ const Name = styled.h3`
   font-weight: 400;
   line-height: 1.1;
   overflow-wrap: anywhere;
+`;
+
+/* Rank by tokens in the period; the hover title spells it out. */
+const Rank = styled.span`
+  color: var(--v2-accent);
+  white-space: nowrap;
 `;
 
 const Handle = styled.p`

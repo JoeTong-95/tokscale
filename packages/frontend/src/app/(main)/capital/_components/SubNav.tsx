@@ -5,7 +5,6 @@ import {
   computePath,
   investorsPath,
   methodologyPath,
-  portfoliosPath,
   roundsPath,
   spendingPath,
 } from "@/lib/capital";
@@ -18,7 +17,6 @@ export type CapitalSection =
   | "rounds"
   | "compute"
   | "spending"
-  | "public-investors"
   | "methodology";
 
 const ITEMS: Array<{ key: CapitalSection; label: string; href: string }> = [
@@ -28,7 +26,6 @@ const ITEMS: Array<{ key: CapitalSection; label: string; href: string }> = [
   { key: "rounds", label: "Rounds", href: roundsPath() },
   { key: "compute", label: "Compute", href: computePath() },
   { key: "spending", label: "Spending", href: spendingPath() },
-  { key: "public-investors", label: "Public investors", href: portfoliosPath() },
   { key: "methodology", label: "Method", href: methodologyPath() },
 ];
 

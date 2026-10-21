@@ -12,6 +12,7 @@ import {
   type LeaderboardSearchParams,
   type LeaderboardView,
 } from "./views";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 // Top-of-page segmented control that swaps between the Humans, Models, Agents
 // and Groups views. Pure-link nav (no client state), so SSR + back/forward
@@ -25,32 +26,17 @@ import {
 export { buildLeaderboardViewHref };
 export type { LeaderboardSearchParams, LeaderboardView };
 
+/* Eyebrow, then the view tabs right under it, then the view's title and description. */
 const Header = styled.header`
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 20px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
   margin-bottom: 24px;
-
-  @media (max-width: 760px) {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 16px;
-  }
 `;
 
 const HeadingGroup = styled.div`
   min-width: 0;
-`;
-
-/* Same treatment as the eyebrows on the home and tracker pages. */
-const Eyebrow = styled.p`
-  margin: 0 0 8px;
-  color: var(--v2-text-subtle);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
 `;
 
 const Title = styled.h1`
@@ -121,11 +107,7 @@ export default function ViewSelector({ current, searchParams }: ViewSelectorProp
 
   return (
     <Header>
-      <HeadingGroup>
-        <Eyebrow>Leaderboards</Eyebrow>
-        <Title>{VIEW_TITLES[current]}</Title>
-        <Description>{VIEW_DESCRIPTIONS[current]}</Description>
-      </HeadingGroup>
+      <Eyebrow>Leaderboards</Eyebrow>
       <SegmentedGroup as="nav" aria-label="Leaderboard view">
         {LEADERBOARD_VIEWS.map((view) => (
           <TouchSegment
@@ -139,6 +121,10 @@ export default function ViewSelector({ current, searchParams }: ViewSelectorProp
           </TouchSegment>
         ))}
       </SegmentedGroup>
+      <HeadingGroup>
+        <Title>{VIEW_TITLES[current]}</Title>
+        <Description>{VIEW_DESCRIPTIONS[current]}</Description>
+      </HeadingGroup>
     </Header>
   );
 }

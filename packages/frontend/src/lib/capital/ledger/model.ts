@@ -471,7 +471,8 @@ export function createLedgerModel(content: LedgerContent) {
       ...(org.parent ? [org.parent.sourceId] : []),
       ...(org.founded ? [org.founded.sourceId] : []),
     ]);
-    const factCount = timeline.length + metricStatements.length + (capex?.quarters.length ?? 0) + (holdings?.positions.length ?? 0);
+    const factCount =
+      timeline.length + metricStatements.length + (capex ? capex.quarters.length + capex.years.length : 0) + (holdings?.positions.length ?? 0);
     const reviewed = [org.reviewedAt, ...timeline.map((e) => e.event.reviewedAt), ...timeline.flatMap((e) => e.event.corrections.map((c) => c.date))]
       .sort()
       .at(-1)!;

@@ -74,6 +74,9 @@ describe("ledger views", () => {
       expect(profile.indexable).toBe(profile.factCount > 0);
     }
     expect(ledger.getCompany("anthropic")!.indexable).toBe(true);
+    // Full-year cash capex from 20-F filings is a sourced fact even without quarters.
+    expect(ledger.getCompany("tsmc")!.capex?.quarters.length).toBe(0);
+    expect(ledger.getCompany("tsmc")!.indexable).toBe(true);
   });
 });
 

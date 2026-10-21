@@ -257,10 +257,6 @@ const Table = styled.table`
     white-space: nowrap;
   }
 
-  tbody tr:hover {
-    background: rgba(255, 255, 255, 0.02);
-  }
-
   @media (max-width: ${STACK_BELOW}) {
     display: block;
 
@@ -759,7 +755,7 @@ function ResultRowView({
   const matched = row.modelKey !== null && row.modelName !== null;
   const name = matched ? (row.modelName as string) : row.sourceName;
   return (
-    <tr role="row">
+    <tr role="row" data-row-link={row.href ? "" : undefined}>
       <td data-col="rank" role="cell">
         {rank}
       </td>
@@ -767,7 +763,13 @@ function ResultRowView({
         <ModelCell>
           {matched ? <ModelMark model={{ name, logoUrl: row.logoUrl }} size={20} /> : <UnmatchedMark aria-hidden="true" />}
           <ModelText>
-            {row.href ? <ModelLink href={row.href}>{name}</ModelLink> : <ModelName>{name}</ModelName>}
+            {row.href ? (
+              <ModelLink href={row.href} data-row-primary="">
+                {name}
+              </ModelLink>
+            ) : (
+              <ModelName>{name}</ModelName>
+            )}
             {matched && row.sourceName !== name ? <Sub>Listed as {row.sourceName}</Sub> : null}
             {!matched ? <Sub>Not matched to a Tokscale model</Sub> : null}
           </ModelText>

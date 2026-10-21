@@ -82,7 +82,8 @@ const Tr = styled.tr`
     border-bottom: 1px solid var(--service-border);
   }
 
-  &:hover td {
+  /* Agent rows have no page: a light reading aid instead of the row-link hover. */
+  &:not([data-row-link]):hover td {
     background: rgba(255, 255, 255, 0.02);
   }
 `;
@@ -258,30 +259,16 @@ const MobileRow = styled.div`
 `;
 
 /**
- * The model name is the row's only link. Its ::after covers the whole row, so
- * the touch target is the full row (88px+) while the link's accessible name
- * stays just the model name.
+ * The model name is the row's only link. It is the row's primary link (row
+ * links, globals.css): its ::after covers the whole row, so the touch target
+ * is the full row (88px+) while the link's accessible name stays just the
+ * model name.
  */
 const MobileNameLink = styled(Link)`
   overflow: hidden;
   color: var(--service-text);
   text-decoration: none;
   text-overflow: ellipsis;
-
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-  }
-
-  &:focus-visible {
-    outline: none;
-  }
-
-  &:focus-visible::after {
-    outline: 2px solid var(--service-focus);
-    outline-offset: -2px;
-  }
 `;
 
 const MobileRank = styled(Rank)`
@@ -414,7 +401,7 @@ export function ModelBoard({ rows, coverage, period, sort }: BoardProps<ModelUsa
             {rows.map((row) => {
               const change = describeUsersChange(row.activeUsers, row.previousActiveUsers, row.isNew, period);
               return (
-                <Tr key={row.key}>
+                <Tr key={row.key} data-row-link="">
                   <Td>
                     <Rank>{row.rank}</Rank>
                   </Td>
@@ -422,7 +409,9 @@ export function ModelBoard({ rows, coverage, period, sort }: BoardProps<ModelUsa
                     <ModelIdentity>
                       <ModelMark model={row} size={28} />
                       <Identity>
-                        <NameLink href={modelPath(row.key)}>{row.name}</NameLink>
+                        <NameLink href={modelPath(row.key)} data-row-primary="">
+                          {row.name}
+                        </NameLink>
                         <SubText>{row.lab ?? UNKNOWN_LAB_NAME}</SubText>
                       </Identity>
                     </ModelIdentity>
@@ -464,11 +453,13 @@ export function ModelBoard({ rows, coverage, period, sort }: BoardProps<ModelUsa
           const primaryIsUsers = sort === "users";
           return (
             <MobileItem key={row.key}>
-              <MobileRow>
+              <MobileRow data-row-link="">
                 <MobileRank>{row.rank}</MobileRank>
                 <MobileName>
                   <ModelMark model={row} size={20} />
-                  <MobileNameLink href={modelPath(row.key)}>{row.name}</MobileNameLink>
+                  <MobileNameLink href={modelPath(row.key)} data-row-primary="">
+                    {row.name}
+                  </MobileNameLink>
                 </MobileName>
                 <MobilePrimary>
                   <MobilePrimaryValue>

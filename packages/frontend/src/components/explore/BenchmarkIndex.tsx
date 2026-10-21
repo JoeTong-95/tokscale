@@ -297,10 +297,16 @@ function NewTab() {
 function BenchmarkRow({ item }: { item: BenchmarkIndexItem }) {
   const linkOnly = item.status === "link-only";
   return (
-    <Item>
+    <Item data-row-link={item.href ? "" : undefined}>
       <Main>
         <NameRow>
-          {item.href ? <NameLink href={item.href}>{item.name}</NameLink> : <NameText>{item.name}</NameText>}
+          {item.href ? (
+            <NameLink href={item.href} data-row-primary="">
+              {item.name}
+            </NameLink>
+          ) : (
+            <NameText>{item.name}</NameText>
+          )}
           {item.status === "history" ? <StatusTag>History</StatusTag> : null}
           {linkOnly ? <StatusTag>Link only</StatusTag> : null}
         </NameRow>

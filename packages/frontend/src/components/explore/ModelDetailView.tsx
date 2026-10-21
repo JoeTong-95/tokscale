@@ -202,30 +202,15 @@ const RowMeter = styled.span`
   }
 `;
 
-/* Stretched row link: the row is the touch target, the name is the label. */
+/* The row's primary link: the whole row opens the page (row links, globals.css). */
 const RowLink = styled(Link)`
   overflow: hidden;
   color: var(--service-text);
   text-decoration: none;
   text-overflow: ellipsis;
 
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-  }
-
   &:hover {
     color: var(--service-accent-hover);
-  }
-
-  &:focus-visible {
-    outline: none;
-  }
-
-  &:focus-visible::after {
-    outline: 2px solid var(--service-focus);
-    outline-offset: -2px;
   }
 `;
 
@@ -515,11 +500,13 @@ export function ModelDetailView({ detail, period, periodOptions, fallbackFrom, r
           {detail.humans.length > 0 ? (
             <Rows>
               {detail.humans.map((human) => (
-                <PersonRow key={human.username}>
+                <PersonRow key={human.username} data-row-link="">
                   <PersonRank>{human.rank}</PersonRank>
                   <Avatar src={human.avatarUrl ?? `https://github.com/${human.username}.png?size=72`} alt="" width={36} height={36} loading="lazy" />
                   <PersonName>
-                    <RowLink href={profilePath(human.username)}>{human.displayName ?? human.username}</RowLink>
+                    <RowLink href={profilePath(human.username)} data-row-primary="">
+                      {human.displayName ?? human.username}
+                    </RowLink>
                     <span>@{human.username}</span>
                   </PersonName>
                   <RowValue>
@@ -553,10 +540,12 @@ export function ModelDetailView({ detail, period, periodOptions, fallbackFrom, r
           {detail.related.length > 0 ? (
             <Rows>
               {detail.related.map((related) => (
-                <Row key={related.key}>
+                <Row key={related.key} data-row-link="">
                   <RowName>
                     <ModelMark model={related} size={20} />
-                    <RowLink href={modelPath(related.key)}>{related.name}</RowLink>
+                    <RowLink href={modelPath(related.key)} data-row-primary="">
+                      {related.name}
+                    </RowLink>
                   </RowName>
                   <RowMeter>
                     <ShareMeter share={related.adoption} label="adoption" />

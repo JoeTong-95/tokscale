@@ -57,7 +57,7 @@ export const SectionTitle = styled.h2`
   margin: 0;
   color: var(--v2-text);
   font-family: var(--v2-font-display);
-  font-size: clamp(32px, 3.6vw, 48px);
+  font-size: clamp(32px, 3.6vw, 38px);
   font-weight: 400;
   line-height: 1.08;
   letter-spacing: -0.008em;

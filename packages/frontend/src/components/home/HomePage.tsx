@@ -100,14 +100,14 @@ const Line = styled.span`
   }
 `;
 
-/* One line at 40px; narrow screens scale the size down so it never wraps (the line is ~9.6 em wide). */
+/* One line at 48px; narrow screens scale the size down so it never wraps (the line is ~9.6 em wide). */
 const HeroTitle = styled(DisplayTitle)`
-  font-size: 40px;
+  font-size: 48px;
   line-height: 1.1;
   white-space: nowrap;
 
   @media (max-width: 520px) {
-    font-size: min(40px, calc((100vw - 32px) * 0.104));
+    font-size: min(48px, calc((100vw - 32px) * 0.104));
   }
 `;
 

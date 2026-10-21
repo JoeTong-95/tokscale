@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { Navigation } from "@/components/layout/Navigation";
 import { listSupportedAgents } from "@/components/home/agents";
+import { getLeaderboardData } from "@/lib/leaderboard/getLeaderboard";
 import { getPublicOrigin } from "@/lib/seo/urls";
-import { TrackerPageClient } from "./TrackerPageClient";
+import { TrackerPageClient, type TrackerStats } from "./TrackerPageClient";
 
 const TITLE = "Tracker: AI usage from your terminal | Tokscale";
 const DESCRIPTION =
@@ -21,11 +22,17 @@ export const metadata: Metadata = {
   },
 };
 
-export default function TrackerPage() {
+export default async function TrackerPage() {
+  // All-time totals, the same numbers as the leaderboard's "Ranked users" and "Tokens".
+  const board = await getLeaderboardData("all", 1, 1, "tokens").catch(() => null);
+  const stats: TrackerStats | null = board
+    ? { rankedUsers: board.stats.uniqueUsers, tokens: board.stats.totalTokens }
+    : null;
+
   return (
     <>
       <Navigation />
-      <TrackerPageClient agents={listSupportedAgents()} />
+      <TrackerPageClient agents={listSupportedAgents()} stats={stats} />
     </>
   );
 }

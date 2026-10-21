@@ -1,19 +1,32 @@
 "use client";
 
 /**
- * /models catalog: every model with data, grouped by lab, with a search box
- * and a lab filter. Search and lab live in the URL (?q=, ?lab=) through
- * history.replaceState, so a filtered list can be shared without adding
- * history entries. The full list is server-rendered for crawlers.
+ * Model catalog (/models/all): every model with data, grouped by lab, with a
+ * search box and a lab filter. Search and lab live in the URL (?q=, ?lab=)
+ * through history.replaceState, so a filtered list can be shared without
+ * adding history entries.
+ *
+ * Long tail: in the unfiltered view each lab lists its top models and
+ * collapses the rest behind a "Show N more" button. A search or a single lab
+ * lists every match. Those top models are server-rendered for crawlers; a
+ * ?lab= URL server-renders a whole lab.
  */
-import { useEffect, useId, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState, type MouseEvent } from "react";
 import Link from "next/link";
 import styled from "styled-components";
-import type { Coverage, ExploreSort, ModelUsageRow } from "@/lib/explore";
+import type { Coverage, ExploreSort } from "@/lib/explore";
 import { SearchIcon, XIcon } from "@/components/ui/Icons";
 import { companyPath, modelPath } from "@/lib/seo/explore";
 import { formatCount, formatEstimatedCost, formatShare, formatTokens } from "./format";
-import { groupModelsByLab, matchesModelQuery, UNKNOWN_LAB_NAME } from "./catalog";
+import {
+  groupModelsByLab,
+  isCatalogFiltered,
+  LAB_PREVIEW_SIZE,
+  matchesModelQuery,
+  previewLabModels,
+  UNKNOWN_LAB_NAME,
+  type CatalogModel,
+} from "./catalog";
 import {
   ButtonSegments,
   ControlBar,
@@ -299,6 +312,34 @@ const Footnote = styled.p`
   }
 `;
 
+const MoreButton = styled.button`
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  margin-top: 8px;
+  padding: 0 12px;
+  border: 1px solid var(--service-border-strong);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--service-text);
+  font-size: 0.8125rem;
+  font-weight: 500;
+
+  &:hover {
+    background: var(--service-surface-muted);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--service-focus);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 640px), (pointer: coarse) {
+    min-height: 44px;
+    font-size: 0.9375rem;
+  }
+`;
+
 const ClearAll = styled.button`
   margin-top: 12px;
   min-height: 36px;
@@ -320,7 +361,8 @@ const ClearAll = styled.button`
 `;
 
 interface ModelCatalogProps {
-  rows: ModelUsageRow[];
+  /** Usage rows; pass them through toCatalogModel to keep the client payload small. */
+  rows: CatalogModel[];
   coverage: Coverage;
   sort: ExploreSort;
   periodOptions: LinkOption[];
@@ -343,6 +385,8 @@ export function ModelCatalog({
 }: ModelCatalogProps) {
   const [query, setQuery] = useState(initialQuery);
   const [lab, setLab] = useState(initialLab);
+  /** Labs whose long tail is open in the unfiltered view. */
+  const [expanded, setExpanded] = useState<ReadonlySet<string>>(() => new Set());
   const searchId = useId();
 
   const allGroups = useMemo(() => groupModelsByLab(rows, sort), [rows, sort]);
@@ -362,6 +406,27 @@ export function ModelCatalog({
       .filter((group) => group.models.length > 0);
   }, [allGroups, activeLab, query]);
   const shown = groups.reduce((total, group) => total + group.models.length, 0);
+  const filtered = isCatalogFiltered(query, activeLab);
+  const previews = groups.map((group) => ({
+    group,
+    // Collapsible in the unfiltered view; open when the visitor asked for the rest.
+    tail: filtered ? 0 : previewLabModels(group.models, true).hidden,
+    preview: previewLabModels(group.models, !filtered && !expanded.has(group.key)),
+  }));
+  const collapsible = previews.some((entry) => entry.tail > 0);
+
+  const toggleLab = (key: string, event: MouseEvent<HTMLButtonElement>) => {
+    const button = event.currentTarget;
+    const closing = expanded.has(key);
+    setExpanded((current) => {
+      const next = new Set(current);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+    // After the tail closes the button moves up; keep it in view with focus on it.
+    if (closing) window.requestAnimationFrame(() => button.scrollIntoView({ block: "nearest" }));
+  };
 
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -414,6 +479,12 @@ export function ModelCatalog({
       <ResultCount aria-live="polite">
         {shown === rows.length ? `${formatCount(rows.length)} models` : `${formatCount(shown)} of ${formatCount(rows.length)} models`}
       </ResultCount>
+      {collapsible ? (
+        <ResultCount>
+          Each lab lists its top {LAB_PREVIEW_SIZE} by {usersSorted ? "active users" : "tokens"}. Use &ldquo;Show more&rdquo;,
+          pick a lab or search to see the rest.
+        </ResultCount>
+      ) : null}
 
       {shown === 0 ? (
         <EmptyNote>
@@ -441,7 +512,7 @@ export function ModelCatalog({
             <span aria-sort={usersSorted ? undefined : "descending"}>Tokens</span>
             <span>Est. cost</span>
           </ColumnHead>
-          {groups.map((group) => (
+          {previews.map(({ group, tail, preview }) => (
             <LabGroup key={group.key} aria-labelledby={`lab-${group.key}`}>
               <LabHeading>
                 <SectionTitle id={`lab-${group.key}`}>
@@ -451,8 +522,8 @@ export function ModelCatalog({
                   <CompanyLink href={companyPath(companySlugs[group.slug])}>About {group.name}</CompanyLink>
                 ) : null}
               </LabHeading>
-              <List>
-                {group.models.map((model) => (
+              <List id={`lab-list-${group.key}`}>
+                {preview.shown.map((model) => (
                   <Item key={model.key}>
                     <NameBlock>
                       <ModelMark model={model} size={28} />
@@ -486,6 +557,18 @@ export function ModelCatalog({
                   </Item>
                 ))}
               </List>
+              {tail > 0 ? (
+                <MoreButton
+                  type="button"
+                  aria-expanded={preview.hidden === 0}
+                  aria-controls={`lab-list-${group.key}`}
+                  onClick={(event) => toggleLab(group.key, event)}
+                >
+                  {preview.hidden > 0
+                    ? `Show ${formatCount(preview.hidden)} more ${group.name} ${preview.hidden === 1 ? "model" : "models"}`
+                    : `Show fewer ${group.name} models`}
+                </MoreButton>
+              ) : null}
             </LabGroup>
           ))}
         </>

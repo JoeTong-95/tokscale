@@ -4,6 +4,7 @@ import Link from "next/link";
 import styled from "styled-components";
 import type { Coverage, HumanRow } from "@/lib/explore";
 import { ModelMark } from "@/components/explore/ModelMark";
+import { InstantTooltip } from "@/components/ui/InstantTooltip";
 import { agentLogoUrl } from "./agents";
 import {
   compactCost,
@@ -14,7 +15,7 @@ import {
   uniqueByKey,
   wholeNumber,
 } from "./format";
-import { Arrow, Container, Eyebrow, Lead, Section, SectionHeader, SectionTitle, TextLink } from "./primitives";
+import { Arrow, Container, Eyebrow, Lead, Section, SectionHeader, SectionTitle, TextLink, VisuallyHidden } from "./primitives";
 
 interface HumansSectionProps {
   human: HumanRow | null;
@@ -50,6 +51,7 @@ function FeaturedProfile({ human, coverage }: { human: HumanRow; coverage: Cover
   const range = coverageRangeLabel(coverage);
   const days = coverageDays(coverage);
   const profileHref = `/u/${encodeURIComponent(human.username)}`;
+  const rankBasis = `by tokens, ${periodLabel(coverage.period).toLowerCase()}`;
 
   return (
     <Card aria-labelledby="featured-human-name">
@@ -64,7 +66,10 @@ function FeaturedProfile({ human, coverage }: { human: HumanRow; coverage: Cover
         <div>
           <Name id="featured-human-name">
             {name}{" "}
-            <Rank title={`#${human.rank} by tokens, ${periodLabel(coverage.period).toLowerCase()}`}>#{human.rank}</Rank>
+            <Rank content={`#${human.rank} ${rankBasis}`} describe={false} openWithParentFocus>
+              #{human.rank}
+              <VisuallyHidden> {rankBasis}</VisuallyHidden>
+            </Rank>
           </Name>
           <Handle>@{human.username}</Handle>
         </div>
@@ -204,8 +209,8 @@ const Name = styled.h3`
   overflow-wrap: anywhere;
 `;
 
-/* Rank by tokens in the period; the hover title spells it out. */
-const Rank = styled.span`
+/* Rank by tokens in the period; the tooltip spells it out. */
+const Rank = styled(InstantTooltip)`
   color: var(--v2-accent);
   white-space: nowrap;
 `;

@@ -1185,6 +1185,14 @@ a.companyName:hover {
   overflow-wrap: anywhere;
 }
 
+/* Model name with its family mark (company profiles, "Models and usage on Tokscale"). */
+.modelCell {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+}
+
 .dash {
   color: var(--cap-faint);
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ModelMark } from "@/components/explore/ModelMark";
 import { TOKSCALE_X_HANDLE } from "@/lib/community";
 import {
   absoluteUrl,
@@ -526,10 +527,15 @@ function ModelsSection({ usage, org }: { usage: LabUsage | null | "unavailable";
           {top.map((m) => (
             <tr key={m.key}>
               <td className={styles.full}>
-                <Link className={styles.cellMain} href={`/models/${encodeURIComponent(m.key)}`}>
-                  {m.name}
-                </Link>
-                <span className={styles.cellSub}>{m.key}</span>
+                <span className={styles.modelCell}>
+                  <ModelMark model={m} size={24} />
+                  <span>
+                    <Link className={styles.cellMain} href={`/models/${encodeURIComponent(m.key)}`}>
+                      {m.name}
+                    </Link>
+                    <span className={styles.cellSub}>{m.key}</span>
+                  </span>
+                </span>
               </td>
               <td className={`${styles.right} ${styles.num}`} data-label="Active users">
                 {m.activeUsers.toLocaleString("en-US")}

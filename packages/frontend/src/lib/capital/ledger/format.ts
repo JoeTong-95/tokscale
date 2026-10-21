@@ -1,5 +1,5 @@
 import { BASIS_TEXT, QUANTITY_UNITS } from "./labels";
-import type { Amount, Basis, Quantity } from "./schema";
+import type { Amount, Basis, Quantity, Source } from "./schema";
 
 /**
  * Money and quantity formatting for the ledger. Currencies are never converted:
@@ -130,4 +130,10 @@ export function formatTotal(t: { value: number | null; currency: string; family:
   if (t.value === null) return "—";
   const prefix = t.family === "floor" ? ">" : t.family === "ceiling" ? "≤" : t.approximate ? "≈" : "";
   return `${prefix}${formatMoney(t.value, t.currency)}`;
+}
+
+/** Short label for a source link: "8-K", "Form D", or the publisher. */
+export function sourceShortLabel(source: Pick<Source, "filing" | "publisher">): string {
+  if (source.filing) return source.filing.form === "D" ? "Form D" : source.filing.form;
+  return source.publisher;
 }

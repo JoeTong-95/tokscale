@@ -70,7 +70,7 @@ mixed money types and stale rows. Tokscale should state its definition next to e
 
 ## 1. Where Capital is today (read from code and the dev server)
 
-Code: `packages/frontend/src/app/(main)/capital/**`, `src/app/(main)/companies/[slug]`,
+Code: `packages/frontend/src/app/(main)/capital/**`, `src/app/(main)/capital/companies/[slug]`,
 `src/content/capital/**`, `src/lib/capital/**`.
 
 | Item | Today |
@@ -88,7 +88,7 @@ Why it feels like a 13F site:
 - The featured object is a quarterly filing. The side feed is "Recent filings" (13F-HR, 13F-NT).
 - Company pages show CIK, SIC code and CUSIP, and nothing about funding, deals or models.
 - No private companies. No rounds. No compute. No capex.
-- `/companies/nvidia` (seen on the dev server) says "Not held by any of the 2 managers Tokscale tracks in Q2 2026" and "Tokscale has not written a description of this company yet." That is the whole page.
+- `/capital/companies/nvidia` (seen on the dev server) says "Not held by any of the 2 managers Tokscale tracks in Q2 2026" and "Tokscale has not written a description of this company yet." That is the whole page.
 
 Keep from today (these are good and should carry over):
 
@@ -328,18 +328,19 @@ Rules (already agreed, now enforced in the model):
 
 ### 4.2 Information architecture and routes
 
-Entity pages are top-level (they are the SEO targets). Events, dashboards and methodology live
-under `/capital`.
+Everything lives under `/capital` (owner decision, 2026-10-21): company and investor profiles, events,
+dashboards and methodology. Model pages link a lab to its company page under `/capital/companies`, so a company
+is still one shared page.
 
 | Route | Purpose | Data | Index |
 |---|---|---|---|
 | `/capital` | Overview: latest events, four money-type cards, stack view, capex chart, sector hubs, public-investor teaser | all | Yes |
-| `/companies` | Directory with filters and saved views | orgs | Yes (base URL only) |
-| `/companies/[slug]` | Company profile. Template varies by category (lab, neocloud, hyperscaler, chips, power/DC) | org, events, metrics | Yes if 1+ sourced fact |
-| `/companies/compare?c=a,b,c` | Side-by-side (phase 2) | orgs | No |
-| `/investors` | Investor directory (VC, growth, sovereign, corporate, mutual fund, 13F manager) | orgs | Yes (base URL only) |
-| `/investors/[slug]` | Investor profile: AI rounds, leads, 13F holdings if a filer, fund marks if a registered fund | orgs, events | Yes if 1+ sourced fact |
-| `/investors/[slug]/13f/[quarter]` | 13F quarter page (moved from `/capital/funds/[fund]/holdings/[quarter]`) | 13F | Yes for story quarters |
+| `/capital/companies` | Directory with filters and saved views | orgs | Yes (base URL only) |
+| `/capital/companies/[slug]` | Company profile. Template varies by category (lab, neocloud, hyperscaler, chips, power/DC) | org, events, metrics | Yes if 1+ sourced fact |
+| `/capital/companies/compare?c=a,b,c` | Side-by-side (phase 2) | orgs | No |
+| `/capital/investors` | Investor directory (VC, growth, sovereign, corporate, mutual fund, 13F manager) | orgs | Yes (base URL only) |
+| `/capital/investors/[slug]` | Investor profile: AI rounds, leads, 13F holdings if a filer, fund marks if a registered fund | orgs, events | Yes if 1+ sourced fact |
+| `/capital/investors/[slug]/13f/[quarter]` | 13F quarter page (moved from `/capital/funds/[fund]/holdings/[quarter]`) | 13F | Yes for story quarters |
 | `/capital/rounds` | All financing events: equity rounds, debt facilities, IPOs, tender offers | events | Yes |
 | `/capital/rounds/[slug]` | One financing event | event | Yes if a primary source |
 | `/capital/compute` | Compute and infrastructure deals list, plus frontier data centers | events, Epoch | Yes |
@@ -350,19 +351,19 @@ under `/capital`.
 | `/capital/sectors/[slug]` | Hubs: `ai-labs`, `neoclouds`, `hyperscalers`, `semiconductors`, `power`, `data-centers` | orgs, events | Yes |
 | `/capital/methodology` | Money types, statuses, coverage, corrections | — | Yes |
 
-Old 13F routes: `/capital/portfolios` becomes `/investors?type=13f`; `/capital/funds/[fund]`
-becomes `/investors/[fund]`. The branch is stealth and unreleased, so a move costs nothing. Add 308
+Old 13F routes: `/capital/portfolios` becomes `/capital/investors?type=13f`; `/capital/funds/[fund]`
+becomes `/capital/investors/[fund]`. The branch is stealth and unreleased, so a move costs nothing. Add 308
 redirects anyway in case links were shared.
 
 Crunchbase concepts mapped to Tokscale v2:
 
 | Crunchbase concept | Tokscale v2 | Difference |
 |---|---|---|
-| Organization profile | `/companies/[slug]` | AI-economy companies only; category templates; Tokscale usage and benchmarks |
+| Organization profile | `/capital/companies/[slug]` | AI-economy companies only; category templates; Tokscale usage and benchmarks |
 | Funding round page | `/capital/rounds/[slug]` | Typed amounts, "included in" links, quotes from the primary source |
 | Acquisition page | `/capital/deals/[slug]` (type acquisition) | Same page type as compute deals |
 | Investment (round × investor) | Participant row with role (lead, co-lead, investor, strategic) | Per-investor amount only when a source states it |
-| Investor profile | `/investors/[slug]` | Adds 13F holdings and N-PORT marks when they exist |
+| Investor profile | `/capital/investors/[slug]` | Adds 13F holdings and N-PORT marks when they exist |
 | Person profile | Phase 3 | Public roles only |
 | Hubs | `/capital/sectors/[slug]` | Curated, small, sourced |
 | Lists, saved searches, Discover | Directory filters and views in the URL | No login needed |
@@ -429,7 +430,7 @@ Notes:
 - The event feed uses type labels in text (ROUND, COMPUTE, FILING, SPENDING, DEAL), not colors.
   One accent (#0073FF) for links and the active tab only.
 
-### 4.4 Wireframe: `/companies` directory
+### 4.4 Wireframe: `/capital/companies` directory
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
@@ -471,14 +472,14 @@ Directory UX rules:
 
 - **Density.** 40 px rows, thin rules (`--v2-rule`), sticky header, `font-variant-numeric: tabular-nums`, right-aligned numbers, numbers in `--v2-numeric`. Monogram or vendored logo per company.
 - **URL state.** Every filter, sort and view lives in the query string, so a view can be shared. Saved views are presets in code ("AI labs by valuation", "Raised in 2026", "Neoclouds by contracts", "Chinese labs", "Public AI infrastructure"). Per-user saved views can come later with GitHub sign-in.
-- **Canonical.** Filtered URLs canonicalize to `/companies`. Sector hubs are the indexable filtered pages.
+- **Canonical.** Filtered URLs canonicalize to `/capital/companies`. Sector hubs are the indexable filtered pages.
 - **Search.** Client-side fuzzy match over names, legal names and aliases ("Z.ai", "Zhipu", "Knowledge Atlas"; "Anysphere", "Cursor").
 - **Empty values.** "—" with a tooltip: "Not tracked yet" or "Undisclosed by the company".
 - **Mobile.** Keep Company, Category and one numeric column; the rest move into a stacked row (the existing `stack` table style).
-- **Compare.** Select up to 4 rows, then "Compare" opens `/companies/compare` (phase 2).
+- **Compare.** Select up to 4 rows, then "Compare" opens `/capital/companies/compare` (phase 2).
 - **Trending without scores.** "Most active (90 days)" = count of events. "Usage momentum" = change in share of Tokscale tokens (labs only). No proprietary rank.
 
-### 4.5 Wireframe: AI lab profile, `/companies/anthropic`
+### 4.5 Wireframe: AI lab profile, `/capital/companies/anthropic`
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
@@ -640,7 +641,7 @@ sections change by category.
 
 ### 4.9 Investor profiles and where 13F fits
 
-- `/investors` lists all investors with type filters: VC, growth, sovereign, corporate,
+- `/capital/investors` lists all investors with type filters: VC, growth, sovereign, corporate,
   mutual fund (N-PORT), public fund manager (13F).
 - An investor profile shows: AI rounds tracked (as lead / co-lead / participant), first and latest
   participation, portfolio companies (logos), strategic ties (compute deals for corporates), and
@@ -648,7 +649,7 @@ sections change by category.
   regulatory identity (IAPD).
 - **13F is demoted, not deleted.** Thiel Macro and Pershing Square become investor profiles of type
   "public fund manager". Their quarter pages and "Inside the 13F" stories stay, under
-  `/investors/[slug]/13f/[quarter]`. Company profiles keep a small "Public investors" section that
+  `/capital/investors/[slug]/13f/[quarter]`. Company profiles keep a small "Public investors" section that
   reuses today's positions table.
 - Scope notes carry over ("It is not Founders Fund's portfolio and not Peter Thiel's total
   investments"). Founders Fund gets its own investor profile, linked as a separate organization.
@@ -894,12 +895,12 @@ Target queries and pages:
 
 | Query pattern | Page | Title pattern |
 |---|---|---|
-| "Anthropic funding", "Anthropic valuation", "who invested in Anthropic" | `/companies/anthropic` | "Anthropic: Funding Rounds, Valuation, Investors and Compute Deals \| Tokscale" |
+| "Anthropic funding", "Anthropic valuation", "who invested in Anthropic" | `/capital/companies/anthropic` | "Anthropic: Funding Rounds, Valuation, Investors and Compute Deals \| Tokscale" |
 | "Anthropic Series H" | `/capital/rounds/anthropic-series-h-2026` | "Anthropic Series H: $65B at $965B Post-Money (May 2026) \| Tokscale" (numbers only when sourced and dated) |
-| "CoreWeave contracts", "CoreWeave customers" | `/companies/coreweave#compute` | "CoreWeave: Customer Contracts, Capex and Financing \| Tokscale" |
+| "CoreWeave contracts", "CoreWeave customers" | `/capital/companies/coreweave#compute` | "CoreWeave: Customer Contracts, Capex and Financing \| Tokscale" |
 | "hyperscaler capex 2026", "Microsoft capex" | `/capital/spending` | "AI Capex Tracker: Cash Spending by Microsoft, Amazon, Alphabet, Meta and Oracle \| Tokscale" |
 | "AI data centers list" | `/capital/data-centers` | "Frontier AI Data Centers: Owners, Users and Power \| Tokscale" |
-| "Sequoia AI investments" | `/investors/sequoia-capital` | "Sequoia Capital: AI Investments Tokscale Tracks \| Tokscale" |
+| "Sequoia AI investments" | `/capital/investors/sequoia-capital` | "Sequoia Capital: AI Investments Tokscale Tracks \| Tokscale" |
 | "AI labs funding" | `/capital/sectors/ai-labs` | "AI Labs: Funding, Valuations and Compute \| Tokscale" |
 
 Structured data (JSON-LD):
@@ -945,12 +946,12 @@ Sizes: S = up to 1 day, M = 2-3 days, L = about 1 week (one engineer plus one ed
 | ID | Task | Size |
 |---|---|---|
 | P1.1 | `/capital` overview rewrite (section 4.3). Title: "Capital: Funding, Compute Deals and AI Spending \| Tokscale". | M |
-| P1.2 | `/companies` directory with filters, views, URL state, CSV download (section 4.4). | L |
-| P1.3 | `/companies/[slug]` v2 template with category variants (sections 4.5 and 4.8). Reuse the 13F positions table as "Public investors". | L |
+| P1.2 | `/capital/companies` directory with filters, views, URL state, CSV download (section 4.4). | L |
+| P1.3 | `/capital/companies/[slug]` v2 template with category variants (sections 4.5 and 4.8). Reuse the 13F positions table as "Public investors". | L |
 | P1.4 | `/capital/rounds` and `/capital/rounds/[slug]` (section 4.6). | M |
 | P1.5 | `/capital/compute` and `/capital/deals/[slug]`, with the Epoch data-center block and CC BY attribution (section 4.7). | M |
 | P1.6 | `/capital/spending` with small multiples and fiscal labels. | M |
-| P1.7 | `/investors` and `/investors/[slug]`. Move 13F quarter pages to `/investors/[slug]/13f/[quarter]`. Add 308 redirects. | M |
+| P1.7 | `/capital/investors` and `/capital/investors/[slug]`. Move 13F quarter pages to `/capital/investors/[slug]/13f/[quarter]`. Add 308 redirects. | M |
 | P1.8 | Methodology page (money types, statuses, coverage, corrections). Home capital preview fed by events. Sitemap entries. JSON-LD. OG images for round and deal pages (reuse the quarter `og` route pattern). | M |
 
 Definition of done for Phase 1:
@@ -1003,7 +1004,7 @@ Definition of done for Phase 1:
 
 ## 7. Decisions the owner must make
 
-1. **Routes.** Top-level `/companies` and `/investors`, with events and dashboards under `/capital` (recommended). Or everything under `/capital`.
+1. **Routes.** Decided 2026-10-21: everything under `/capital` (`/capital/companies`, `/capital/investors`, `/capital/rounds`, ...). Company pages already moved; `/companies/*` redirects with 308.
 2. **Source policy.** Primary sources only? Or also press-reported numbers with status "reported" and the outlet named (recommended: allowed, but never in totals or header facts)?
 3. **Epoch AI.** Import as a seed with CC BY attribution and re-verify each row against its primary source before publishing (recommended)? Or show Epoch rows as they are, labeled "via Epoch AI"?
 4. **Fund marks (N-PORT).** Publish now, later, or never? They are new and useful, and they can be misread.

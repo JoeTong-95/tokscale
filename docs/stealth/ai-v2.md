@@ -10,7 +10,7 @@ Direction: tokscale.ai becomes the public place to see how people build with AI.
 | data | `src/lib/explore/**` implementation (keep `types.ts` signatures), DB rollups, seed script under `scripts/stealth/`, drizzle migration if needed |
 | home | `src/app/(main)/page.tsx`, `src/components/home/**`, `src/app/(main)/tracker/**`, `src/components/layout/Navigation.tsx`, new footer, design tokens for v2 (`src/app/globals.css` additions), new art in `public/assets/v2/` |
 | boards | `src/app/(main)/leaderboard/**` (Humans/Models/Agents tabs), `src/app/(main)/models/**`, `src/components/explore/**` |
-| capital | `src/app/(main)/capital/**`, `src/app/(main)/companies/**`, `src/content/capital/**`, `src/lib/capital/**`, capital sitemap entries in a separate function |
+| capital | `src/app/(main)/capital/**` (company pages at `capital/companies/[slug]`), `src/content/capital/**`, `src/lib/capital/**`, capital sitemap entries in a separate function |
 
 Shared contract: `src/lib/explore/types.ts`. Change it only by asking the parent.
 

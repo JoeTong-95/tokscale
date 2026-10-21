@@ -539,7 +539,7 @@ export function Navigation() {
     <Bar aria-label="Main navigation">
       <BarInner>
         <LogoLink href="/" aria-label="Tokscale home">
-          <Image src="/assets/hero-logo.svg" alt="" width={100} height={19} priority />
+          <Image src="/assets/hero-logo.svg" alt="" width={147} height={28} priority />
         </LogoLink>
 
         <Links>

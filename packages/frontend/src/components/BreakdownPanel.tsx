@@ -6,6 +6,7 @@ import { formatCurrency, formatTokenCount, groupClientsByType, sortClientsByCost
 import { formatContributionDateFull } from "@/lib/date-utils";
 import { SOURCE_DISPLAY_NAMES, SOURCE_COLORS, SOURCE_LOGOS } from "@/lib/constants";
 import { SourceLogo } from "./SourceLogo";
+import { Eyebrow as SharedEyebrow } from "@/components/ui/Eyebrow";
 
 interface BreakdownPanelProps {
   day: DailyContribution | null;
@@ -38,13 +39,9 @@ const PanelHeading = styled.div`
   min-width: 0;
 `;
 
-const Eyebrow = styled.div`
+/* The shared eyebrow (Title Case, no letter-spacing), tucked close to the title. */
+const Eyebrow = styled(SharedEyebrow)`
   margin-bottom: 2px;
-  color: var(--service-text-muted);
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
 `;
 
 const PanelTitle = styled.h3`
@@ -139,7 +136,7 @@ export function BreakdownPanel({ day, onClose }: BreakdownPanelProps) {
     <PanelContainer role="region" aria-label="Day breakdown">
       <PanelHeader>
         <PanelHeading>
-          <Eyebrow>Detailed breakdown</Eyebrow>
+          <Eyebrow as="div">Detailed Breakdown</Eyebrow>
           <PanelTitle>{formatContributionDateFull(day)}</PanelTitle>
         </PanelHeading>
         <CloseButton type="button" onClick={onClose} aria-label="Close breakdown panel">

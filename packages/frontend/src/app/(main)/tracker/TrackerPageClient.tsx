@@ -20,7 +20,7 @@ import {
 import { TwinkleArt } from "@/components/home/TwinkleArt";
 import { compactNumber, wholeNumber } from "@/components/home/format";
 import { AgentsGrid } from "./AgentsGrid";
-import { EmbedShowcase } from "./EmbedShowcase";
+// import { EmbedShowcase } from "./EmbedShowcase"; // README embed section is hidden for now (see below).
 import { FlowDiagram } from "./FlowDiagram";
 import { TuiShowcase } from "./TuiShowcase";
 
@@ -169,6 +169,7 @@ export function TrackerPageClient({ agents, stats }: { agents: SupportedAgent[];
           </Container>
         </Section>
 
+        {/* Hidden for now: the README embed section. To restore, uncomment this block and the EmbedShowcase import.
         <Section aria-labelledby="tracker-embed-title">
           <Container>
             <EmbedShowcase
@@ -185,6 +186,7 @@ export function TrackerPageClient({ agents, stats }: { agents: SupportedAgent[];
             />
           </Container>
         </Section>
+        */}
 
         <Section aria-labelledby="tracker-data-title">
           <Container>

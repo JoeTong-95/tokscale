@@ -228,14 +228,14 @@ describe("pages and SEO", () => {
   it("builds a quarter page only when the filing has positions", () => {
     expect(capital.getQuarter("thiel-macro", "2026-q1")).toBeNull();
     expect(capital.getQuarterPages().map((q) => q.href)).toEqual([
-      "/capital/funds/thiel-macro/holdings/2026-q2",
-      "/capital/funds/thiel-macro/holdings/2025-q3",
-      "/capital/funds/thiel-macro/holdings/2025-q2",
-      "/capital/funds/pershing-square/holdings/2026-q2",
-      "/capital/funds/pershing-square/holdings/2026-q1",
-      "/capital/funds/pershing-square/holdings/2025-q4",
-      "/capital/funds/pershing-square/holdings/2025-q3",
-      "/capital/funds/pershing-square/holdings/2025-q2",
+      "/capital/investors/thiel-macro/13f/2026-q2",
+      "/capital/investors/thiel-macro/13f/2025-q3",
+      "/capital/investors/thiel-macro/13f/2025-q2",
+      "/capital/investors/pershing-square/13f/2026-q2",
+      "/capital/investors/pershing-square/13f/2026-q1",
+      "/capital/investors/pershing-square/13f/2025-q4",
+      "/capital/investors/pershing-square/13f/2025-q3",
+      "/capital/investors/pershing-square/13f/2025-q2",
     ]);
   });
 
@@ -254,12 +254,15 @@ describe("pages and SEO", () => {
     const entries = capitalSitemapEntries();
     const urls = entries.map((e) => e.url);
     expect(new Set(urls).size).toBe(urls.length);
-    expect(urls.some((u) => u.endsWith("/capital/funds/thiel-macro/holdings/2026-q2"))).toBe(true);
+    expect(urls.some((u) => u.endsWith("/capital/investors/thiel-macro/13f/2026-q2"))).toBe(true);
     expect(urls.some((u) => u.endsWith("/capital/companies/amazon"))).toBe(true);
-    const quarter = entries.find((e) => e.url.endsWith("/thiel-macro/holdings/2026-q2"))!;
+    expect(urls.some((u) => u.includes("/capital/funds/") || u.includes("/capital/portfolios"))).toBe(false);
+    const quarter = entries.find((e) => e.url.endsWith("/thiel-macro/13f/2026-q2"))!;
     expect((quarter.lastModified as Date).toISOString()).toBe("2026-10-19T00:00:00.000Z");
-    // 2 section pages + 2 funds + 8 quarters + every company with data
-    expect(entries).toHaveLength(2 + 2 + 8 + capital.getCompaniesWithData().length);
+    // Every 13F quarter page and every company that a tracked manager held is listed.
+    for (const q of capital.getQuarterPages()) expect(urls.some((u) => u.endsWith(q.href))).toBe(true);
+    for (const c of capital.getCompaniesWithData()) expect(urls.some((u) => u.endsWith(`/capital/companies/${c.slug}`))).toBe(true);
+    for (const entry of entries) expect(entry.lastModified).toBeInstanceOf(Date);
   });
 
   it("gives every company page tracked positions", () => {
@@ -274,7 +277,7 @@ describe("pages and SEO", () => {
     const featured = getFeaturedCapital();
     expect(featured).toHaveLength(2);
     for (const item of featured) {
-      expect(item.href).toMatch(/^\/capital\/funds\/[a-z-]+\/holdings\/\d{4}-q[1-4]$/);
+      expect(item.href).toMatch(/^\/capital\/investors\/[a-z-]+\/13f\/\d{4}-q[1-4]$/);
       expect(item.imageUrl).toBe(`${item.href}/og`);
       expect(item.summary).toContain("reported 13F value");
     }

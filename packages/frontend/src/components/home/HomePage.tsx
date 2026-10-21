@@ -43,8 +43,8 @@ export function HomePage({ snapshot, featuredHuman, humansCoverage, models, mode
         <SnapshotStage>
           <Backdrop aria-hidden="true">
             <picture>
-              <source media="(max-width: 720px)" srcSet="/assets/v2/observatory-960.webp" />
-              <img src="/assets/v2/observatory.webp" alt="" width={1672} height={941} decoding="async" />
+              <source media="(max-width: 720px)" srcSet="/assets/v2/observatory-blue-960.webp" width={1356} height={768} />
+              <img src="/assets/v2/observatory-blue.webp" alt="" width={2472} height={1392} decoding="async" />
             </picture>
           </Backdrop>
           <Container>
@@ -113,6 +113,8 @@ const Hero = styled.section`
   position: relative;
   z-index: 1;
   padding: 128px 0 56px;
+  /* A faint blue glow behind the title, matching the blue backdrop below. */
+  background: radial-gradient(52% 70% at 50% 0%, rgba(22, 64, 160, 0.26), rgba(22, 64, 160, 0) 72%);
 
   @media (max-width: 720px) {
     padding: 112px 0 48px;
@@ -174,8 +176,9 @@ const Backdrop = styled.div`
   width: min(1240px, 118vw);
   transform: translateX(-50%);
   pointer-events: none;
-  opacity: 0.62;
+  opacity: 0.92;
   /*
+   * Blue dot-matrix rendering of the observatory engraving (ordered dither).
    * Sits below the snapshot card: the card covers only the sky, and the dome
    * and telescope show in the space under it. Fade the sides, the top (behind
    * the card), and the base so it runs softly into the next section.
@@ -198,7 +201,7 @@ const Backdrop = styled.div`
   @media (max-width: 720px) {
     bottom: -12px;
     width: 175vw;
-    opacity: 0.5;
+    opacity: 0.85;
   }
 `;
 

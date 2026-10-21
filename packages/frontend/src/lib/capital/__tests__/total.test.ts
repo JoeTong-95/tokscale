@@ -117,8 +117,8 @@ describe("capacity totals", () => {
       ],
       "capacity_gw"
     );
-    expect(mixed).toMatchObject({ ok: false, largest: 5 });
-    expect(tryQuantityTotal([], "gpus")).toMatchObject({ ok: false, largest: null });
+    expect(mixed).toMatchObject({ ok: false, largest: 5, largestBasis: "up_to" });
+    expect(tryQuantityTotal([], "gpus")).toMatchObject({ ok: false, largest: null, largestBasis: null });
   });
 });
 

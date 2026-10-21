@@ -141,13 +141,17 @@ export function tryTotal(
 export function tryQuantityTotal(
   quantities: ReadonlyArray<Pick<Quantity, "measure" | "value" | "basis">>,
   measure: QuantityMeasure
-): { ok: true; value: number; family: BasisFamily; approximate: boolean; count: number } | { ok: false; reason: string; largest: number | null } {
+):
+  | { ok: true; value: number; family: BasisFamily; approximate: boolean; count: number }
+  | { ok: false; reason: string; largest: number | null; largestBasis: Basis | null } {
   const list = quantities.filter((q) => q.measure === measure);
-  const largest = list.length > 0 ? Math.max(...list.map((q) => q.value)) : null;
-  if (list.length === 0) return { ok: false, reason: "no stated capacity", largest };
+  const top = list.reduce<(typeof list)[number] | null>((best, q) => (best === null || q.value > best.value ? q : best), null);
+  const largest = top?.value ?? null;
+  const largestBasis = top?.basis ?? null;
+  if (list.length === 0) return { ok: false, reason: "no stated capacity", largest, largestBasis };
   const families = new Set(list.map((q) => basisFamily(q.basis)));
-  if (families.has(null)) return { ok: false, reason: "a range cannot be added", largest };
-  if (families.size > 1) return { ok: false, reason: "stated with different bases (about, up to, more than)", largest };
+  if (families.has(null)) return { ok: false, reason: "a range cannot be added", largest, largestBasis };
+  if (families.size > 1) return { ok: false, reason: "stated with different bases (about, up to, more than)", largest, largestBasis };
   return {
     ok: true,
     value: list.reduce((sum, q) => sum + q.value, 0),

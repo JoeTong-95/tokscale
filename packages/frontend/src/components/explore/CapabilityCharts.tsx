@@ -93,6 +93,13 @@ const PointLabel = styled.span`
   &[data-flip="true"] {
     transform: translate(calc(-100% - 14px), -50%);
   }
+
+  /* Phones keep only the first few labels; the data table has every value. */
+  @media (max-width: 640px) {
+    &[data-minor="true"] {
+      display: none;
+    }
+  }
 `;
 
 const Tick = styled.span`
@@ -249,6 +256,7 @@ function Scatter({ points, xLabel, yLabel, formatX, frontierKeys, labelKeys, sum
         {xLabel}
       </AxisTitle>
       {points.map((p) => {
+        const labelRank = [...labels.keys()].indexOf(p.key);
         const left = px(p.x);
         const top = py(p.y);
         return (
@@ -257,7 +265,11 @@ function Scatter({ points, xLabel, yLabel, formatX, frontierKeys, labelKeys, sum
               <ModelMark model={p} size={20} />
             </Mark>
             {labels.has(p.key) ? (
-              <PointLabel style={{ left: `${left}%`, top: `${top}%` }} data-flip={labels.get(p.key) === "left" ? "true" : undefined}>
+              <PointLabel
+                style={{ left: `${left}%`, top: `${top}%` }}
+                data-flip={labels.get(p.key) === "left" ? "true" : undefined}
+                data-minor={labelRank >= 3 ? "true" : undefined}
+              >
                 {p.name}
               </PointLabel>
             ) : null}

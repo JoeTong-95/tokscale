@@ -342,8 +342,31 @@ const CardFacts = styled.dl`
   }
 `;
 
-/** Phones show this many cards before "Show all". */
+/** Phones show this many cards, and wide screens this many rows, before "Show all". */
 const CARD_LIMIT = 20;
+const ROW_LIMIT = 60;
+
+const TableMore = styled.button`
+  display: none;
+  min-height: 36px;
+  margin-top: 12px;
+  padding: 0 14px;
+  border: 1px solid var(--service-border-strong);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--service-text);
+  font-size: 0.875rem;
+
+  &:focus-visible {
+    outline: 2px solid var(--service-focus);
+    outline-offset: 2px;
+  }
+
+  @media (min-width: 960px) {
+    display: inline-flex;
+    align-items: center;
+  }
+`;
 
 const MoreButton = styled.button`
   width: 100%;
@@ -569,7 +592,7 @@ export function ModelsDashboard({
 }: ModelsDashboardProps) {
   const [groups, setGroups] = useState<ColumnGroup[]>(initialGroups);
   const [sortChoice, setSortChoice] = useState(initialSort);
-  const [showAllCards, setShowAllCards] = useState(false);
+  const [showAll, setShowAll] = useState(false);
   const sort = effectiveSortKey(sortChoice, groups);
   const columns = useMemo(() => buildColumns(groups, period, benchmarks, communityMix, ownMixes), [groups, period, benchmarks, communityMix, ownMixes]);
   const sorted = useMemo(() => sortDashboardRows(rows, sort, sortAscending(sort)), [rows, sort]);
@@ -708,7 +731,7 @@ export function ModelsDashboard({
               </tr>
             </thead>
             <tbody>
-              {sorted.map((row, index) => (
+              {(showAll ? sorted : sorted.slice(0, ROW_LIMIT)).map((row, index) => (
                 <tr key={row.key}>
                   <th className="model" scope="row">
                     <ModelCell>
@@ -731,10 +754,15 @@ export function ModelsDashboard({
         </Scroller>
         <Fade $visible={overflow && !atEnd} aria-hidden="true" />
         </ScrollArea>
+        {!showAll && sorted.length > ROW_LIMIT ? (
+          <TableMore type="button" onClick={() => setShowAll(true)}>
+            Show all {formatCount(sorted.length)} models
+          </TableMore>
+        ) : null}
       </ScrollBox>
 
       <Cards aria-label="Models">
-        {(showAllCards ? sorted : sorted.slice(0, CARD_LIMIT)).map((row, index) => (
+        {(showAll ? sorted : sorted.slice(0, CARD_LIMIT)).map((row, index) => (
           <Card key={row.key}>
             <CardHead>
               <span>{index + 1}</span>
@@ -755,8 +783,8 @@ export function ModelsDashboard({
           </Card>
         ))}
       </Cards>
-      {!showAllCards && sorted.length > CARD_LIMIT ? (
-        <MoreButton type="button" onClick={() => setShowAllCards(true)}>
+      {!showAll && sorted.length > CARD_LIMIT ? (
+        <MoreButton type="button" onClick={() => setShowAll(true)}>
           Show all {formatCount(sorted.length)} models
         </MoreButton>
       ) : null}

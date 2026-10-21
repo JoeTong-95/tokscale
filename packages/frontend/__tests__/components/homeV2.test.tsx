@@ -144,7 +144,7 @@ describe("community snapshot", () => {
 describe("trusted by", () => {
   it("names each logo under the trusted-by label", () => {
     const markup = renderToStaticMarkup(<TrustedBy />);
-    for (const name of ["Microsoft", "Amazon", "Google", "Toss", "Hashed"]) {
+    for (const name of ["Microsoft", "Amazon", "Google", "ByteDance", "Tencent", "Alibaba", "Intel", "Toss", "Hashed"]) {
       expect(markup).toContain(`alt="${name}"`);
     }
     expect(markup).not.toContain("MUSINSA");

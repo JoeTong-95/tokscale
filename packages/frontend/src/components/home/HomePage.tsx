@@ -115,12 +115,12 @@ const HeroTitle = styled(DisplayTitle)`
 const Hero = styled.section`
   position: relative;
   z-index: 1;
-  padding: 128px 0 56px;
+  padding: 128px 0 36px;
   /* A faint blue glow behind the title, matching the blue backdrop below. */
   background: var(--v2-glow);
 
   @media (max-width: 720px) {
-    padding: 112px 0 48px;
+    padding: 112px 0 28px;
   }
 `;
 
@@ -128,7 +128,7 @@ const HeroCopy = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 12px;
   max-width: 860px;
   margin: 0 auto;
   text-align: center;
@@ -147,7 +147,7 @@ const Actions = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 12px;
+  gap: 6px;
   margin-top: 8px;
 
   @media (max-width: 400px) {

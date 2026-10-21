@@ -3,6 +3,8 @@ import { getPublicOrigin } from "@/lib/seo/urls";
 /** Path builders for the capital section. Absolute variants share the site's canonical origin. */
 export const capitalPath = () => "/capital";
 export const companiesPath = () => "/capital/companies";
+/** The directory as CSV (route handler; not indexed). */
+export const companiesCsvPath = () => "/capital/companies.csv";
 /** Company pages live inside Capital; model pages link their lab here too. */
 export const companyPath = (slug: string) => `/capital/companies/${encodeURIComponent(slug)}`;
 export const investorsPath = (type?: string) =>

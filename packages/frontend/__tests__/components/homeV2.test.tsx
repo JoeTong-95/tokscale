@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { listSupportedAgents, agentLogoUrl } from "../../src/components/home/agents";
 import { CapitalPreview } from "../../src/components/home/CapitalPreview";
 import { CommunitySnapshot } from "../../src/components/home/CommunitySnapshot";
+import { TrustedBy } from "../../src/components/home/TrustedBy";
 import {
   coverageDays,
   coverageRangeLabel,
@@ -129,6 +130,17 @@ describe("community snapshot", () => {
   it("renders an empty state without data", () => {
     const markup = renderToStaticMarkup(<CommunitySnapshot snapshot={null} />);
     expect(markup).toContain("No public usage in this period yet.");
+  });
+});
+
+describe("trusted by", () => {
+  it("names each logo under the trusted-by label", () => {
+    const markup = renderToStaticMarkup(<TrustedBy />);
+    for (const name of ["Microsoft", "Amazon", "MUSINSA", "Google", "Toss", "Hashed"]) {
+      expect(markup).toContain(`alt="${name}"`);
+    }
+    expect(markup).not.toContain('alt="Meta"');
+    expect(markup).toContain("Trusted by professionals at");
   });
 });
 

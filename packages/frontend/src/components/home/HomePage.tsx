@@ -8,6 +8,7 @@ import { CommunitySnapshot } from "./CommunitySnapshot";
 import { CopyCommand } from "./CopyCommand";
 import { HumansSection } from "./HumansSection";
 import { ModelsSection } from "./ModelsSection";
+import { TrustedBy } from "./TrustedBy";
 import { Container, DisplayTitle, Eyebrow, Lead, PageShell, PrimaryButton, SecondaryButton, SectionTitle } from "./primitives";
 
 export interface HomePageProps {
@@ -50,6 +51,7 @@ export function HomePage({ snapshot, featuredHuman, humansCoverage, models, mode
           </Backdrop>
           <Container>
             <CommunitySnapshot snapshot={snapshot} />
+            <TrustedBy />
           </Container>
         </SnapshotStage>
 
@@ -143,11 +145,15 @@ const Actions = styled.div`
 const SnapshotStage = styled.div`
   position: relative;
   isolation: isolate;
-  /* Room under the card for the observatory engraving. */
-  padding-bottom: clamp(220px, 26vw, 360px);
+  /*
+   * Room under the card and the logo row for the observatory engraving. The
+   * padding tracks the engraving height, so the telescope always starts below
+   * the logo row.
+   */
+  padding-bottom: min(440px, 42vw);
 
   @media (max-width: 720px) {
-    padding-bottom: 210px;
+    padding-bottom: 64vw;
   }
 `;
 

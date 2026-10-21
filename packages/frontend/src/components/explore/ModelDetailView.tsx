@@ -57,8 +57,37 @@ const Notice = styled.p`
   font-size: 0.875rem;
 `;
 
+/*
+ * Six facts need about 950px on one line. Between the phone grid (two per
+ * line) and that width, show three per line instead of running past the page.
+ */
 const Facts = styled(MetricStrip)`
   margin-bottom: 12px;
+
+  @media (min-width: 720px) and (max-width: 999px) {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-width: none;
+
+    && > ${MetricItem} {
+      min-width: 0;
+      padding: 12px 20px;
+      border-left: 1px solid var(--service-border);
+    }
+
+    && > ${MetricItem}:nth-child(3n + 1) {
+      padding-left: 0;
+      border-left: 0;
+    }
+
+    && > ${MetricItem}:nth-child(3n) {
+      padding-right: 0;
+    }
+
+    && > ${MetricItem}:nth-child(n + 4) {
+      border-top: 1px solid var(--service-border) !important;
+    }
+  }
 `;
 
 const FactSub = styled.dd`

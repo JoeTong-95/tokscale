@@ -79,9 +79,10 @@ const Mark = styled.span`
   }
 `;
 
+/* --x is the point's left offset; the label never runs past the plot's edge on narrow screens. */
 const PointLabel = styled.span`
   position: absolute;
-  max-width: 150px;
+  max-width: min(150px, calc(100% - var(--x, 0%) - 16px));
   overflow: hidden;
   color: var(--service-text);
   font-size: 0.6875rem;
@@ -91,6 +92,7 @@ const PointLabel = styled.span`
   pointer-events: none;
 
   &[data-flip="true"] {
+    max-width: min(150px, calc(var(--x, 100%) - 16px));
     transform: translate(calc(-100% - 14px), -50%);
   }
 
@@ -266,7 +268,7 @@ function Scatter({ points, xLabel, yLabel, formatX, frontierKeys, labelKeys, sum
             </Mark>
             {labels.has(p.key) ? (
               <PointLabel
-                style={{ left: `${left}%`, top: `${top}%` }}
+                style={{ left: `${left}%`, top: `${top}%`, "--x": `${left}%` } as React.CSSProperties}
                 data-flip={labels.get(p.key) === "left" ? "true" : undefined}
                 data-minor={labelRank >= 3 ? "true" : undefined}
               >

@@ -8,9 +8,9 @@ const LOGOS = [
   { name: "Microsoft", src: "/assets/v2/trusted/microsoft.svg", width: 105, height: 23, display: 21 },
   { name: "Amazon", src: "/assets/v2/trusted/amazon.svg", width: 73, height: 24, display: 22 },
   { name: "Google", src: "/assets/v2/trusted/google.svg", width: 76, height: 26, display: 23 },
-  { name: "ByteDance", src: "/assets/v2/trusted/bytedance.svg", width: 112, height: 22, display: 19 },
+  { name: "ByteDance", src: "/assets/v2/trusted/bytedance.svg", width: 251, height: 43.3, display: 20 },
   { name: "Tencent", src: "/assets/v2/trusted/tencent.svg", width: 105.18, height: 20, display: 18 },
-  { name: "Alibaba", src: "/assets/v2/trusted/alibaba.svg", width: 99, height: 20, display: 17 },
+  { name: "Alibaba", src: "/assets/v2/trusted/alibaba.png", width: 902, height: 116, display: 18 },
   { name: "Intel", src: "/assets/v2/trusted/intel.svg", width: 24, height: 9.31, display: 18 },
   { name: "Toss", src: "/assets/v2/trusted/toss.png", width: 173, height: 52, display: 23 },
   { name: "Hashed", src: "/assets/v2/trusted/hashed.svg", width: 108, height: 28, display: 21 },
@@ -66,7 +66,7 @@ const Logos = styled.ul`
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 18px 44px;
+  gap: 18px 40px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -78,24 +78,38 @@ const Logos = styled.ul`
     opacity: 0.85;
   }
 
-  /* Keep all logos on one line down to about 1000px. */
+  /* Keep all logos on one line down to about 1080px. */
   @media (max-width: 1180px) {
     column-gap: 28px;
   }
 
   /* Two balanced rows (5 + 4) between phones and small laptops. */
-  @media (max-width: 1000px) and (min-width: 721px) {
-    max-width: 600px;
+  @media (max-width: 1080px) and (min-width: 721px) {
+    max-width: 640px;
     margin: 0 auto;
   }
 
+  /* Phones: a 3 x 3 grid; a wide logo scales down to fit its cell. */
   @media (max-width: 720px) {
-    gap: 22px 28px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px 20px;
+    justify-items: center;
+    width: 100%;
+
+    li {
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    img {
+      max-width: 100%;
+      object-fit: contain;
+    }
   }
 
-  /* Keep three logos per row on the narrowest phones. */
   @media (max-width: 360px) {
-    column-gap: 20px;
+    column-gap: 14px;
 
     img {
       height: calc(var(--logo-h) * 0.86);

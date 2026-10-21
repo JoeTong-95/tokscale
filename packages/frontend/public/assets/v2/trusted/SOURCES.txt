@@ -2,9 +2,12 @@ Logo sources for the home "Trusted by professionals at" row.
 
 - microsoft.svg, amazon.svg, google.svg, hashed.svg, toss.png: from the previous tokscale.ai landing
   (packages/frontend/public/assets/landing/trusted-by-*), recolored to #A3ADBD.
-- bytedance.svg, tencent.svg, alibaba.svg: wordmarks from LobeHub Icons
-  (@lobehub/icons-static-svg 1.95.1, https://github.com/lobehub/lobe-icons, MIT License),
-  cropped to the glyphs and recolored to #A3ADBD.
+- bytedance.svg: the full logo (symbol and wordmark) from the header of https://www.bytedance.com/en/
+  (inline SVG, retrieved 2026-10-21), cropped to the artwork and recolored to #A3ADBD.
+- alibaba.png: the full logo (symbol and wordmark) from https://www.alibabagroup.com/en-US/
+  (902x116 PNG, retrieved 2026-10-21), recolored to #A3ADBD with its transparency kept.
+- tencent.svg: wordmark from LobeHub Icons (@lobehub/icons-static-svg 1.95.1,
+  https://github.com/lobehub/lobe-icons, MIT License), cropped to the glyphs and recolored to #A3ADBD.
 - intel.svg: from Simple Icons 16.35.0 (https://github.com/simple-icons/simple-icons, CC0 1.0),
   cropped to the glyphs and recolored to #A3ADBD.
 

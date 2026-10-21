@@ -41,7 +41,7 @@ function stubBrowser({ reducedMotion = false } = {}) {
 describe("tracker flow diagram", () => {
   it("keeps the logs and the CLI inside the machine and sends only counts", () => {
     const html = renderToStaticMarkup(<FlowDiagram agents={agents} />);
-    expect(html).toContain("Your machine");
+    expect(html).toContain("Your Machine");
     expect(html).toContain("Claude Code, Codex CLI, Cursor and 56 more.");
     expect(html).toContain("+55");
     expect(html).toContain("tokscale submit");

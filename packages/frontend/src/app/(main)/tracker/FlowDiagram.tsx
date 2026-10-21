@@ -20,7 +20,7 @@ export function FlowDiagram({ agents }: { agents: SupportedAgent[] }) {
   return (
     <Flow>
       <Machine>
-        <BoundaryLabel>Your machine</BoundaryLabel>
+        <BoundaryLabel>Your Machine</BoundaryLabel>
         <Step>
           <StepNumber aria-hidden="true">1</StepNumber>
           <StepTitle>Your agents&apos; logs</StepTitle>
@@ -63,7 +63,7 @@ export function FlowDiagram({ agents }: { agents: SupportedAgent[] }) {
       </Crossing>
 
       <Public>
-        <BoundaryLabel $public>tokscale.ai · public</BoundaryLabel>
+        <BoundaryLabel $public>tokscale.ai · Public</BoundaryLabel>
         <Step>
           <StepNumber aria-hidden="true">3</StepNumber>
           <StepTitle>Your public profile</StepTitle>
@@ -134,11 +134,9 @@ const BoundaryLabel = styled.span<{ $public?: boolean }>`
   padding: 0 8px;
   background: var(--v2-canvas);
   color: #4f8ae6;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.08em;
   line-height: 20px;
-  text-transform: uppercase;
 
   ${({ $public }) =>
     $public &&

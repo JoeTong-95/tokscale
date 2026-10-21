@@ -8,6 +8,7 @@ import { Breadcrumbs } from "../_components/Breadcrumbs";
 import { CapitalShell } from "../_components/CapitalShell";
 import { JsonLd } from "../_components/JsonLd";
 import styles from "../_components/capital.module.css";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 const TITLE = "How Tokscale Counts AI Capital: Money Types, Statuses and Sources | Tokscale";
 const DESCRIPTION =
@@ -57,7 +58,7 @@ export default function MethodologyPage() {
       />
       <Breadcrumbs items={[{ label: "Capital", href: capitalPath() }, { label: "Method" }]} />
       <header className={styles.pageHead}>
-        <p className={styles.eyebrow}>Method</p>
+        <Eyebrow>Method</Eyebrow>
         <h1 className={`${styles.display} ${styles.pageTitle}`}>How we count</h1>
         <p className={styles.lede}>
           Capital tracks money in the AI economy as typed events. These rules decide what becomes a number on a page, and what

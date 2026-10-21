@@ -40,19 +40,6 @@
   text-wrap: balance;
 }
 
-.eyebrow {
-  margin: 0;
-  color: var(--cap-muted);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.eyebrow a:hover {
-  color: var(--cap-text);
-}
-
 .muted {
   color: var(--cap-muted);
 }

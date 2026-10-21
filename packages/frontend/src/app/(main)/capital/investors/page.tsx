@@ -9,6 +9,7 @@ import { JsonLd } from "../_components/JsonLd";
 import { OrgCell } from "../_components/OrgMark";
 import { Missing } from "../_components/Amount";
 import styles from "../_components/capital.module.css";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 const TITLE = "AI Investors: Rounds, Leads and Deals | Tokscale";
 const DESCRIPTION =
@@ -66,7 +67,7 @@ export default async function InvestorsPage({ searchParams }: PageProps) {
       />
       <Breadcrumbs items={[{ label: "Capital", href: capitalPath() }, { label: "Investors" }]} />
       <header className={styles.pageHead}>
-        <p className={styles.eyebrow}>Investors</p>
+        <Eyebrow>Investors</Eyebrow>
         <h1 className={`${styles.display} ${styles.pageTitle}`}>Who funds the AI economy</h1>
         <p className={styles.lede}>Investors named in the primary sources of the rounds and deals Tokscale tracks.</p>
       </header>

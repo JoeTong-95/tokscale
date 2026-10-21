@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import styled from "styled-components";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 /** Companies where Tokscale users report working (community reports, not customer relationships). */
 const LOGOS = [
@@ -19,7 +20,7 @@ const LOGOS = [
 export function TrustedBy() {
   return (
     <Wrap aria-labelledby="trusted-by-title">
-      <Label id="trusted-by-title">Trusted by professionals at</Label>
+      <Label id="trusted-by-title">Trusted by Professionals at</Label>
       <Logos>
         {LOGOS.map((logo) => (
           <li key={logo.name}>
@@ -52,14 +53,8 @@ const Wrap = styled.section`
   }
 `;
 
-const Label = styled.p`
-  margin: 0;
-  color: var(--v2-text-subtle);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-`;
+/* The shared eyebrow, centred over the logos. */
+const Label = styled(Eyebrow)``
 
 const Logos = styled.ul`
   display: flex;

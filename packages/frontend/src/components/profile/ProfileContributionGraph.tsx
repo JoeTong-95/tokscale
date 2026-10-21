@@ -33,6 +33,7 @@ import {
   type GraphColorPalette,
 } from "@/lib/themes";
 import { formatCurrency, formatTokenCount } from "@/lib/utils";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 export interface ProfileContributionGraphProps {
   breakdownId?: string;
@@ -1496,14 +1497,9 @@ const DetailHeader = styled.header`
   border-bottom: 1px solid var(--service-border);
 `;
 
-const DetailEyebrow = styled.div`
+const DetailEyebrow = styled(Eyebrow)`
   margin-bottom: 0.125rem;
-  color: var(--service-text-muted);
-  font-size: 0.625rem;
-  font-weight: 600;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-`;
+`
 
 const DetailTitle = styled.h3`
   margin: 0;
@@ -1877,7 +1873,7 @@ function ContributionDayBreakdown({
     >
       <DetailHeader>
         <div>
-          <DetailEyebrow>Day breakdown</DetailEyebrow>
+          <DetailEyebrow as="div">Day Breakdown</DetailEyebrow>
           <DetailTitle id={headingId}>{formatFullDay(day.date)}</DetailTitle>
         </div>
         {onClose && (

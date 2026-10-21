@@ -15,6 +15,7 @@ import { CapitalShell } from "./_components/CapitalShell";
 import { EventFeed } from "./_components/EventFeed";
 import { JsonLd } from "./_components/JsonLd";
 import styles from "./_components/capital.module.css";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 const TITLE = "Capital: Funding, Compute Deals and AI Spending | Tokscale";
 const DESCRIPTION =
@@ -64,7 +65,7 @@ export default function CapitalPage() {
         }}
       />
       <header className={styles.hero}>
-        <p className={styles.eyebrow}>Capital</p>
+        <Eyebrow>Capital</Eyebrow>
         <h1 className={`${styles.display} ${styles.heroTitle}`}>Where money moves in the AI economy.</h1>
         <p className={styles.heroLede}>
           Funding rounds, compute contracts and capital spending across AI labs, clouds, chips and power. Every number has a
@@ -81,7 +82,7 @@ export default function CapitalPage() {
         </h2>
         <div className={styles.moneyCards}>
           <div className={styles.moneyCard}>
-            <p className={styles.eyebrow}>Equity · {year} so far</p>
+            <Eyebrow>Equity · {year} So Far</Eyebrow>
             <p className={styles.moneyValue}>{usdEquity ? formatTotal(usdEquity) : "—"}</p>
             <p className={styles.cellSub}>
               {usdEquity
@@ -96,7 +97,7 @@ export default function CapitalPage() {
             </p>
           </div>
           <div className={styles.moneyCard}>
-            <p className={styles.eyebrow}>Compute deals · {year}</p>
+            <Eyebrow>Compute Deals · {year}</Eyebrow>
             {compute.summed.ok && compute.summed.total.value !== null ? (
               <>
                 <p className={styles.moneyValue}>{formatTotal(compute.summed.total)}</p>
@@ -127,7 +128,7 @@ export default function CapitalPage() {
             </p>
           </div>
           <div className={styles.moneyCard}>
-            <p className={styles.eyebrow}>Cash capex · {capexQuarter ? capexQuarter.label : "latest quarter"}</p>
+            <Eyebrow>Cash Capex · {capexQuarter ? capexQuarter.label : "Latest Quarter"}</Eyebrow>
             <p className={styles.moneyValue}>{capexQuarter ? formatTotal(capexQuarter.total) : "—"}</p>
             <p className={styles.cellSub}>
               {capexQuarter
@@ -141,7 +142,7 @@ export default function CapitalPage() {
             </p>
           </div>
           <div className={styles.moneyCard}>
-            <p className={styles.eyebrow}>Largest valuation</p>
+            <Eyebrow>Largest Valuation</Eyebrow>
             <p className={styles.moneyValue}>{valuation ? valuation.amount.short : "—"}</p>
             <p className={styles.cellSub}>
               {valuation

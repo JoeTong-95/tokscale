@@ -12,6 +12,8 @@ import { JsonLd } from "../../_components/JsonLd";
 import { OrgMark } from "../../_components/OrgMark";
 import { SourceLink, sourceShortLabel } from "../../_components/SourceLink";
 import styles from "../../_components/capital.module.css";
+import { Eyebrow } from "@/components/ui/Eyebrow";
+import { titleCase } from "@/lib/text/titleCase";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -80,9 +82,13 @@ export default async function InvestorPage({ params }: PageProps) {
       <header className={styles.profileHead}>
         <OrgMark org={p.org} large />
         <div>
-          <p className={styles.eyebrow}>
-            {[p.org.investorTypeLabels.join(", "), org.hq ? [org.hq.city, org.hq.country].filter(Boolean).join(", ") : null].filter(Boolean).join(" · ")}
-          </p>
+          <Eyebrow>
+            {titleCase(
+              [p.org.investorTypeLabels.join(", "), org.hq ? [org.hq.city, org.hq.country].filter(Boolean).join(", ") : null]
+                .filter(Boolean)
+                .join(" · "),
+            )}
+          </Eyebrow>
           <h1 className={`${styles.display} ${styles.profileTitle}`}>{org.name}</h1>
           <p className={styles.lede}>{org.description}</p>
           <ul className={styles.idLinks}>

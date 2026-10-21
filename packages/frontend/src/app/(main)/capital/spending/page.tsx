@@ -11,6 +11,7 @@ import { CapitalShell } from "../_components/CapitalShell";
 import { JsonLd } from "../_components/JsonLd";
 import { OrgMark } from "../_components/OrgMark";
 import styles from "../_components/capital.module.css";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 const TITLE = "AI Capex Tracker: Cash Spending by Microsoft, Amazon, Alphabet, Meta and Oracle | Tokscale";
 const DESCRIPTION =
@@ -50,7 +51,7 @@ export default function SpendingPage() {
       />
       <Breadcrumbs items={[{ label: "Capital", href: capitalPath() }, { label: "Spending" }]} />
       <header className={styles.pageHead}>
-        <p className={styles.eyebrow}>Spending</p>
+        <Eyebrow>Spending</Eyebrow>
         <h1 className={`${styles.display} ${styles.pageTitle}`}>Cash paid for property and equipment</h1>
         <p className={styles.lede}>
           How much the companies that build AI capacity spend on servers, buildings and power equipment, quarter by quarter,

@@ -26,6 +26,7 @@ import { embedImageUrl, embedMarkdown, EMBED_SHOWCASE_TEMPLATES } from "../../sr
 import { EMBED_TEMPLATES } from "../../src/lib/embed/embedShared";
 import { fixtureSnapshot } from "../../src/lib/explore/fixtures";
 import { TOKSCALE_DISCORD_URL, TOKSCALE_X_URL } from "../../src/lib/community";
+import { titleCase } from "../../src/lib/text/titleCase";
 
 describe("home format helpers", () => {
   it("shows no price instead of $0 when there is usage but no cost", () => {
@@ -174,7 +175,7 @@ describe("trusted by", () => {
     }
     expect(markup).not.toContain("MUSINSA");
     expect(markup).not.toContain('alt="Meta"');
-    expect(markup).toContain("Trusted by professionals at");
+    expect(markup).toContain("Trusted by Professionals at");
   });
 });
 
@@ -192,7 +193,7 @@ describe("capital preview", () => {
 
   it("shows the four money types and says they are never added together", () => {
     const markup = renderToStaticMarkup(<CapitalPreview data={data} />);
-    for (const stat of data.stats) expect(markup).toContain(stat.label);
+    for (const stat of data.stats) expect(markup).toContain(titleCase(stat.label));
     expect(markup).toContain("They are never added together.");
   });
 

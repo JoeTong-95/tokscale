@@ -10,6 +10,7 @@ import { EventFeed } from "../_components/EventFeed";
 import { JsonLd } from "../_components/JsonLd";
 import { SourceLink } from "../_components/SourceLink";
 import styles from "../_components/capital.module.css";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 const TITLE = "AI Funding Rounds, Debt and IPOs | Tokscale";
 const DESCRIPTION =
@@ -57,7 +58,7 @@ export default async function RoundsPage({ searchParams }: PageProps) {
       />
       <Breadcrumbs items={[{ label: "Capital", href: capitalPath() }, { label: "Rounds" }]} />
       <header className={styles.pageHead}>
-        <p className={styles.eyebrow}>Rounds</p>
+        <Eyebrow>Rounds</Eyebrow>
         <h1 className={`${styles.display} ${styles.pageTitle}`}>Funding rounds, debt and IPOs</h1>
         <p className={styles.lede}>
           How AI companies raise money. Each event has one page with its amounts, investors and the sentence each number comes

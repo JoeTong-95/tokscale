@@ -134,7 +134,7 @@ export function TrackerPageClient({ agents, stats }: { agents: SupportedAgent[];
         <Section aria-labelledby="tracker-flow-title">
           <Container>
             <Header>
-              <Eyebrow>How it works</Eyebrow>
+              <Eyebrow>How It Works</Eyebrow>
               <SectionTitle id="tracker-flow-title">From your logs to your profile.</SectionTitle>
               <Lead>Tokscale runs on your machine. Only counts cross to tokscale.ai, and only when you submit.</Lead>
             </Header>
@@ -159,7 +159,7 @@ export function TrackerPageClient({ agents, stats }: { agents: SupportedAgent[];
         <Section aria-labelledby="tracker-agents-title">
           <Container>
             <Header>
-              <Eyebrow>Supported agents</Eyebrow>
+              <Eyebrow>Supported Agents</Eyebrow>
               <SectionTitle id="tracker-agents-title">Works with the agents you already use.</SectionTitle>
               <Lead>
                 Tokscale reads local logs from {agents.length} coding agents and AI clients.
@@ -175,7 +175,7 @@ export function TrackerPageClient({ agents, stats }: { agents: SupportedAgent[];
             <EmbedShowcase
               intro={
                 <SectionHeader>
-                  <Eyebrow>README embed</Eyebrow>
+                  <Eyebrow>README Embed</Eyebrow>
                   <SectionTitle id="tracker-embed-title">Put your usage in your README.</SectionTitle>
                   <Lead>
                     Pick one of eight cards. Each card renders from your latest submitted data. More options, like
@@ -191,7 +191,7 @@ export function TrackerPageClient({ agents, stats }: { agents: SupportedAgent[];
         <Section aria-labelledby="tracker-data-title">
           <Container>
             <Header>
-              <Eyebrow>Your data</Eyebrow>
+              <Eyebrow>Your Data</Eyebrow>
               <SectionTitle id="tracker-data-title">Counts leave your machine. Content does not.</SectionTitle>
             </Header>
             <Ledger>

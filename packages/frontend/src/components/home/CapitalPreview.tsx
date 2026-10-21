@@ -6,6 +6,7 @@ import { ModelMark } from "@/components/explore/ModelMark";
 import type { HomeCapital, HomeCapitalLab } from "@/lib/capital/ledger/home";
 import { coverageRangeLabel, wholeNumber } from "./format";
 import { Arrow, Container, Eyebrow, focusRing, Lead, Section, SectionHeader, SectionTitle, TextLink, VisuallyHidden } from "./primitives";
+import { titleCase } from "@/lib/text/titleCase";
 
 interface CapitalPreviewProps {
   data: HomeCapital | null;
@@ -40,7 +41,7 @@ export function CapitalPreview({ data }: CapitalPreviewProps) {
             <Stats aria-label="Four money types">
               {data.stats.map((stat) => (
                 <Stat key={stat.label}>
-                  <StatLabel>{stat.label}</StatLabel>
+                  <StatLabel>{titleCase(stat.label)}</StatLabel>
                   <StatValue>{stat.value}</StatValue>
                   <StatDetail>{stat.detail}</StatDetail>
                   <StatLink href={stat.href}>
@@ -240,14 +241,8 @@ const Stat = styled.div`
   }
 `;
 
-const StatLabel = styled.p`
-  margin: 0;
-  color: var(--v2-text-subtle);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-`;
+/* The shared eyebrow above each number. */
+const StatLabel = styled(Eyebrow)``
 
 const StatValue = styled.p`
   margin: 0;

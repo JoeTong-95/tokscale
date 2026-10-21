@@ -2,6 +2,7 @@ import { ImageResponse } from "next/og";
 import { OG_BORDER, OG_SIZE, OG_TEXT, OG_TEXT_MUTED, OgCardShell } from "@/components/og/OgCard";
 import { MEASURE_LABELS, QUANTITY_UNITS, formatPartialDate, sortForDisplay, type EventView } from "@/lib/capital/ledger";
 import { loadOgFonts } from "@/lib/og/fonts";
+import { titleCase } from "@/lib/text/titleCase";
 
 const ACCENT = "#53d1f3";
 
@@ -11,7 +12,7 @@ const ACCENT = "#53d1f3";
  * computed here.
  */
 export async function eventOgImage(e: EventView): Promise<Response> {
-  const eyebrow = `${e.tag.toUpperCase()} · ${e.statusLabel.toUpperCase()} · ${formatPartialDate(e.date).toUpperCase()}`;
+  const eyebrow = titleCase(`${e.tag} · ${e.statusLabel} · ${formatPartialDate(e.date)}`);
   const title = e.title.replace(/\u2019/g, "'");
   const amounts = sortForDisplay(
     e.amounts.filter((a) => a.skipped === null && a.amount.status !== "reported" && a.amount.measure !== "price_per_share"),
@@ -31,7 +32,7 @@ export async function eventOgImage(e: EventView): Promise<Response> {
     (
       <OgCardShell>
         <div style={{ display: "flex", flexDirection: "column", marginTop: 28 }}>
-          <div style={{ display: "flex", fontSize: 20, color: OG_TEXT_MUTED, letterSpacing: 2 }}>{eyebrow}</div>
+          <div style={{ display: "flex", fontSize: 20, color: OG_TEXT_MUTED }}>{eyebrow}</div>
           <div style={{ display: "flex", marginTop: 14, fontSize: 52, fontWeight: 700, color: OG_TEXT, lineHeight: 1.1 }}>{title}</div>
           <div style={{ display: "flex", marginTop: 12, fontSize: 24, color: OG_TEXT_MUTED }}>{parties}</div>
         </div>

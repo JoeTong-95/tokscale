@@ -33,14 +33,8 @@ export const Container = styled.div`
   }
 `;
 
-export const Eyebrow = styled.p`
-  margin: 0;
-  color: var(--v2-text-subtle);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-`;
+/* The shared eyebrow (Title Case, no letter-spacing). */
+export { Eyebrow } from "@/components/ui/Eyebrow";
 
 export const DisplayTitle = styled.h1`
   margin: 0;

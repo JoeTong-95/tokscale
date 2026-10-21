@@ -27,6 +27,8 @@ import { JsonLd } from "../../_components/JsonLd";
 import { OrgMark } from "../../_components/OrgMark";
 import { SourceLink, sourceShortLabel } from "../../_components/SourceLink";
 import styles from "../../_components/capital.module.css";
+import { Eyebrow } from "@/components/ui/Eyebrow";
+import { titleCase } from "@/lib/text/titleCase";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -615,7 +617,7 @@ async function V2Profile({ p }: { p: CompanyProfile }) {
       <header className={styles.profileHead}>
         <OrgMark org={p.org} large />
         <div>
-          <p className={styles.eyebrow}>{eyebrow}</p>
+          <Eyebrow>{titleCase(eyebrow)}</Eyebrow>
           <h1 className={`${styles.display} ${styles.profileTitle}`}>{p.org.name}</h1>
           <p className={styles.lede}>{org.description}</p>
           <p className={styles.metaLine}>

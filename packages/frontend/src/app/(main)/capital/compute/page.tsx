@@ -10,6 +10,7 @@ import { CapitalShell } from "../_components/CapitalShell";
 import { JsonLd } from "../_components/JsonLd";
 import { SourceLink } from "../_components/SourceLink";
 import styles from "../_components/capital.module.css";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 const TITLE = "AI Compute Deals: Cloud Contracts, Data-Center Leases and Chips | Tokscale";
 const DESCRIPTION =
@@ -77,7 +78,7 @@ export default async function ComputePage({ searchParams }: PageProps) {
       />
       <Breadcrumbs items={[{ label: "Capital", href: capitalPath() }, { label: "Compute" }]} />
       <header className={styles.pageHead}>
-        <p className={styles.eyebrow}>Compute</p>
+        <Eyebrow>Compute</Eyebrow>
         <h1 className={`${styles.display} ${styles.pageTitle}`}>Compute and infrastructure deals</h1>
         <p className={styles.lede}>
           Contracts for cloud capacity, data-center leases, chips and power among companies Tokscale tracks. Contract values

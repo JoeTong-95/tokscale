@@ -21,6 +21,8 @@ import { Breadcrumbs } from "./Breadcrumbs";
 import { OrgCell } from "./OrgMark";
 import { SourceLink, sourceShortLabel } from "./SourceLink";
 import styles from "./capital.module.css";
+import { Eyebrow } from "@/components/ui/Eyebrow";
+import { titleCase } from "@/lib/text/titleCase";
 
 const DATE_LABELS: Record<string, string> = {
   announced: "Announced",
@@ -109,9 +111,7 @@ export function EventDetail({ e }: { e: EventView }) {
     <>
       <Breadcrumbs items={[{ label: "Capital", href: capitalPath() }, crumb, { label: e.title }]} />
       <header className={styles.pageHead}>
-        <p className={styles.eyebrow}>
-          {e.tag} · {e.typeLabels.join(" · ")} · {e.statusLabel}
-        </p>
+        <Eyebrow>{titleCase(`${e.tag} · ${e.typeLabels.join(" · ")} · ${e.statusLabel}`)}</Eyebrow>
         <h1 className={`${styles.display} ${styles.pageTitle}`}>{e.title}</h1>
         <p className={styles.lede}>{e.event.summary}</p>
         <p className={styles.metaLine}>

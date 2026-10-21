@@ -245,7 +245,8 @@
   border-bottom: 1px solid var(--cap-rule);
 }
 
-.row:first-child {
+/* A row link keeps its top padding, so its hover background does not sit tight on the text. */
+.row:first-child:not([data-row-link]) {
   padding-top: 0;
 }
 

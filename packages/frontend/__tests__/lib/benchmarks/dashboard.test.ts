@@ -3,6 +3,8 @@ import {
   columnGroupsParam,
   dashboardQuery,
   DEFAULT_COLUMN_GROUPS,
+  effectiveSortKey,
+  visibleSortKeys,
   groupForSortKey,
   parseColumnGroups,
   parseSortKey,
@@ -139,22 +141,31 @@ function usage(key: string, activeUsers: number): ModelUsageRow {
 }
 
 describe("column groups in the URL", () => {
-  it("parses, orders and defaults the groups", () => {
+  it("parses and orders the groups; nothing valid means the overview", () => {
     expect(parseColumnGroups("coding,usage")).toEqual(["usage", "coding"]);
-    expect(parseColumnGroups("nope")).toEqual([...DEFAULT_COLUMN_GROUPS]);
+    expect(parseColumnGroups("nope")).toEqual([]);
     expect(parseColumnGroups(undefined)).toEqual([...DEFAULT_COLUMN_GROUPS]);
     expect(parseColumnGroups(["price,specs", "usage"])).toEqual(["price", "specs"]);
   });
 
   it("serializes only non-default groups", () => {
     expect(columnGroupsParam(DEFAULT_COLUMN_GROUPS)).toBeNull();
+    expect(columnGroupsParam([])).toBeNull();
     expect(columnGroupsParam(["specs", "usage"])).toBe("usage,specs");
   });
 
-  it("toggles groups and never hides the last one", () => {
+  it("toggles groups and returns to the overview after the last one", () => {
     expect(toggleColumnGroup(["usage", "coding"], "price")).toEqual(["usage", "coding", "price"]);
     expect(toggleColumnGroup(["usage", "coding"], "usage")).toEqual(["coding"]);
-    expect(toggleColumnGroup(["coding"], "coding")).toEqual(["coding"]);
+    expect(toggleColumnGroup(["coding"], "coding")).toEqual([]);
+  });
+
+  it("keeps a sort only while its column is visible", () => {
+    expect(visibleSortKeys([])).toEqual(["users", "epoch-capabilities-index", "terminal-bench-4", "webdev-arena", "price-community"]);
+    expect(effectiveSortKey("terminal-bench-4", [])).toBe("terminal-bench-4");
+    expect(effectiveSortKey("gpqa-diamond", [])).toBe("users");
+    expect(effectiveSortKey("users", ["price"])).toBe("price-community");
+    expect(effectiveSortKey("context", ["specs", "usage"])).toBe("context");
   });
 
   it("validates sort keys and knows their direction and group", () => {

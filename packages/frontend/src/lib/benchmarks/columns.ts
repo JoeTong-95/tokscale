@@ -16,7 +16,15 @@ export const COLUMN_GROUP_LABELS: Record<ColumnGroup, string> = {
   specs: "Specs",
 };
 
-export const DEFAULT_COLUMN_GROUPS: readonly ColumnGroup[] = ["usage", "capability", "coding"];
+/**
+ * No group selected means the overview: one headline column per group
+ * (active users, ECI, Terminal-Bench 4.0, WebDev Arena, price at the
+ * community token mix). Selecting groups shows their full column sets.
+ */
+export const DEFAULT_COLUMN_GROUPS: readonly ColumnGroup[] = [];
+
+/** Headline columns of the overview, as sort keys. */
+export const OVERVIEW_SORT_KEYS: readonly string[] = ["users", "epoch-capabilities-index", "terminal-bench-4", "webdev-arena", "price-community"];
 
 /** Benchmarks shown in each score group, in column order. */
 export const GROUP_BENCHMARKS: Record<"capability" | "coding" | "webdev", readonly string[]> = {
@@ -41,7 +49,7 @@ function isGroup(value: string): value is ColumnGroup {
   return (COLUMN_GROUPS as readonly string[]).includes(value);
 }
 
-/** Parse `?cols=`. Unknown names are dropped; nothing valid means the default. Order is canonical. */
+/** Parse `?cols=`. Unknown names are dropped; nothing valid means the overview. Order is canonical. */
 export function parseColumnGroups(raw: RawParam): ColumnGroup[] {
   const wanted = new Set(
     first(raw)
@@ -49,27 +57,37 @@ export function parseColumnGroups(raw: RawParam): ColumnGroup[] {
       .map((v) => v.trim().toLowerCase())
       .filter(isGroup),
   );
-  const groups = COLUMN_GROUPS.filter((g) => wanted.has(g));
-  return groups.length > 0 ? groups : [...DEFAULT_COLUMN_GROUPS];
+  return COLUMN_GROUPS.filter((g) => wanted.has(g));
 }
 
 function sameGroups(a: readonly ColumnGroup[], b: readonly ColumnGroup[]): boolean {
   return a.length === b.length && a.every((g, i) => g === b[i]);
 }
 
-/** Value for `?cols=`, or null when the groups are the default. */
+/** Value for `?cols=`, or null for the overview. */
 export function columnGroupsParam(groups: readonly ColumnGroup[]): string | null {
   const canonical = COLUMN_GROUPS.filter((g) => groups.includes(g));
   if (canonical.length === 0 || sameGroups(canonical, DEFAULT_COLUMN_GROUPS)) return null;
   return canonical.join(",");
 }
 
-/** Toggle one group. The last visible group cannot be turned off. */
+/** Toggle one group. Turning off the last group returns to the overview. */
 export function toggleColumnGroup(groups: readonly ColumnGroup[], group: ColumnGroup): ColumnGroup[] {
-  if (groups.includes(group)) {
-    return groups.length === 1 ? [...groups] : groups.filter((g) => g !== group);
-  }
+  if (groups.includes(group)) return groups.filter((g) => g !== group);
   return COLUMN_GROUPS.filter((g) => g === group || groups.includes(g));
+}
+
+/** Sort keys whose columns are visible for these groups. */
+export function visibleSortKeys(groups: readonly ColumnGroup[]): string[] {
+  if (groups.length === 0) return [...OVERVIEW_SORT_KEYS];
+  return SORT_KEYS.filter((key) => groups.includes(groupForSortKey(key)));
+}
+
+/** Keep the sort when its column is visible; otherwise fall back to active users or the first visible column. */
+export function effectiveSortKey(sort: string, groups: readonly ColumnGroup[]): string {
+  const visible = visibleSortKeys(groups);
+  if (visible.includes(sort)) return sort;
+  return visible.includes(DEFAULT_SORT) ? DEFAULT_SORT : (visible[0] ?? DEFAULT_SORT);
 }
 
 /** Sortable columns. Scores and usage sort high-to-low; prices low-to-high. */
@@ -113,6 +131,7 @@ export function dashboardQuery(state: { groups: readonly ColumnGroup[]; sort: So
   const cols = columnGroupsParam(state.groups);
   if (cols) params.set("cols", cols);
   if (state.sort !== DEFAULT_SORT) params.set("sort", state.sort);
-  const query = params.toString();
+  // Commas stay readable in ?cols=usage,coding.
+  const query = params.toString().replace(/%2C/g, ",");
   return query ? `?${query}` : "";
 }

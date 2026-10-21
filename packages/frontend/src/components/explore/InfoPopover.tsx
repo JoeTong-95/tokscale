@@ -9,7 +9,10 @@
 import { useCallback, useEffect, useId, useRef, type ReactNode } from "react";
 import styled from "styled-components";
 
-const Trigger = styled.button`
+/* popover and popoverTarget are valid DOM props in React 19; forward them without styled-components' dev warning. */
+const forwardDomProps = { shouldForwardProp: (prop: string) => !prop.startsWith("$") };
+
+const Trigger = styled.button.withConfig(forwardDomProps)`
   display: inline-grid;
   width: 20px;
   height: 20px;
@@ -40,7 +43,7 @@ const Trigger = styled.button`
   }
 `;
 
-const Panel = styled.div`
+const Panel = styled.div.withConfig(forwardDomProps)`
   position: fixed;
   inset: auto;
   width: min(320px, calc(100vw - 24px));

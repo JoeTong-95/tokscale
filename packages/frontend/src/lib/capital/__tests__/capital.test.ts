@@ -57,7 +57,9 @@ describe("Thiel Macro Q2 2026 (13F-HR 0001315863-26-000593)", () => {
 
   it("compares with an empty Q1 2026 report and finds Vistra returning from Q2 2025", () => {
     expect(q.previous).toMatchObject({ quarter: "2026-q1", reportedValueUsd: 0, positions: 0, hasPage: false });
-    expect(q.reportedValueChangeUsd).toBe(418_666_506);
+    // Q1 2026 had only a $0 placeholder row: every position is new, so there is no "+$418.67M from $0" change.
+    expect(q.comparison).toBe("previous-empty");
+    expect(q.reportedValueChangeUsd).toBeNull();
     const kinds = Object.fromEntries(q.holdings.map((h) => [h.company.ticker, h.change.kind]));
     expect(kinds).toEqual({ AMZN: "new", VIST: "new", VST: "returned", AEP: "new", DTE: "new", FE: "new", CMS: "new", XE: "new" });
     const vistra = q.holdings.find((h) => h.company.ticker === "VST")!;
@@ -240,7 +242,12 @@ describe("pages and SEO", () => {
   it("does not compare a quarter whose previous quarter is not loaded", () => {
     const first = capital.getQuarter("pershing-square", "2025-q2")!;
     expect(first.previous).toBeNull();
+    expect(first.comparison).toBe("not-in-dataset");
+    expect(first.reportedValueChangeUsd).toBeNull();
     expect(first.holdings.every((h) => h.change.kind === "not-compared")).toBe(true);
+    const compared = capital.getQuarter("pershing-square", "2026-q2")!;
+    expect(compared.comparison).toBe("compared");
+    expect(compared.reportedValueChangeUsd).toBe(19_465_692_772 - 14_283_639_861);
   });
 
   it("emits unique sitemap URLs with content dates", () => {

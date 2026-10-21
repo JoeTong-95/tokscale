@@ -165,13 +165,19 @@ export default async function QuarterPage({ params }: PageProps) {
               sub: q.rowCount === q.holdings.length ? `${q.rowCount} table rows` : `issuers, from ${q.rowCount} table rows`,
             },
             { label: "Top-5 concentration", value: formatWeight(q.topFiveWeight), sub: "of reported 13F value" },
-            change === null
-              ? { label: "Change in reported value", value: "Not compared", sub: "previous quarter not in dataset" }
-              : {
-                  label: `Change in reported value vs ${q.previous?.label}`,
-                  value: formatSignedUsdCompact(change),
-                  sub: `from ${formatUsdCompact(q.previous?.reportedValueUsd ?? 0)}; prices and trades, not inflows`,
-                },
+            q.comparison === "previous-empty"
+              ? {
+                  label: `Change vs ${q.previous?.label}`,
+                  value: "All new",
+                  sub: `The ${q.previous?.label} report listed no positions, so every position here is new`,
+                }
+              : change === null
+                ? { label: "Change in reported value", value: "Not compared", sub: "previous quarter not in dataset" }
+                : {
+                    label: `Change in reported value vs ${q.previous?.label}`,
+                    value: formatSignedUsdCompact(change),
+                    sub: `from ${formatUsdCompact(q.previous?.reportedValueUsd ?? 0)}; prices and trades, not inflows`,
+                  },
           ]}
         />
         <AllocationBar holdings={q.holdings} label={`Weights of ${q.holdings.length} positions in the reported 13F value`} />

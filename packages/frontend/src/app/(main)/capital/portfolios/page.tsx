@@ -149,8 +149,16 @@ export default async function PortfoliosPage({ searchParams }: PageProps) {
                     {formatUsdCompact(latest.reportedValueUsd)}
                   </td>
                   <td className={`${styles.right} ${styles.num}`} data-label="Change">
-                    {latest.reportedValueChangeUsd === null ? "Not compared" : formatSignedUsdCompact(latest.reportedValueChangeUsd)}
-                    {latest.previous ? <span className={styles.companySub}>vs {latest.previous.label}</span> : null}
+                    {latest.comparison === "previous-empty"
+                      ? "All new"
+                      : latest.reportedValueChangeUsd === null
+                        ? "Not compared"
+                        : formatSignedUsdCompact(latest.reportedValueChangeUsd)}
+                    {latest.previous ? (
+                      <span className={styles.companySub}>
+                        {latest.comparison === "previous-empty" ? `${latest.previous.label} listed no positions` : `vs ${latest.previous.label}`}
+                      </span>
+                    ) : null}
                   </td>
                   <td className={`${styles.right} ${styles.num}`} data-label="Holdings">
                     {latest.holdings.length}

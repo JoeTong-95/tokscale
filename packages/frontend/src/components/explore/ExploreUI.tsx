@@ -10,6 +10,7 @@ import styled from "styled-components";
 import { SegmentButton, SegmentedGroup } from "@/components/leaderboard/RankingUI";
 import { agentIconUrl } from "@/lib/agentIcons";
 import { SOURCE_LOGOS } from "@/lib/constants";
+import { InstantTooltip } from "@/components/ui/InstantTooltip";
 import type { AgentRef, Coverage } from "@/lib/explore";
 import { clampShare, describeCoverage, formatShare, type UsersChange } from "./format";
 
@@ -267,7 +268,7 @@ export const NewBadge = styled.span`
   white-space: nowrap;
 `;
 
-const ChangeWrap = styled.span<{ $kind: UsersChange["kind"] }>`
+const ChangeWrap = styled(InstantTooltip)<{ $kind: UsersChange["kind"] }>`
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -288,7 +289,7 @@ const ChangePercent = styled.span`
 export function ChangeText({ change }: { change: UsersChange }) {
   if (change.kind === "none") return null;
   return (
-    <ChangeWrap $kind={change.kind} title={change.description}>
+    <ChangeWrap $kind={change.kind} content={change.description} describe={false}>
       {change.kind === "new" ? <NewBadge>New</NewBadge> : null}
       <span aria-hidden="true">{change.text}</span>
       {change.percentText ? <ChangePercent aria-hidden="true">({change.percentText})</ChangePercent> : null}

@@ -9,6 +9,7 @@ import styled from "styled-components";
 import type { BenchmarkInfo } from "@/lib/benchmarks/attribution";
 import type { ScoreCell } from "@/lib/benchmarks/dashboard";
 import { formatIsoDay } from "@/lib/benchmarks/format";
+import { InstantTooltip } from "@/components/ui/InstantTooltip";
 import { InfoPopover, PopoverFacts, PopoverLink, PopoverNote, PopoverTitle } from "./InfoPopover";
 import { VisuallyHidden } from "./ExploreUI";
 
@@ -32,7 +33,7 @@ const Value = styled.span`
   white-space: nowrap;
 `;
 
-const Tag = styled.span`
+const Tag = styled(InstantTooltip)`
   max-width: 14em;
   overflow: hidden;
   color: var(--service-text-muted);
@@ -128,7 +129,11 @@ export function ScoreValue({
     <Wrap $align={align}>
       <Stack $align={align}>
         <Value>{cell.text}</Value>
-        {showTag && cell.tag ? <Tag title={cell.tag}>{cell.tag}</Tag> : null}
+        {showTag && cell.tag ? (
+          <Tag content={cell.tag} describe={false}>
+            {cell.tag}
+          </Tag>
+        ) : null}
       </Stack>
       <InfoPopover label={`Source for ${modelName} on ${info.name}`}>
         <ScoreDetails cell={cell} info={info} modelName={modelName} />

@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useEffect, useId, useRef, useState } from "react";
 import styled from "styled-components";
 import { PrimaryActionLink } from "@/components/leaderboard/RankingUI";
+import { InstantTooltip } from "@/components/ui/InstantTooltip";
 import type { SourceNote } from "@/lib/benchmarks/attribution";
 import type { BenchmarkPageInfo, DateKind, MappingSummary, ResultColumns, ResultRow, TimelineData } from "@/lib/benchmarks/detail";
 import { formatIsoDay } from "@/lib/benchmarks/format";
@@ -451,7 +452,7 @@ const NarrowOnly = styled.span`
   }
 `;
 
-const WideOnly = styled.span`
+const WideOnly = styled(InstantTooltip)`
   @media (max-width: ${STACK_BELOW}) {
     display: none;
   }
@@ -728,7 +729,7 @@ function UsageCell({ row, usageAvailable }: { row: ResultRow; usageAvailable: bo
   }
   return (
     <td data-col="usage" role="cell">
-      <WideOnly aria-hidden="true" title="No Tokscale usage in the last 30 days">
+      <WideOnly aria-hidden="true" content="No Tokscale usage in the last 30 days" describe={false}>
         {"\u2014"}
       </WideOnly>
       <NarrowOnly aria-hidden="true">

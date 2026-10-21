@@ -15,6 +15,7 @@ import styled from "styled-components";
 import { linearDomain, linearPosition, linearTicks, logDomain, logPosition, logTicks, paretoFrontier } from "@/lib/benchmarks/charts";
 import { formatPricePerMillion } from "@/lib/benchmarks/format";
 import { modelPath } from "@/lib/seo/explore";
+import { InstantTooltip } from "@/components/ui/InstantTooltip";
 import { InlineLink, ModelMark, Section, SectionNote, SectionTitle, VisuallyHidden } from "./ExploreUI";
 import { formatCount, formatShare } from "./format";
 
@@ -70,7 +71,7 @@ const Svg = styled.svg`
   overflow: visible;
 `;
 
-const Mark = styled.span`
+const Mark = styled(InstantTooltip)`
   position: absolute;
   display: inline-flex;
   border-radius: 7px;
@@ -266,7 +267,12 @@ function Scatter({ points, xLabel, yLabel, formatX, frontierKeys, labelKeys, sum
         const top = py(p.y);
         return (
           <span key={p.key} aria-hidden="true">
-            <Mark style={{ left: `${left}%`, top: `${top}%` }} title={`${p.name}: ${yLabel} ${p.y.toFixed(1)}, ${xLabel} ${formatX(p.x)}`} data-frontier={frontierKeys?.has(p.key) ? "true" : undefined}>
+            <Mark
+              style={{ left: `${left}%`, top: `${top}%` }}
+              content={`${p.name}: ${yLabel} ${p.y.toFixed(1)}, ${xLabel} ${formatX(p.x)}`}
+              describe={false}
+              data-frontier={frontierKeys?.has(p.key) ? "true" : undefined}
+            >
               <ModelMark model={p} size={20} />
             </Mark>
             {labels.has(p.key) ? (

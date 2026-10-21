@@ -41,6 +41,7 @@ import { ControlBar, CoverageLine, InlineLink, LinkSegments, ModelMark, TouchSeg
 import { DEFAULT_EXPLORE_PERIOD, EXPLORE_PERIODS, formatCount, formatShare, periodShortLabel } from "./format";
 import { ScoreValue } from "./ScoreValue";
 import { SegmentedGroup } from "@/components/leaderboard/RankingUI";
+import { InstantTooltip } from "@/components/ui/InstantTooltip";
 import { Select } from "@/components/ui/Select";
 
 interface Column {
@@ -256,6 +257,15 @@ const SortButton = styled.button<{ $active: boolean }>`
     color: var(--service-text);
   }
 
+  &:focus-visible {
+    border-radius: 4px;
+    outline: 2px solid var(--service-focus);
+    outline-offset: 2px;
+  }
+`;
+
+/* A column header without sorting. It takes focus, so keyboard users can open its explanation. */
+const HeaderTip = styled(InstantTooltip)`
   &:focus-visible {
     border-radius: 4px;
     outline: 2px solid var(--service-focus);
@@ -747,20 +757,23 @@ export function ModelsDashboard({
                     data-group-start={groupStart.has(column.id) ? "true" : undefined}
                     aria-sort={column.id === sort ? (sortAscending(sort) ? "ascending" : "descending") : undefined}
                     style={{ minWidth: column.width }}
-                    title={column.title}
                   >
                     {column.sortable ? (
-                      <SortButton
+                      <InstantTooltip
+                        as={SortButton}
                         type="button"
                         $active={column.id === sort}
                         aria-label={column.id === sort ? `${column.label}, sorted` : `Sort by ${column.label}`}
                         onClick={() => setSortChoice(column.id)}
+                        content={column.title}
                       >
                         {column.label}
                         <span aria-hidden="true">{column.id === sort ? (sortAscending(sort) ? "\u2191" : "\u2193") : ""}</span>
-                      </SortButton>
+                      </InstantTooltip>
                     ) : (
-                      column.label
+                      <HeaderTip content={column.title} focusable>
+                        {column.label}
+                      </HeaderTip>
                     )}
                   </th>
                 ))}
@@ -818,7 +831,9 @@ export function ModelsDashboard({
             <CardFacts>
               {columns.map((column) => (
                 <div key={column.id}>
-                  <dt title={column.title}>{column.label}</dt>
+                  <InstantTooltip as="dt" content={column.title} describe={false}>
+                    {column.label}
+                  </InstantTooltip>
                   <dd>{column.render(row, "start")}</dd>
                 </div>
               ))}

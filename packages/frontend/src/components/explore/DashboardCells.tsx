@@ -9,18 +9,19 @@ import type { DashboardRow, PriceCell } from "@/lib/benchmarks/dashboard";
 import { formatContext, formatIsoDay, formatPricePerMillion } from "@/lib/benchmarks/format";
 import type { EffectivePrice, MixCounts } from "@/lib/benchmarks/price";
 import type { ExplorePeriod } from "@/lib/explore";
+import { InstantTooltip } from "@/components/ui/InstantTooltip";
 import { AgentMark, ChangeText, VisuallyHidden } from "./ExploreUI";
 import { describeUsersChange, formatCount, formatShare, formatTokens, TOKEN_MIX_LABELS } from "./format";
 import { InfoPopover, PopoverFacts, PopoverNote, PopoverTitle } from "./InfoPopover";
 
-export const Dash = styled.span`
+export const Dash = styled(InstantTooltip)`
   color: var(--service-text-muted);
 `;
 
 /** An em dash with a spoken and hover label, for values that do not exist. */
 export function Missing({ label }: { label: string }) {
   return (
-    <Dash title={label}>
+    <Dash content={label} describe={false}>
       <span aria-hidden="true">{"\u2014"}</span>
       <VisuallyHidden>{label}</VisuallyHidden>
     </Dash>
@@ -41,6 +42,13 @@ const Sub = styled.span`
 `;
 
 const Inline = styled.span`
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: 4px;
+`;
+
+const InlineTip = styled(InstantTooltip)`
   display: inline-flex;
   min-width: 0;
   align-items: center;
@@ -74,11 +82,11 @@ export function TopAgentCell({ row }: { row: DashboardRow }) {
   const agent = row.usage?.topAgent;
   if (!agent) return <Missing label="No agent data in this period" />;
   return (
-    <Inline title={`${agent.name} carries ${formatShare(agent.share)} of this model's tokens`}>
+    <InlineTip content={`${agent.name} carries ${formatShare(agent.share)} of this model's tokens`}>
       <AgentMark agent={agent} size={16} />
       <AgentName>{agent.name}</AgentName>
       <Sub>{formatShare(agent.share)}</Sub>
-    </Inline>
+    </InlineTip>
   );
 }
 

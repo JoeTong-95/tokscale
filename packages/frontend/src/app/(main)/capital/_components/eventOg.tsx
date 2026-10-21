@@ -6,9 +6,9 @@ import { loadOgFonts } from "@/lib/og/fonts";
 const ACCENT = "#53d1f3";
 
 /**
- * 1200x630 Open Graph card for a round or deal page, served at <event page>/og.
- * Same pattern as the 13F quarter card: a route handler, so the URL is stable.
- * Numbers come from the event's sourced amounts; nothing is computed here.
+ * 1200x630 Open Graph card for a round or deal page, served at <event page>/og by a route
+ * handler, so the URL is stable. Numbers come from the event's sourced amounts; nothing is
+ * computed here.
  */
 export async function eventOgImage(e: EventView): Promise<Response> {
   const eyebrow = `${e.tag.toUpperCase()} · ${e.statusLabel.toUpperCase()} · ${formatPartialDate(e.date).toUpperCase()}`;

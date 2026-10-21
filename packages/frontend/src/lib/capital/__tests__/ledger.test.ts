@@ -1,6 +1,10 @@
+import { existsSync } from "node:fs";
+import path from "node:path";
 import { describe, expect, it } from "vitest";
+import nextConfig from "../../../../next.config";
+import { quarterLabel } from "@/lib/capital";
+import { CAPITAL_REDIRECTS } from "@/lib/capital/redirects";
 import { capitalSitemapEntries } from "@/lib/capital/sitemap";
-import { legacyCapitalRedirect } from "@/lib/capital/redirects";
 import { ledger, total } from "@/lib/capital/ledger";
 import {
   DEFAULT_DIRECTORY_PARAMS,
@@ -47,6 +51,8 @@ describe("ledger views", () => {
   it("adds capex only inside one aligned calendar quarter and one currency", () => {
     const q = ledger.capexCalendarQuarter()!;
     expect(q.key).toMatch(/^\d{4}-q[1-4]$/);
+    expect(q.label).toBe(quarterLabel(q.key));
+    expect(quarterLabel("2026-q2")).toBe("Q2 2026");
     expect(q.entries.every((e) => e.quarter.calendarQuarter === q.key && e.quarter.currency === "USD")).toBe(true);
     expect(q.total.value).toBe(q.entries.reduce((sum, e) => sum + e.quarter.value, 0));
     expect(q.derivedCount).toBe(q.entries.filter((e) => e.quarter.derived).length);
@@ -94,13 +100,35 @@ describe("lab links", () => {
 });
 
 describe("old capital URLs", () => {
-  it("redirect to their new homes", () => {
-    expect(legacyCapitalRedirect("/capital/portfolios")).toBe("/capital/investors?type=13f");
-    expect(legacyCapitalRedirect("/capital/funds/thiel-macro")).toBe("/capital/investors/thiel-macro");
-    expect(legacyCapitalRedirect("/capital/funds/thiel-macro/holdings/2026-q2")).toBe("/capital/investors/thiel-macro/13f/2026-q2");
-    expect(legacyCapitalRedirect("/capital/funds/thiel-macro/holdings/2026-q2/og")).toBe("/capital/investors/thiel-macro/13f/2026-q2/og");
-    expect(legacyCapitalRedirect("/capital/funds/Thiel/holdings/2026")).toBeNull();
-    expect(legacyCapitalRedirect("/capital/companies/amazon")).toBeNull();
+  const sources = new Set(CAPITAL_REDIRECTS.map((r) => r.source));
+
+  it("send the removed 13F pages to the nearest live page, permanently", () => {
+    for (const r of CAPITAL_REDIRECTS) {
+      expect(r.permanent).toBe(true);
+      expect(["/capital/investors", "/capital/companies"]).toContain(r.destination);
+    }
+    for (const source of [
+      "/capital/portfolios",
+      "/capital/funds/:path*",
+      "/capital/investors/:slug/13f/:path*",
+      "/capital/investors/thiel-macro",
+      "/capital/investors/pershing-square",
+      "/capital/companies/netflix",
+    ]) {
+      expect(sources.has(source), source).toBe(true);
+    }
+  });
+
+  it("never hide a live company, investor or route", () => {
+    for (const org of ledger.getCompanies()) expect(sources.has(`/capital/companies/${org.slug}`), org.slug).toBe(false);
+    for (const row of ledger.getInvestors()) expect(sources.has(`/capital/investors/${row.org.slug}`), row.org.slug).toBe(false);
+    const app = path.join(process.cwd(), "src/app/(main)/capital");
+    for (const dir of ["portfolios", "funds", "investors/[slug]/13f"]) expect(existsSync(path.join(app, dir)), dir).toBe(false);
+  });
+
+  it("are served by next.config", async () => {
+    const redirects = await nextConfig.redirects!();
+    for (const r of CAPITAL_REDIRECTS) expect(redirects).toContainEqual(r);
   });
 });
 

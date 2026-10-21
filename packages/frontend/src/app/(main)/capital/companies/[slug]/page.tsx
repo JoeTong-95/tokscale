@@ -3,19 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ModelMark } from "@/components/explore/ModelMark";
 import { TOKSCALE_X_HANDLE } from "@/lib/community";
-import {
-  absoluteUrl,
-  capital,
-  capitalPath,
-  companiesPath,
-  companyUrl,
-  edgarFilingsUrl,
-  formatDate,
-  formatUsdCompact,
-  methodologyPath,
-  quarterLabel,
-  quarterKeyForPeriod,
-} from "@/lib/capital";
+import { absoluteUrl, capitalPath, companiesPath, companyUrl, edgarFilingsUrl, methodologyPath } from "@/lib/capital";
 import {
   CATEGORY_LABELS,
   QUANTITY_UNITS,
@@ -37,7 +25,6 @@ import { CapitalShell } from "../../_components/CapitalShell";
 import { EventFeed } from "../../_components/EventFeed";
 import { JsonLd } from "../../_components/JsonLd";
 import { OrgMark } from "../../_components/OrgMark";
-import { PositionsTable } from "../../_components/PositionsTable";
 import { SourceLink, sourceShortLabel } from "../../_components/SourceLink";
 import styles from "../../_components/capital.module.css";
 
@@ -45,15 +32,12 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-/** Ledger companies, plus U.S.-listed companies that appear only in tracked 13F filings. */
 export const dynamicParams = false;
 /** Tokscale usage on lab profiles refreshes with the explore rollups. */
 export const revalidate = 600;
 
 export function generateStaticParams() {
-  const slugs = new Set(ledger.getCompanies().map((c) => c.slug));
-  for (const company of capital.getCompaniesWithData()) slugs.add(company.slug);
-  return [...slugs].map((slug) => ({ slug }));
+  return ledger.getCompanies().map((c) => ({ slug: c.slug }));
 }
 
 const SEO_SUFFIX: Record<CompanyProfile["template"], string> = {
@@ -69,29 +53,16 @@ const SEO_SUFFIX: Record<CompanyProfile["template"], string> = {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const profile = ledger.getCompany(slug);
-  if (profile) {
-    const title = `${profile.org.name}: ${SEO_SUFFIX[profile.template]} | Tokscale`;
-    const description = `${profile.org.org.description} ${profile.timeline.length} tracked ${profile.timeline.length === 1 ? "event" : "events"} with sources: funding, compute deals${profile.capex ? ", cash capex by quarter" : ""}.`;
-    const canonical = companyUrl(slug);
-    return {
-      title,
-      description,
-      alternates: { canonical },
-      robots: profile.indexable ? undefined : { index: false, follow: true },
-      openGraph: { title, description, type: "profile", url: canonical, siteName: "Tokscale" },
-      twitter: { card: "summary", site: TOKSCALE_X_HANDLE, title, description },
-    };
-  }
-  const detail = capital.getCompany(slug);
-  if (!detail) return { title: "Not found | Tokscale", robots: { index: false } };
-  const company = detail.company;
-  const title = `${company.name} (${company.ticker}) Among Tracked 13F Portfolios | Tokscale`;
-  const description = `${company.name} in the 13F filings of the managers Tokscale tracks: shares, reported values and weights by quarter.`;
+  if (!profile) return { title: "Not found | Tokscale", robots: { index: false } };
+  const title = `${profile.org.name}: ${SEO_SUFFIX[profile.template]} | Tokscale`;
+  const description = `${profile.org.org.description} ${profile.timeline.length} tracked ${profile.timeline.length === 1 ? "event" : "events"} with sources: funding, compute deals${profile.capex ? ", cash capex by quarter" : ""}.`;
+  const canonical = companyUrl(slug);
   return {
     title,
     description,
-    alternates: { canonical: companyUrl(slug) },
-    openGraph: { title, description, type: "website", url: companyUrl(slug), siteName: "Tokscale" },
+    alternates: { canonical },
+    robots: profile.indexable ? undefined : { index: false, follow: true },
+    openGraph: { title, description, type: "profile", url: canonical, siteName: "Tokscale" },
     twitter: { card: "summary", site: TOKSCALE_X_HANDLE, title, description },
   };
 }
@@ -622,7 +593,6 @@ async function V2Profile({ p }: { p: CompanyProfile }) {
     labSlugs.length > 0 ? ["models", "Models on Tokscale"] : null,
     p.capex ? ["spending", "Spending"] : null,
     p.statements.length > 0 ? ["metrics", "Metrics"] : null,
-    p.holdings || org.status === "public" ? ["public-markets", "Public markets"] : null,
     ["timeline", "Timeline"],
     ["sources", "Sources"],
   ].filter((s): s is string[] => s !== null);
@@ -875,29 +845,6 @@ async function V2Profile({ p }: { p: CompanyProfile }) {
         </section>
       ) : null}
 
-      {p.holdings || org.status === "public" ? (
-        <section className={styles.section} id="public-markets" aria-labelledby="public-title">
-          <div className={styles.sectionHead}>
-            <h2 id="public-title" className={`${styles.display} ${styles.sectionTitle}`}>
-              Public markets
-            </h2>
-            <p className={styles.sectionNote}>{p.org.ticker ?? org.statusNote ?? ""}</p>
-          </div>
-          {p.holdings ? (
-            <>
-              <p className={styles.note} style={{ marginTop: 0, marginBottom: 12 }}>
-                {p.holdings.current.length > 0
-                  ? `Held by ${p.holdings.current.length} of the ${p.holdings.trackedFunds} 13F managers Tokscale tracks in ${quarterLabel(quarterKeyForPeriod(p.holdings.latestPeriod))}, ${formatUsdCompact(p.holdings.current.reduce((s, x) => s + x.holding.valueUsd, 0))} combined reported value.`
-                  : `Not held by the ${p.holdings.trackedFunds} 13F managers Tokscale tracks in ${quarterLabel(quarterKeyForPeriod(p.holdings.latestPeriod))}.`}
-              </p>
-              <PositionsTable detail={p.holdings} />
-            </>
-          ) : (
-            <p className={styles.empty}>Not held by the 13F managers Tokscale tracks.</p>
-          )}
-        </section>
-      ) : null}
-
       {p.otherDeals.length > 0 || p.asInvestor.length > 0 ? (
         <section className={styles.section} aria-labelledby="other-title">
           <div className={styles.sectionHead}>
@@ -1007,87 +954,13 @@ async function V2Profile({ p }: { p: CompanyProfile }) {
   );
 }
 
-function ThirteenFOnly({ slug }: { slug: string }) {
-  const detail = capital.getCompany(slug)!;
-  const { company } = detail;
-  const period = quarterLabel(quarterKeyForPeriod(detail.latestPeriod));
-  const value = detail.current.reduce((sum, p) => sum + p.holding.valueUsd, 0);
-  return (
-    <>
-      <JsonLd
-        data={{
-          "@context": "https://schema.org",
-          "@graph": [
-            { "@type": "Corporation", name: company.name, tickerSymbol: `${company.exchange}: ${company.ticker}`, url: companyUrl(slug) },
-            {
-              "@type": "BreadcrumbList",
-              itemListElement: [
-                { "@type": "ListItem", position: 1, name: "Capital", item: absoluteUrl(capitalPath()) },
-                { "@type": "ListItem", position: 2, name: "Companies", item: absoluteUrl(companiesPath()) },
-                { "@type": "ListItem", position: 3, name: company.name, item: companyUrl(slug) },
-              ],
-            },
-          ],
-        }}
-      />
-      <Breadcrumbs items={[{ label: "Capital", href: capitalPath() }, { label: "Companies", href: companiesPath() }, { label: company.name }]} />
-      <header className={styles.pageHead}>
-        <p className={styles.eyebrow}>
-          Listed company · {company.exchange}: {company.tickers.join(", ")} · {company.sector}
-        </p>
-        <h1 className={`${styles.display} ${styles.pageTitle}`}>{company.name}</h1>
-        <p className={styles.lede}>
-          {detail.current.length > 0
-            ? `Held by ${detail.current.length} of the ${detail.trackedFunds} managers Tokscale tracks in ${period}, with a combined reported 13F value of ${formatUsdCompact(value)}.`
-            : `Not held by any of the ${detail.trackedFunds} managers Tokscale tracks in ${period}. Earlier positions are listed below.`}
-        </p>
-        <p className={styles.metaLine}>
-          <span>This company is outside the AI-economy set; it appears here because a tracked 13F manager held it.</span>
-        </p>
-      </header>
-      {company.description ? (
-        <section className={styles.section} aria-label="About the company">
-          <div className={styles.prose}>
-            <p>{company.description}</p>
-            {company.descriptionSource ? (
-              <p className={styles.note}>
-                Source:{" "}
-                <a href={company.descriptionSource.url} target="_blank" rel="noopener noreferrer">
-                  {company.descriptionSource.label}
-                </a>
-              </p>
-            ) : null}
-          </div>
-        </section>
-      ) : null}
-      <section className={styles.section} aria-labelledby="positions">
-        <div className={styles.sectionHead}>
-          <h2 id="positions" className={`${styles.display} ${styles.sectionTitle}`}>
-            Positions among managers Tokscale tracks
-          </h2>
-          <p className={styles.sectionNote}>Quarter-end 13F values, newest first · SEC CIK {Number(company.cik)}</p>
-        </div>
-        <PositionsTable detail={detail} />
-        <p className={styles.note}>Data from SEC EDGAR, retrieved {formatDate(detail.positions[0].quarter.secRetrievedAt.slice(0, 10))}.</p>
-      </section>
-    </>
-  );
-}
-
 export default async function CompanyPage({ params }: PageProps) {
   const { slug } = await params;
   const profile = ledger.getCompany(slug);
-  if (profile) {
-    return (
-      <CapitalShell section="companies">
-        <V2Profile p={profile} />
-      </CapitalShell>
-    );
-  }
-  if (!capital.getCompany(slug)) notFound();
+  if (!profile) notFound();
   return (
     <CapitalShell section="companies">
-      <ThirteenFOnly slug={slug} />
+      <V2Profile p={profile} />
     </CapitalShell>
   );
 }

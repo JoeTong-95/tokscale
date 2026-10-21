@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { TOKSCALE_X_HANDLE } from "@/lib/community";
-import { capitalPath, methodologyUrl, portfoliosPath, spendingPath } from "@/lib/capital";
+import { capitalPath, methodologyUrl, spendingPath } from "@/lib/capital";
 import { AMOUNT_STATUS_LABELS, BASIS_TEXT, MEASURES, MEASURE_LABELS, formatPartialDate, ledger, type Measure } from "@/lib/capital/ledger";
 import { SUMMABLE_MEASURES } from "@/lib/capital/ledger/schema";
 import { Breadcrumbs } from "../_components/Breadcrumbs";
@@ -202,11 +202,6 @@ export default function MethodologyPage() {
           <p>
             AI-lab profiles show how Tokscale users use the lab’s models: active users, adoption and tokens in public Tokscale
             submissions. These numbers describe Tokscale users only. They are not market share.
-          </p>
-          <h2>Public investors</h2>
-          <p>
-            13F holdings come from SEC filings and are checked line by line.{" "}
-            <Link href={portfoliosPath()}>Public investors</Link> explains what a 13F shows and what it leaves out.
           </p>
           <h2>Coverage</h2>
           <p>

@@ -8,7 +8,6 @@ import { agentLogoUrl } from "./agents";
 import {
   compactCost,
   compactNumber,
-  coverageRangeLabel,
   percent,
   periodLabel,
   userChange,
@@ -23,7 +22,6 @@ interface ModelsSectionProps {
 
 export function ModelsSection({ models, coverage }: ModelsSectionProps) {
   const pair = models.slice(0, 2);
-  const range = coverage ? coverageRangeLabel(coverage) : null;
 
   return (
     <Section aria-labelledby="home-models-title">
@@ -43,16 +41,14 @@ export function ModelsSection({ models, coverage }: ModelsSectionProps) {
 
         {pair.length > 0 && coverage ? (
           <Comparison>
-            <ComparisonMeta>
-              <span>
-                Top {pair.length} by active users · {periodLabel(coverage.period)}
-                {range ? ` (${range})` : ""}
-              </span>
-              <span>{wholeNumber(coverage.accounts)} active accounts in this period</span>
-            </ComparisonMeta>
             <Pair>
               {pair.map((model) => (
-                <ModelColumn key={model.key} model={model} accounts={coverage.accounts} />
+                <ModelColumn
+                  key={model.key}
+                  model={model}
+                  accounts={coverage.accounts}
+                  period={periodLabel(coverage.period).toLowerCase()}
+                />
               ))}
             </Pair>
           </Comparison>
@@ -62,17 +58,19 @@ export function ModelsSection({ models, coverage }: ModelsSectionProps) {
   );
 }
 
-function ModelColumn({ model, accounts }: { model: ModelUsageRow; accounts: number }) {
+function ModelColumn({ model, accounts, period }: { model: ModelUsageRow; accounts: number; period: string }) {
   const change = userChange(model);
   const titleId = `home-model-${model.key.replace(/[^a-z0-9-]/gi, "-")}`;
   return (
     <Column aria-labelledby={titleId}>
       <ModelHead>
-        <ModelRank>#{model.rank}</ModelRank>
         <MarkSlot>
           <ModelMark model={model} size={40} />
         </MarkSlot>
-        <ModelName id={titleId}>{model.name}</ModelName>
+        <ModelName id={titleId}>
+          {model.name}{" "}
+          <Rank title={`#${model.rank} by active users, ${period}`}>#{model.rank}</Rank>
+        </ModelName>
         <ModelLab>{model.lab ?? "Unknown lab"}</ModelLab>
       </ModelHead>
       <Facts>
@@ -155,22 +153,6 @@ const Comparison = styled.div`
   background: var(--v2-surface);
 `;
 
-const ComparisonMeta = styled.p`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 4px 16px;
-  margin: 0;
-  padding: 12px 24px;
-  border-bottom: 1px solid var(--v2-rule);
-  color: var(--v2-text-subtle);
-  font-size: 13px;
-
-  @media (max-width: 520px) {
-    padding: 12px 16px;
-  }
-`;
-
 const Pair = styled.div`
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -199,7 +181,7 @@ const Column = styled.section`
 
 const ModelHead = styled.header`
   display: grid;
-  grid-template-columns: auto auto minmax(0, 1fr);
+  grid-template-columns: auto minmax(0, 1fr);
   column-gap: 12px;
   padding: 24px 24px 16px;
 
@@ -214,14 +196,6 @@ const MarkSlot = styled.span`
   align-self: center;
 `;
 
-const ModelRank = styled.span`
-  grid-row: span 2;
-  padding-top: 6px;
-  color: var(--v2-text-subtle);
-  font-size: 14px;
-  font-variant-numeric: tabular-nums;
-`;
-
 const ModelName = styled.h3`
   margin: 0;
   color: var(--v2-text);
@@ -229,6 +203,12 @@ const ModelName = styled.h3`
   font-size: 34px;
   font-weight: 400;
   line-height: 1.1;
+`;
+
+/* Rank by active users in the period, as on the featured human; the hover title spells it out. */
+const Rank = styled.span`
+  color: var(--v2-accent);
+  white-space: nowrap;
 `;
 
 const ModelLab = styled.p`

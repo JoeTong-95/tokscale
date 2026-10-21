@@ -1,12 +1,12 @@
 "use client";
 
-import { useRef, useEffect, useCallback, useMemo, useState } from "react";
+import { useRef, useEffect, useCallback, useId, useMemo, useState } from "react";
 import styled from "styled-components";
 import type { DailyContribution, GraphColorPalette, TooltipPosition } from "@/lib/types";
 import { getDarkGraphColor } from "@/lib/darkGraphColors";
-import { groupByWeek } from "@/lib/utils";
+import { formatCurrency, formatTokenCount, groupByWeek } from "@/lib/utils";
 import { CELL_SIZE, FONT_FAMILY, DAY_LABELS_SHORT, MONTH_LABELS_SHORT } from "@/lib/constants";
-import { parseISO, getMonth } from "date-fns";
+import { addDays, format, getMonth, parseISO, startOfWeek, startOfYear } from "date-fns";
 
 /* Canvas layout, in CSS pixels. Cells grow with the card up to MAX_CELL_SIZE and never shrink below
    the original 12px pitch; narrower cards scroll sideways instead. */
@@ -23,9 +23,41 @@ export function getGraphCellSize(availableWidth: number, weeks: number): number 
   return Math.max(CELL_SIZE, Math.min(MAX_CELL_SIZE, fit));
 }
 
+type Cell = readonly [weekIndex: number, dayIndex: number];
+
+/**
+ * The cell an arrow key moves to. The grid is laid out like the profile graph's: weeks are columns and
+ * weekdays are rows, so Left and Right step a week and Up and Down step a day. Home and End jump to the
+ * first and last week. Moves stop at the edges.
+ */
+export function moveGraphCell(cell: Cell, key: string, weeks: number): Cell | null {
+  const [weekIndex, dayIndex] = cell;
+  const clampWeek = (value: number) => Math.max(0, Math.min(weeks - 1, value));
+  const clampDay = (value: number) => Math.max(0, Math.min(6, value));
+  switch (key) {
+    case "ArrowLeft":
+      return [clampWeek(weekIndex - 1), dayIndex];
+    case "ArrowRight":
+      return [clampWeek(weekIndex + 1), dayIndex];
+    case "ArrowUp":
+      return [weekIndex, clampDay(dayIndex - 1)];
+    case "ArrowDown":
+      return [weekIndex, clampDay(dayIndex + 1)];
+    case "Home":
+      return [0, dayIndex];
+    case "End":
+      return [Math.max(0, weeks - 1), dayIndex];
+    default:
+      return null;
+  }
+}
+
 const Container = styled.div`
   overflow-x: auto;
   overscroll-behavior-inline: contain;
+  /* Room for the focus ring, which the scroll box would otherwise clip. */
+  padding: 4px;
+  margin: -4px;
   scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
   scrollbar-width: thin;
 `;
@@ -33,7 +65,29 @@ const Container = styled.div`
 const GraphCanvas = styled.canvas`
   display: block;
   max-width: none;
+  border-radius: 4px;
   cursor: pointer;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--service-focus);
+    outline-offset: 2px;
+  }
+`;
+
+const VisuallyHidden = styled.span`
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
 `;
 
 interface TokenGraph2DProps {
@@ -54,6 +108,8 @@ export function TokenGraph2D({ contributions, palette, year, hoveredDate = null,
   const weeksData = useMemo(() => groupByWeek(contributions, year), [contributions, year]);
   const [availableWidth, setAvailableWidth] = useState(0);
   const [fontsReady, setFontsReady] = useState(false);
+  const [keyboardCell, setKeyboardCell] = useState<Cell | null>(null);
+  const instructionsId = useId();
 
   const cellSize = getGraphCellSize(availableWidth, weeksData.length);
   const gap = cellSize < 16 ? 2 : 3;
@@ -63,7 +119,7 @@ export function TokenGraph2D({ contributions, palette, year, hoveredDate = null,
   const canvasHeight = MONTH_LABEL_HEIGHT + 7 * cellSize + BOTTOM_PADDING;
 
   const cellIndexByDate = useMemo(() => {
-    const index = new Map<string, [number, number]>();
+    const index = new Map<string, Cell>();
     weeksData.forEach((week, weekIndex) => {
       week.days.forEach((day, dayIndex) => {
         if (day) index.set(day.date, [weekIndex, dayIndex]);
@@ -71,6 +127,9 @@ export function TokenGraph2D({ contributions, palette, year, hoveredDate = null,
     });
     return index;
   }, [weeksData]);
+
+  // Same calendar as groupByWeek: week 0 starts on the Sunday on or before January 1.
+  const firstSunday = useMemo(() => startOfWeek(startOfYear(parseISO(`${year}-01-01`)), { weekStartsOn: 0 }), [year]);
 
   // Size the cells to the card: the observer reports the width before the first paint.
   useEffect(() => {
@@ -164,8 +223,7 @@ export function TokenGraph2D({ contributions, palette, year, hoveredDate = null,
       }
     }
 
-    const outline = (date: string | null, color: string, width: number) => {
-      const cell = date ? cellIndexByDate.get(date) : undefined;
+    const outline = (cell: Cell | undefined, color: string, width: number) => {
       if (!cell) return;
       const [weekIndex, dayIndex] = cell;
       const x = DAY_LABEL_WIDTH + weekIndex * cellSize;
@@ -176,9 +234,10 @@ export function TokenGraph2D({ contributions, palette, year, hoveredDate = null,
       roundRect(ctx, x - inset, y - inset, boxSize + inset * 2, boxSize + inset * 2, radius + 1);
       ctx.stroke();
     };
-    if (hoveredDate && hoveredDate !== selectedDate) outline(hoveredDate, "rgba(244, 247, 251, 0.85)", 1);
-    outline(selectedDate, focusColor, 1.5);
-  }, [palette, weeksData, cellIndexByDate, cellSize, boxSize, radius, canvasWidth, canvasHeight, hoveredDate, selectedDate, fontsReady]);
+    if (hoveredDate && hoveredDate !== selectedDate) outline(cellIndexByDate.get(hoveredDate), "rgba(244, 247, 251, 0.85)", 1);
+    if (selectedDate) outline(cellIndexByDate.get(selectedDate), focusColor, 1.5);
+    if (keyboardCell) outline(keyboardCell, "#f4f7fb", 2);
+  }, [palette, weeksData, cellIndexByDate, cellSize, boxSize, radius, canvasWidth, canvasHeight, hoveredDate, selectedDate, keyboardCell, fontsReady]);
 
   const getDayAtPosition = useCallback(
     (clientX: number, clientY: number): { day: DailyContribution | null; position: TooltipPosition } | null => {
@@ -225,15 +284,110 @@ export function TokenGraph2D({ contributions, palette, year, hoveredDate = null,
     [getDayAtPosition, onDayClick]
   );
 
+  /* Keyboard: the canvas takes focus, the arrow keys move a ring between days, the tooltip follows the
+     ring, and Enter does what a click does. A visually hidden live region reads each day out. */
+  const startCell = (): Cell => {
+    const selected = selectedDate ? cellIndexByDate.get(selectedDate) : undefined;
+    if (selected) return selected;
+    let latest: Cell | undefined;
+    for (const [, cell] of cellIndexByDate) {
+      if (!latest || cell[0] > latest[0] || (cell[0] === latest[0] && cell[1] > latest[1])) latest = cell;
+    }
+    return latest ?? [0, 0];
+  };
+
+  const showCell = (cell: Cell) => {
+    setKeyboardCell(cell);
+    const [weekIndex, dayIndex] = cell;
+    const container = containerRef.current;
+    const canvas = canvasRef.current;
+    const left = DAY_LABEL_WIDTH + weekIndex * cellSize;
+    if (container) {
+      if (left < container.scrollLeft + DAY_LABEL_WIDTH) {
+        container.scrollLeft = Math.max(0, left - DAY_LABEL_WIDTH);
+      } else if (left + boxSize > container.scrollLeft + container.clientWidth) {
+        container.scrollLeft = left + boxSize - container.clientWidth + 8;
+      }
+    }
+    const day = weeksData[weekIndex]?.days[dayIndex] ?? null;
+    if (!day || !canvas) {
+      onDayHover(null, null);
+      return;
+    }
+    const rect = canvas.getBoundingClientRect();
+    onDayHover(day, { x: rect.left + left + boxSize, y: rect.top + MONTH_LABEL_HEIGHT + dayIndex * cellSize + boxSize });
+  };
+
+  const handleFocus = (e: React.FocusEvent<HTMLCanvasElement>) => {
+    let fromKeyboard = true;
+    try {
+      fromKeyboard = e.currentTarget.matches(":focus-visible");
+    } catch {
+      // Older engines without :focus-visible: treat focus as keyboard focus.
+    }
+    if (fromKeyboard) showCell(startCell());
+  };
+
+  const handleBlur = () => {
+    setKeyboardCell(null);
+    onDayHover(null, null);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLCanvasElement>) => {
+    if (e.key === "Escape") {
+      if (keyboardCell) {
+        e.preventDefault();
+        onDayHover(null, null);
+      }
+      return;
+    }
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      if (!keyboardCell) {
+        showCell(startCell());
+        return;
+      }
+      const day = weeksData[keyboardCell[0]]?.days[keyboardCell[1]] ?? null;
+      if (day) onDayClick(day);
+      return;
+    }
+    const next = moveGraphCell(keyboardCell ?? startCell(), e.key, weeksData.length);
+    if (!next) return;
+    e.preventDefault();
+    showCell(keyboardCell ? next : startCell());
+  };
+
+  let announcement = "";
+  if (keyboardCell) {
+    const [weekIndex, dayIndex] = keyboardCell;
+    const day = weeksData[weekIndex]?.days[dayIndex] ?? null;
+    const date = format(addDays(firstSunday, weekIndex * 7 + dayIndex), "EEEE, MMMM d, yyyy");
+    announcement = day
+      ? `${date}: ${formatTokenCount(day.totals.tokens)} tokens, ${formatCurrency(day.totals.cost)}, ${day.totals.messages.toLocaleString("en-US")} messages${day.date === selectedDate ? ", shown in the breakdown" : ""}`
+      : `${date}: no usage`;
+  }
+
   return (
     <Container ref={containerRef}>
       <GraphCanvas
         ref={canvasRef}
+        tabIndex={0}
+        role="application"
+        aria-label={`Daily token usage in ${year}`}
+        aria-describedby={instructionsId}
         onMouseMove={handleMouseMove}
         onMouseLeave={() => onDayHover(null, null)}
         onClick={handleClick}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        onKeyDown={handleKeyDown}
         style={{ minWidth: canvasWidth }}
       />
+      <VisuallyHidden id={instructionsId}>
+        Use the arrow keys to move between days, Home and End to jump to the first and last week, Enter to show
+        the day in the breakdown, and Escape to hide the tooltip.
+      </VisuallyHidden>
+      <VisuallyHidden aria-live="polite">{announcement}</VisuallyHidden>
     </Container>
   );
 }

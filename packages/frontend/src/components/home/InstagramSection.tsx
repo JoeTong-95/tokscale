@@ -1,6 +1,6 @@
 "use client";
 
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { TOKSCALE_INSTAGRAM_HANDLE, TOKSCALE_INSTAGRAM_URL } from "@/lib/community";
 import { Container, Eyebrow, focusRing, Lead, Section, SectionHeader, SectionTitle, TextLink } from "./primitives";
 
@@ -13,31 +13,13 @@ export interface InstagramPost {
   caption: string;
 }
 
-/** Four recent posts from @tokscaleai, refreshed by hand. */
+/** Posts from @tokscaleai shown on the home page, refreshed by hand. */
 export const INSTAGRAM_POSTS: InstagramPost[] = [
-  {
-    href: "https://www.instagram.com/p/DeAHX4kEhxX/",
-    image: "/assets/v2/instagram/DeAHX4kEhxX.webp",
-    alt: "Card: 6.4% of AI coders burned half the tokens.",
-    caption: "In September 2026, just 63 accounts on Tokscale used as many AI tokens as the other 926 combined.",
-  },
-  {
-    href: "https://www.instagram.com/p/Dd_a8fwEixF/",
-    image: "/assets/v2/instagram/Dd_a8fwEixF.webp",
-    alt: "Card: 76.3% of AI coders use Codex.",
-    caption: "Codex showed up in more accounts. Claude Code moved more tokens.",
-  },
   {
     href: "https://www.instagram.com/p/DemjVOaElI9/",
     image: "/assets/v2/instagram/DemjVOaElI9.webp",
     alt: "Card: Tracking a trillion tokens worldwide.",
     caption: "You opened your laptop for one small fix. Now the sky outside is turning blue.",
-  },
-  {
-    href: "https://www.instagram.com/p/DeAU_0RTKhn/",
-    image: "/assets/v2/instagram/DeAU_0RTKhn.webp",
-    alt: "Card: SoftBank completes $30B OpenAI investment.",
-    caption: "SoftBank has delivered on its $30 billion commitment to OpenAI.",
   },
 ];
 
@@ -45,7 +27,7 @@ export function InstagramSection({ posts = INSTAGRAM_POSTS }: { posts?: Instagra
   return (
     <Section aria-labelledby="home-instagram-title">
       <Container>
-        <Head>
+        <Layout $single={posts.length === 1}>
           <SectionHeader>
             <Eyebrow>Instagram</Eyebrow>
             <SectionTitle id="home-instagram-title">Tokscale data, in your feed.</SectionTitle>
@@ -54,28 +36,43 @@ export function InstagramSection({ posts = INSTAGRAM_POSTS }: { posts?: Instagra
               Follow {TOKSCALE_INSTAGRAM_HANDLE} <span aria-hidden="true">↗</span>
             </TextLink>
           </SectionHeader>
-        </Head>
-        <Posts>
-          {posts.map((post) => (
-            <li key={post.href}>
-              <PostLink href={post.href} target="_blank" rel="noopener noreferrer">
-                {/* eslint-disable-next-line @next/next/no-img-element -- small vendored card images */}
-                <img src={post.image} alt={post.alt} width={540} height={720} loading="lazy" decoding="async" />
-                <Caption>{post.caption}</Caption>
-              </PostLink>
-            </li>
-          ))}
-        </Posts>
+          <Posts $single={posts.length === 1}>
+            {posts.map((post) => (
+              <li key={post.href}>
+                <PostLink href={post.href} target="_blank" rel="noopener noreferrer">
+                  {/* eslint-disable-next-line @next/next/no-img-element -- small vendored card images */}
+                  <img src={post.image} alt={post.alt} width={540} height={720} loading="lazy" decoding="async" />
+                  <Caption>{post.caption}</Caption>
+                </PostLink>
+              </li>
+            ))}
+          </Posts>
+        </Layout>
       </Container>
     </Section>
   );
 }
 
-const Head = styled.div`
-  margin-bottom: 40px;
+/* One post sits beside the copy, like the featured profile; more posts form a grid under it. */
+const Layout = styled.div<{ $single: boolean }>`
+  display: grid;
+  gap: 40px;
+
+  ${({ $single }) =>
+    $single &&
+    css`
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+      align-items: center;
+      gap: 64px;
+
+      @media (max-width: 960px) {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 32px;
+      }
+    `}
 `;
 
-const Posts = styled.ul`
+const Posts = styled.ul<{ $single: boolean }>`
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 20px;
@@ -87,6 +84,18 @@ const Posts = styled.ul`
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 16px;
   }
+
+  ${({ $single }) =>
+    $single &&
+    css`
+      grid-template-columns: minmax(0, 1fr);
+      width: min(100%, 360px);
+      justify-self: center;
+
+      @media (max-width: 900px) {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    `}
 `;
 
 const PostLink = styled.a`

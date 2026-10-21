@@ -10,7 +10,7 @@ describe("home Instagram section", () => {
     const markup = renderToStaticMarkup(<InstagramSection />);
     expect(markup).toContain(`href="${TOKSCALE_INSTAGRAM_URL}"`);
     expect(markup).toContain("Follow @tokscaleai");
-    expect(INSTAGRAM_POSTS.length).toBe(4);
+    expect(INSTAGRAM_POSTS.length).toBeGreaterThan(0);
     for (const post of INSTAGRAM_POSTS) {
       expect(post.href).toMatch(/^https:\/\/www\.instagram\.com\/(p|reel)\/[\w-]+\/$/);
       expect(markup).toContain(`href="${post.href}"`);

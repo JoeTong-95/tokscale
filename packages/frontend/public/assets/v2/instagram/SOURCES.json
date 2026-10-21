@@ -1,0 +1,26 @@
+{
+  "about": "Images of four posts from Tokscale's own Instagram account (@tokscaleai), resized to 540x720 WebP for the home page. Each links to its post.",
+  "fetched": "2026-10-22",
+  "posts": [
+    {
+      "file": "DeAHX4kEhxX.webp",
+      "post": "https://www.instagram.com/p/DeAHX4kEhxX/",
+      "firstLine": "In September 2026, just 63 accounts on Tokscale used as many AI tokens as the other 926 combined."
+    },
+    {
+      "file": "Dd_a8fwEixF.webp",
+      "post": "https://www.instagram.com/p/Dd_a8fwEixF/",
+      "firstLine": "Codex showed up in more accounts. Claude Code moved more tokens."
+    },
+    {
+      "file": "DemjVOaElI9.webp",
+      "post": "https://www.instagram.com/p/DemjVOaElI9/",
+      "firstLine": "You opened your laptop for one small fix. Now the sky outside is turning blue."
+    },
+    {
+      "file": "DeAU_0RTKhn.webp",
+      "post": "https://www.instagram.com/p/DeAU_0RTKhn/",
+      "firstLine": "SoftBank has delivered on its $30 billion commitment to OpenAI."
+    }
+  ]
+}

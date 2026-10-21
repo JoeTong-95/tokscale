@@ -1,7 +1,9 @@
 /** @vitest-environment jsdom */
 
 import React from "react";
-import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import LocalClient, { formatExportRange } from "@/app/local/LocalClient";
 import { localExport } from "../support/localExport";
@@ -52,6 +54,22 @@ describe("local viewer page", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Load different data" }));
     expect(screen.getByRole("textbox", { name: "Export JSON" })).toBeTruthy();
+  });
+});
+
+describe("bundled sample data", () => {
+  it("loads into the viewer in the shape `tokscale graph` prints today", async () => {
+    const sample = JSON.parse(readFileSync(path.join(__dirname, "../../public/sample-data.json"), "utf8"));
+    expect(Array.isArray(sample.summary.clients)).toBe(true);
+    expect(sample.contributions.every((day: { clients?: { client?: string }[] }) => day.clients?.every((line) => line.client))).toBe(true);
+
+    vi.stubGlobal("fetch", vi.fn(async () => ({ ok: true, status: 200, json: async () => sample })));
+    render(<LocalClient />);
+    fireEvent.click(screen.getByRole("button", { name: "Load sample data" }));
+    await waitFor(() => expect(screen.getByLabelText("Loaded export")).toBeTruthy());
+    expect(screen.getByRole("group", { name: "Client filters" })).toBeTruthy();
+    expect(screen.getByRole("region", { name: "Day breakdown" })).toBeTruthy();
+    vi.unstubAllGlobals();
   });
 });
 

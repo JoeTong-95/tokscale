@@ -1,5 +1,6 @@
 import { formatMoney, formatPartialDate } from "@/lib/capital/ledger";
 import { calendarSpanLabel, fiscalLabel, type CapexView } from "@/lib/capital/ledger/capex";
+import { InstantTooltip } from "@/components/ui/InstantTooltip";
 import { CapexBars } from "./CapexBars";
 import styles from "./capital.module.css";
 
@@ -41,10 +42,10 @@ export function CapexTable({ view, name, limit = 8 }: { view: CapexView; name: s
               </td>
               <td data-label="How">
                 {q.derived ? (
-                  <span title={q.formula ?? undefined}>
+                  <InstantTooltip content={q.formula} describe={false}>
                     Derived
                     <span className={styles.cellSub}>{q.formula}</span>
-                  </span>
+                  </InstantTooltip>
                 ) : (
                   "Reported"
                 )}

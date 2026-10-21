@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { InstantTooltip } from "@/components/ui/InstantTooltip";
 import { TOKSCALE_X_HANDLE } from "@/lib/community";
 import { capitalPath, computePath, computeUrl, methodologyPath } from "@/lib/capital";
 import { QUANTITY_UNITS, formatPartialDate, ledger, tryQuantityTotal, type EventView, type QuantityMeasure } from "@/lib/capital/ledger";
@@ -151,9 +152,9 @@ export default async function ComputePage({ searchParams }: PageProps) {
                 <td className={`${styles.right} ${styles.num} ${capacity.length > 0 ? "" : styles.emptyStacked}`} data-label="Capacity">
                   {capacity.length > 0 ? (
                     capacity.map((q) => (
-                      <span key={q.quantity.id} style={{ display: "block" }} title={QUANTITY_UNITS[q.quantity.measure].label}>
+                      <InstantTooltip key={q.quantity.id} style={{ display: "block" }} content={QUANTITY_UNITS[q.quantity.measure].label}>
                         {q.short}
-                      </span>
+                      </InstantTooltip>
                     ))
                   ) : (
                     <Missing reason="No capacity stated in the source" />

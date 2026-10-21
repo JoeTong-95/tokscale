@@ -23,7 +23,9 @@ export async function eventOgImage(e: EventView): Promise<Response> {
     ...(quantity ? [{ label: (quantity.quantity.label ?? QUANTITY_UNITS[quantity.quantity.measure].label).toUpperCase(), value: quantity.short }] : []),
   ].slice(0, 3);
   const source = e.sources[0] ? `SOURCE: ${e.sources[0].publisher.toUpperCase()}` : "";
-  const fonts = await loadOgFonts(`${eyebrow}${title}${stats.map((s) => s.label + s.value).join("")}${source}≈≤>`);
+  // The card font has no arrow glyph; the renderer would swap in an emoji.
+  const parties = e.partiesText.replace(/ ↔ /g, " and ");
+  const fonts = await loadOgFonts(`${eyebrow}${title}${parties}${stats.map((s) => s.label + s.value).join("")}${source}≈≤≥>`);
 
   return new ImageResponse(
     (
@@ -31,16 +33,20 @@ export async function eventOgImage(e: EventView): Promise<Response> {
         <div style={{ display: "flex", flexDirection: "column", marginTop: 28 }}>
           <div style={{ display: "flex", fontSize: 20, color: OG_TEXT_MUTED, letterSpacing: 2 }}>{eyebrow}</div>
           <div style={{ display: "flex", marginTop: 14, fontSize: 52, fontWeight: 700, color: OG_TEXT, lineHeight: 1.1 }}>{title}</div>
-          <div style={{ display: "flex", marginTop: 12, fontSize: 24, color: OG_TEXT_MUTED }}>{e.partiesText}</div>
+          <div style={{ display: "flex", marginTop: 12, fontSize: 24, color: OG_TEXT_MUTED }}>{parties}</div>
         </div>
         <div style={{ display: "flex", flex: 1 }} />
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <div style={{ display: "flex", height: 1, background: OG_BORDER }} />
-          <div style={{ display: "flex", gap: 56 }}>
+          <div style={{ display: "flex", gap: 40 }}>
             {stats.map((s) => (
-              <div key={s.label} style={{ display: "flex", flexDirection: "column" }}>
-                <div style={{ display: "flex", fontSize: 44, fontWeight: 700, color: ACCENT }}>{s.value}</div>
-                <div style={{ display: "flex", marginTop: 4, fontSize: 16, color: OG_TEXT_MUTED, letterSpacing: 2 }}>{s.label}</div>
+              <div key={s.label} style={{ display: "flex", flexDirection: "column", flexShrink: 0 }}>
+                <div style={{ display: "flex", flexShrink: 0, fontSize: s.value.length > 10 ? 38 : 44, fontWeight: 700, color: ACCENT, whiteSpace: "nowrap" }}>
+                  {s.value}
+                </div>
+                <div style={{ display: "flex", maxWidth: 330, marginTop: 4, fontSize: 16, color: OG_TEXT_MUTED, letterSpacing: 2, lineHeight: 1.35 }}>
+                  {s.label}
+                </div>
               </div>
             ))}
           </div>

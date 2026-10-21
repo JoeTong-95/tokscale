@@ -3,9 +3,10 @@
 import Link from "next/link";
 import styled, { css } from "styled-components";
 import type { CommunitySnapshot as Snapshot, HumanRow, ModelUsageRow } from "@/lib/explore";
+import { AgentMark } from "@/components/explore/ExploreUI";
 import { ModelMark } from "@/components/explore/ModelMark";
 import { Arrow, focusRing, VisuallyHidden } from "./primitives";
-import { compactNumber, coverageRangeLabel, periodLabel, uniqueNames, updatedLabel, userChange, wholeNumber } from "./format";
+import { compactCurrency, compactNumber, coverageRangeLabel, periodLabel, userChange, wholeNumber } from "./format";
 
 interface CommunitySnapshotProps {
   snapshot: Snapshot | null;
@@ -16,7 +17,6 @@ export function CommunitySnapshot({ snapshot }: CommunitySnapshotProps) {
   const models = snapshot?.models.slice(0, 5) ?? [];
   const coverage = snapshot?.coverage ?? null;
   const range = coverage ? coverageRangeLabel(coverage) : null;
-  const updated = coverage ? updatedLabel(coverage.lastDataAt) : null;
   const period = coverage ? periodLabel(coverage.period) : "Last 30 days";
 
   return (
@@ -40,8 +40,9 @@ export function CommunitySnapshot({ snapshot }: CommunitySnapshotProps) {
           <HeaderRow $kind="humans" aria-hidden="true">
             <span>#</span>
             <span>Builder</span>
-            <HideNarrow>Top models and agents</HideNarrow>
+            <HideNarrow>Top model and agent</HideNarrow>
             <Right>Tokens</Right>
+            <Right>Est. cost</Right>
           </HeaderRow>
           {humans.length > 0 ? (
             <List>
@@ -64,8 +65,9 @@ export function CommunitySnapshot({ snapshot }: CommunitySnapshotProps) {
           <HeaderRow $kind="models" aria-hidden="true">
             <span>#</span>
             <span>Model</span>
-            <Right>Active users</Right>
-            <Right>vs previous</Right>
+            <Right>Users</Right>
+            <Right>vs prev.</Right>
+            <Right>Est. cost</Right>
           </HeaderRow>
           {models.length > 0 ? (
             <List>
@@ -78,52 +80,56 @@ export function CommunitySnapshot({ snapshot }: CommunitySnapshotProps) {
           )}
         </Column>
       </Columns>
-
-      <PanelFooter>
-        <span>
-          Based on public usage submissions.
-          {updated ? ` Updated ${updated}.` : null}
-        </span>
-        {coverage ? <span>{wholeNumber(coverage.accounts)} accounts with usage in this period</span> : null}
-      </PanelFooter>
     </Panel>
   );
 }
 
 function HumanItem({ human }: { human: HumanRow }) {
   const name = human.displayName || human.username;
-  const models = uniqueNames(human.topModels).slice(0, 2);
-  const agents = uniqueNames(human.topAgents).slice(0, 2);
+  const topModel = human.topModels[0];
+  const topAgent = human.topAgents[0];
   return (
     <li>
-      <RowLink href={`/u/${encodeURIComponent(human.username)}`} $kind="humans">
+      <RowLink href={`/u/${encodeURIComponent(human.username)}`} $kind="humans" title={`@${human.username}`}>
         <Rank>{human.rank}</Rank>
         <Identity>
           <AvatarImg
-            src={human.avatarUrl || `https://github.com/${encodeURIComponent(human.username)}.png?size=64`}
+            src={human.avatarUrl || `https://github.com/${encodeURIComponent(human.username)}.png?size=48`}
             alt=""
-            width={28}
-            height={28}
+            width={22}
+            height={22}
             loading="lazy"
           />
-          <NameBlock>
-            <Name>{name}</Name>
-            {human.displayName && human.displayName !== human.username ? <Sub>@{human.username}</Sub> : null}
-            <NarrowStack>
-              {[models[0], agents[0]].filter(Boolean).join(" · ") || "—"}
-            </NarrowStack>
-          </NameBlock>
+          <Name>{name}</Name>
+          {human.displayName && human.displayName !== human.username ? (
+            <VisuallyHidden> (@{human.username})</VisuallyHidden>
+          ) : null}
         </Identity>
         <Stack>
-          <VisuallyHidden>Top models: </VisuallyHidden>
-          <StackLine>{models.length ? models.join(", ") : "—"}</StackLine>
-          <VisuallyHidden>. Agents: </VisuallyHidden>
-          <StackLine $muted>{agents.length ? agents.join(", ") : "—"}</StackLine>
+          <VisuallyHidden>Top model and agent: </VisuallyHidden>
+          {topModel ? (
+            <>
+              <ModelMark model={topModel} size={18} />
+              <StackText>{topModel.name}</StackText>
+            </>
+          ) : (
+            <StackText>—</StackText>
+          )}
+          {topAgent ? (
+            <AgentChip title={topAgent.name}>
+              <AgentMark agent={topAgent} size={16} />
+              <VisuallyHidden>, {topAgent.name}</VisuallyHidden>
+            </AgentChip>
+          ) : null}
         </Stack>
         <Value>
           <VisuallyHidden>Tokens: </VisuallyHidden>
           {compactNumber(human.tokens)}
         </Value>
+        <Cost>
+          <VisuallyHidden>Estimated cost: </VisuallyHidden>
+          {compactCurrency(human.estimatedCost)}
+        </Cost>
       </RowLink>
     </li>
   );
@@ -133,14 +139,12 @@ function ModelItem({ model }: { model: ModelUsageRow }) {
   const change = userChange(model);
   return (
     <li>
-      <RowLink href={`/models/${encodeURIComponent(model.key)}`} $kind="models">
+      <RowLink href={`/models/${encodeURIComponent(model.key)}`} $kind="models" title={model.lab ?? undefined}>
         <Rank>{model.rank}</Rank>
         <Identity>
-          <ModelMark model={model} size={28} />
-          <NameBlock>
-            <Name $wrapNarrow>{model.name}</Name>
-            <Sub>{model.lab ?? "Unknown lab"}</Sub>
-          </NameBlock>
+          <ModelMark model={model} size={22} />
+          <Name>{model.name}</Name>
+          {model.lab ? <VisuallyHidden> by {model.lab}</VisuallyHidden> : null}
         </Identity>
         <Value>
           <VisuallyHidden>Active users: </VisuallyHidden>
@@ -150,6 +154,10 @@ function ModelItem({ model }: { model: ModelUsageRow }) {
           <VisuallyHidden>Change in active users against the previous period: </VisuallyHidden>
           {change.kind === "new" ? <NewBadge>New</NewBadge> : change.label}
         </Change>
+        <Cost>
+          <VisuallyHidden>Estimated cost: </VisuallyHidden>
+          {compactCurrency(model.estimatedCost)}
+        </Cost>
       </RowLink>
     </li>
   );
@@ -169,19 +177,19 @@ const PanelHeader = styled.div`
   flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
-  gap: 8px 16px;
-  padding: 18px 24px;
+  gap: 6px 16px;
+  padding: 14px 20px;
   border-bottom: 1px solid var(--v2-rule);
 
   @media (max-width: 520px) {
-    padding: 16px;
+    padding: 12px 16px;
   }
 `;
 
 const PanelTitle = styled.h2`
   margin: 0;
   color: var(--v2-text);
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
 `;
 
@@ -210,7 +218,7 @@ const Columns = styled.div`
 
 const Column = styled.section`
   min-width: 0;
-  padding: 8px 0 12px;
+  padding: 4px 0 8px;
 
   & + & {
     border-left: 1px solid var(--v2-rule);
@@ -229,10 +237,10 @@ const ColumnHead = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 10px 24px 6px;
+  padding: 8px 20px 2px;
 
   @media (max-width: 520px) {
-    padding: 10px 16px 6px;
+    padding: 8px 16px 2px;
   }
 `;
 
@@ -240,7 +248,7 @@ const ColumnTitle = styled.h3`
   margin: 0;
   color: var(--v2-text);
   font-family: var(--v2-font-display);
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 400;
   line-height: 1.2;
 `;
@@ -266,44 +274,49 @@ const ColumnLink = styled(Link)`
   }
 `;
 
-const humansGrid = css`
-  grid-template-columns: 20px minmax(0, 1.1fr) minmax(0, 1fr) 64px;
+/* One line per row: rank, identity, (stack), and right-aligned numbers. */
+const narrowHumans = "(max-width: 1100px) and (min-width: 961px), (max-width: 600px)";
 
-  @media (max-width: 1100px) and (min-width: 961px), (max-width: 600px) {
-    grid-template-columns: 20px minmax(0, 1fr) 64px;
+const humansGrid = css`
+  grid-template-columns: 16px minmax(0, 1fr) minmax(0, 1fr) 52px 56px;
+
+  @media ${narrowHumans} {
+    grid-template-columns: 16px minmax(0, 1fr) 52px 56px;
   }
 `;
 
 const modelsGrid = css`
-  grid-template-columns: 20px minmax(0, 1fr) 92px 92px;
+  grid-template-columns: 16px minmax(0, 1fr) 48px 52px 56px;
 
-  @media (max-width: 520px) {
-    grid-template-columns: 16px minmax(0, 1fr) 52px 48px;
+  @media (max-width: 400px) {
+    grid-template-columns: 14px minmax(0, 1fr) 34px 40px 58px;
   }
 `;
 
 const HeaderRow = styled.div<{ $kind: "humans" | "models" }>`
   display: grid;
   ${({ $kind }) => ($kind === "humans" ? humansGrid : modelsGrid)}
-  gap: 12px;
-  padding: 6px 24px;
+  gap: 10px;
+  padding: 4px 20px;
   color: var(--v2-text-subtle);
   font-size: 12px;
   font-weight: 500;
 
   @media (max-width: 520px) {
-    padding: 6px 16px;
+    gap: 8px;
+    padding: 4px 16px;
   }
 `;
 
 const HideNarrow = styled.span`
-  @media (max-width: 1100px) and (min-width: 961px), (max-width: 600px) {
+  @media ${narrowHumans} {
     display: none;
   }
 `;
 
 const Right = styled.span`
   text-align: right;
+  white-space: nowrap;
 `;
 
 const List = styled.ol`
@@ -319,11 +332,11 @@ const List = styled.ol`
 const RowLink = styled(Link)<{ $kind: "humans" | "models" }>`
   display: grid;
   ${({ $kind }) => ($kind === "humans" ? humansGrid : modelsGrid)}
-  gap: 12px;
+  gap: 10px;
   align-items: center;
-  min-height: 60px;
-  margin: 0 12px;
-  padding: 10px 12px;
+  min-height: 44px;
+  margin: 0 10px;
+  padding: 6px 10px;
   border-radius: 6px;
   color: inherit;
   text-decoration: none;
@@ -339,7 +352,9 @@ const RowLink = styled(Link)<{ $kind: "humans" | "models" }>`
   }
 
   @media (max-width: 520px) {
+    gap: 8px;
     margin: 0 4px;
+    padding: 6px 12px;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -349,30 +364,24 @@ const RowLink = styled(Link)<{ $kind: "humans" | "models" }>`
 
 const Rank = styled.span`
   color: var(--v2-text-subtle);
-  font-size: 13px;
+  font-size: 12px;
   font-variant-numeric: tabular-nums;
 `;
 
 const Identity = styled.span`
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   min-width: 0;
 `;
 
 const AvatarImg = styled.img`
   flex-shrink: 0;
-  width: 28px;
-  height: 28px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: var(--v2-surface-raised);
   box-shadow: 0 0 0 1px var(--v2-rule-strong);
-`;
-
-const NameBlock = styled.span`
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
 `;
 
 const ellipsis = css`
@@ -381,61 +390,57 @@ const ellipsis = css`
   white-space: nowrap;
 `;
 
-const Name = styled.span<{ $wrapNarrow?: boolean }>`
+const Name = styled.span`
   ${ellipsis}
+  min-width: 0;
   color: var(--v2-text);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 500;
-
-  @media (max-width: 520px) {
-    white-space: ${({ $wrapNarrow }) => ($wrapNarrow ? "normal" : "nowrap")};
-  }
-`;
-
-const Sub = styled.span`
-  ${ellipsis}
-  color: var(--v2-text-subtle);
-  font-size: 13px;
 `;
 
 const Stack = styled.span`
   display: flex;
-  flex-direction: column;
   min-width: 0;
+  align-items: center;
+  gap: 6px;
+  color: var(--v2-text-muted);
+  font-size: 13px;
 
-  @media (max-width: 1100px) and (min-width: 961px), (max-width: 600px) {
+  @media ${narrowHumans} {
     display: none;
   }
 `;
 
-const NarrowStack = styled.span`
-  display: none;
+const StackText = styled.span`
   ${ellipsis}
-  color: var(--v2-text-muted);
-  font-size: 13px;
-
-  @media (max-width: 1100px) and (min-width: 961px), (max-width: 600px) {
-    display: block;
-  }
+  min-width: 0;
 `;
 
-const StackLine = styled.span<{ $muted?: boolean }>`
-  ${ellipsis}
-  color: ${({ $muted }) => ($muted ? "var(--v2-text-subtle)" : "var(--v2-text-muted)")};
-  font-size: 13px;
+const AgentChip = styled.span`
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  margin-left: 2px;
 `;
 
 const Value = styled.span`
   color: var(--v2-text);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+`;
+
+const Cost = styled.span`
+  color: var(--v2-text-muted);
+  font-size: 13px;
   font-variant-numeric: tabular-nums;
   text-align: right;
 `;
 
 const Change = styled.span<{ $kind: string }>`
   color: ${({ $kind }) => ($kind === "up" ? "var(--v2-numeric)" : "var(--v2-text-muted)")};
-  font-size: 14px;
+  font-size: 13px;
   font-variant-numeric: tabular-nums;
   text-align: right;
 `;
@@ -443,34 +448,19 @@ const Change = styled.span<{ $kind: string }>`
 const NewBadge = styled.span`
   display: inline-flex;
   align-items: center;
-  height: 22px;
-  padding: 0 8px;
+  height: 20px;
+  padding: 0 7px;
   border: 1px solid rgba(0, 115, 255, 0.55);
   border-radius: 999px;
   background: var(--v2-accent-soft);
   color: #8cc2ff;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
 `;
 
 const Empty = styled.p`
   margin: 0;
-  padding: 24px;
+  padding: 20px;
   color: var(--v2-text-muted);
   font-size: 14px;
-`;
-
-const PanelFooter = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 4px 16px;
-  padding: 14px 24px;
-  border-top: 1px solid var(--v2-rule);
-  color: var(--v2-text-subtle);
-  font-size: 13px;
-
-  @media (max-width: 520px) {
-    padding: 14px 16px;
-  }
 `;

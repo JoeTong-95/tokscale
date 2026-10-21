@@ -106,13 +106,14 @@ describe("public footer", () => {
 });
 
 describe("community snapshot", () => {
-  it("links five humans and five models and labels the period and data time", () => {
+  it("links five humans and five models, labels the period, and shows estimated cost", () => {
     const snapshot = fixtureSnapshot("30d");
     const markup = renderToStaticMarkup(<CommunitySnapshot snapshot={snapshot} />);
     expect(markup.match(/href="\/u\//g)).toHaveLength(5);
     expect(markup.match(/href="\/models\/[^"]+"/g)).toHaveLength(5);
     expect(markup).toContain("Last 30 days");
-    expect(markup).toContain("Based on public usage submissions. Updated Oct 19, 2026, 04:12 UTC.");
+    expect(markup).toContain("Est. cost");
+    expect(markup).not.toContain("Based on public usage submissions");
   });
 
   it("shows a New badge for models without previous usage", () => {

@@ -91,9 +91,9 @@ export default function SpendingPage() {
           </dl>
           {leftOut.length > 0 ? (
             <p className={styles.note}>
-              Left out of this sum because they have no {quarter.label} figure in USD yet (another fiscal calendar, another
-              currency or no quarterly filing): {leftOut.map((r) => r.org.displayName).join(", ")}. They are listed below with
-              their own fiscal labels.
+              Left out of this sum because they have no figure for exactly this calendar quarter in USD (a different fiscal
+              calendar, another currency or no quarterly filing): {leftOut.map((r) => r.org.displayName).join(", ")}. They are
+              listed below with their own fiscal labels.
             </p>
           ) : null}
         </section>

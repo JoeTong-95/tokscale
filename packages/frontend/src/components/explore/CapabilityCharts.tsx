@@ -28,9 +28,11 @@ export interface ChartModel {
   price: number | null;
 }
 
+/* Top-aligned, so opening one chart's data table does not stretch the chart beside it. */
 const Grid = styled.div`
   display: grid;
   grid-template-columns: minmax(0, 1fr);
+  align-items: start;
   gap: 32px;
 
   @media (min-width: 1100px) {
@@ -41,6 +43,7 @@ const Grid = styled.div`
 
 const Figure = styled.figure`
   display: grid;
+  align-content: start;
   gap: 8px;
   min-width: 0;
   margin: 0;

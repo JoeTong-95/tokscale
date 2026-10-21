@@ -168,13 +168,13 @@ export default function SpendingPage() {
                 lastFour.every((q, i) => i === 0 || Date.parse(`${q.start}T00:00:00Z`) - Date.parse(`${lastFour[i - 1].end}T00:00:00Z`) <= 2 * 86_400_000);
               const year = view.years.at(-1) ?? null;
               return (
-                <tr key={org.id}>
+                <tr key={org.id} data-row-link={org.companyHref ? "" : undefined}>
                   <td className={`${styles.full} ${styles.nameCol}`}>
                     <span className={styles.orgCell}>
                       <OrgMark org={org} />
                       <span>
                         {org.companyHref ? (
-                          <Link className={styles.cellMain} href={`${org.companyHref}#spending`}>
+                          <Link className={styles.cellMain} href={`${org.companyHref}#spending`} data-row-primary="">
                             {org.name}
                           </Link>
                         ) : (

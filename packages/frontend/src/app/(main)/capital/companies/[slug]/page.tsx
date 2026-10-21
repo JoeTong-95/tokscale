@@ -356,12 +356,12 @@ function FundingRow({
         : (debt?.amount.label ?? equity?.amount.label ?? null);
   return (
     <>
-      <tr>
+      <tr data-row-link="">
         <td className={styles.nowrap} data-label="Date">
           {formatPartialDate(e.date)}
         </td>
         <td className={styles.full}>
-          <Link className={styles.cellMain} href={e.href}>
+          <Link className={styles.cellMain} href={e.href} data-row-primary="">
             {e.event.roundLabel ?? e.typeLabels[0]}
           </Link>
           {detail ? <span className={styles.cellSub}>{detail}</span> : null}
@@ -427,12 +427,12 @@ function ComputeTable({ p }: { p: CompanyProfile }) {
           const capacity = e.quantities.filter((q) => q.quantity.measure !== "shares" && q.quantity.measure !== "investors");
           const others = e.participants.filter((x) => x.org.id !== p.org.id).map((x) => x.org.displayName);
           return (
-            <tr key={e.id}>
+            <tr key={e.id} data-row-link="">
               <td className={styles.nowrap} data-label="Date">
                 {formatPartialDate(e.date)}
               </td>
               <td className={styles.full}>
-                <Link className={styles.cellMain} href={e.href}>
+                <Link className={styles.cellMain} href={e.href} data-row-primary="">
                   {e.title}
                 </Link>
                 <span className={styles.cellSub}>
@@ -496,12 +496,12 @@ function ModelsSection({ usage, org }: { usage: LabUsage | null | "unavailable";
         </thead>
         <tbody>
           {top.map((m) => (
-            <tr key={m.key}>
+            <tr key={m.key} data-row-link="">
               <td className={styles.full}>
                 <span className={styles.modelCell}>
                   <ModelMark model={m} size={24} />
                   <span>
-                    <Link className={styles.cellMain} href={`/models/${encodeURIComponent(m.key)}`}>
+                    <Link className={styles.cellMain} href={`/models/${encodeURIComponent(m.key)}`} data-row-primary="">
                       {m.name}
                     </Link>
                     <span className={styles.cellSub}>{m.key}</span>

@@ -558,7 +558,8 @@
 .ledgerTable thead th {
   position: sticky;
   top: 0;
-  z-index: 1;
+  /* Above row links and the links raised over them (globals.css). */
+  z-index: 3;
   padding: 8px 10px;
   border-bottom: 1px solid var(--cap-rule-strong);
   background: var(--service-canvas, #000);

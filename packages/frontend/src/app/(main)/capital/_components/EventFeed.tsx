@@ -12,11 +12,13 @@ export function EventFeed({ events, showParties = true }: { events: EventView[];
       {events.map((e) => {
         const headline = e.headline?.amount ?? null;
         return (
-          <li className={styles.feedRow} key={e.id}>
+          <li className={styles.feedRow} key={e.id} data-row-link="">
             <span className={styles.feedDate}>{formatPartialDate(e.date)}</span>
             <span className={styles.tag}>{e.tag}</span>
             <span className={styles.feedTitle}>
-              <Link href={e.href}>{e.title}</Link>
+              <Link href={e.href} data-row-primary="">
+                {e.title}
+              </Link>
               {showParties ? <span className={styles.cellSub}>{e.partiesText}</span> : null}
             </span>
             <span className={styles.feedValue}>

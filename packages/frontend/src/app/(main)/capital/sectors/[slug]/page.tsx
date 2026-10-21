@@ -104,9 +104,9 @@ export default async function SectorPage({ params }: PageProps) {
         </thead>
         <tbody>
           {rows.map((row) => (
-            <tr key={row.org.id}>
+            <tr key={row.org.id} data-row-link={row.org.href ? "" : undefined}>
               <td className={styles.full}>
-                <OrgCell org={row.org} />
+                <OrgCell org={row.org} rowLink />
               </td>
               <td data-label="Status">{row.org.statusText}</td>
               <td className={row.lastFinancing ? undefined : styles.emptyStacked} data-label="Last financing">

@@ -99,12 +99,12 @@ export default async function RoundsPage({ searchParams }: PageProps) {
             const main = e.headline?.amount ?? null;
             const leads = e.participants.filter((p) => p.roles.includes("lead_investor") || p.roles.includes("co_lead"));
             return (
-              <tr key={e.id}>
+              <tr key={e.id} data-row-link="">
                 <td className={styles.nowrap} data-label="Date">
                   {formatPartialDate(e.date)}
                 </td>
                 <td className={styles.full}>
-                  <Link className={styles.cellMain} href={e.href}>
+                  <Link className={styles.cellMain} href={e.href} data-row-primary="">
                     {e.title}
                   </Link>
                   <span className={styles.cellSub}>{e.issuer?.name ?? e.partiesText}</span>

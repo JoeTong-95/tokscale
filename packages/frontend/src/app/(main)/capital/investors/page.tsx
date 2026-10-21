@@ -106,9 +106,9 @@ export default async function InvestorsPage({ searchParams }: PageProps) {
           </thead>
           <tbody>
             {rows.map((row) => (
-              <tr key={row.org.id}>
+              <tr key={row.org.id} data-row-link={row.org.investorHref ? "" : undefined}>
                 <td className={styles.full}>
-                  <OrgCell org={{ ...row.org, href: row.org.investorHref }} />
+                  <OrgCell org={{ ...row.org, href: row.org.investorHref }} rowLink />
                 </td>
                 <td data-label="Type">{row.org.investorTypeLabels.join(", ")}</td>
                 <td className={`${styles.right} ${styles.num}`} data-label="Rounds and deals">

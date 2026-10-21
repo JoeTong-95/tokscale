@@ -265,9 +265,9 @@ export function EventDetail({ e }: { e: EventView }) {
           </thead>
           <tbody>
             {e.participants.map((p) => (
-              <tr key={p.org.id}>
+              <tr key={p.org.id} data-row-link={p.org.href ? "" : undefined}>
                 <td className={styles.full}>
-                  <OrgCell org={p.org} />
+                  <OrgCell org={p.org} rowLink />
                 </td>
                 <td data-label="Role">{p.roleLabels.join(", ")}</td>
                 <td data-label="Type">{p.org.categoryLabel ?? p.org.investorTypeLabels.join(", ")}</td>
@@ -310,9 +310,12 @@ export function EventDetail({ e }: { e: EventView }) {
           </div>
           <ul className={styles.rows}>
             {step ? (
-              <li className={styles.row}>
+              <li className={styles.row} data-row-link="">
                 <p className={styles.rowTitle}>
-                  Previous round: <Link href={step.previous.href}>{step.previous.title}</Link>
+                  Previous round:{" "}
+                  <Link href={step.previous.href} data-row-primary="">
+                    {step.previous.title}
+                  </Link>
                 </p>
                 <p className={styles.rowMeta}>
                   {formatPartialDate(step.previous.date)}
@@ -322,9 +325,11 @@ export function EventDetail({ e }: { e: EventView }) {
               </li>
             ) : null}
             {e.relations.map((r) => (
-              <li className={styles.row} key={`${r.type}-${r.event.id}`}>
+              <li className={styles.row} key={`${r.type}-${r.event.id}`} data-row-link="">
                 <p className={styles.rowTitle}>
-                  <Link href={r.event.href}>{r.event.title}</Link>
+                  <Link href={r.event.href} data-row-primary="">
+                    {r.event.title}
+                  </Link>
                 </p>
                 <p className={styles.rowMeta}>
                   {formatPartialDate(r.event.date)}

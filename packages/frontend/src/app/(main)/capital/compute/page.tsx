@@ -122,12 +122,12 @@ export default async function ComputePage({ searchParams }: PageProps) {
             const alternative = e.amounts.find((a) => a.skipped === "alternative");
             const capacity = e.quantities.filter((q) => q.quantity.measure !== "shares" && q.quantity.measure !== "investors");
             return (
-              <tr key={e.id}>
+              <tr key={e.id} data-row-link="">
                 <td className={styles.nowrap} data-label="Date">
                   {formatPartialDate(e.date)}
                 </td>
                 <td className={styles.full}>
-                  <Link className={styles.cellMain} href={e.href}>
+                  <Link className={styles.cellMain} href={e.href} data-row-primary="">
                     {e.title}
                   </Link>
                   <span className={styles.cellSub}>
@@ -211,8 +211,16 @@ export default async function ComputePage({ searchParams }: PageProps) {
                 const mw = capacityBy(entry.deals, "it_load_mw");
                 const gw = capacityBy(entry.deals, "capacity_gw");
                 return (
-                  <tr key={id}>
-                    <td className={styles.full}>{entry.href ? <Link className={styles.cellMain} href={entry.href}>{entry.name}</Link> : <span className={styles.cellMain}>{entry.name}</span>}</td>
+                  <tr key={id} data-row-link={entry.href ? "" : undefined}>
+                    <td className={styles.full}>
+                      {entry.href ? (
+                        <Link className={styles.cellMain} href={entry.href} data-row-primary="">
+                          {entry.name}
+                        </Link>
+                      ) : (
+                        <span className={styles.cellMain}>{entry.name}</span>
+                      )}
+                    </td>
                     <td className={`${styles.right} ${styles.num}`} data-label="Deals">
                       {entry.deals.length}
                     </td>

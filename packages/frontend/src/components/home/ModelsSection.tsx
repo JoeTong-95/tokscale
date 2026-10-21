@@ -35,10 +35,10 @@ export function ModelsSection({ models, coverage }: ModelsSectionProps) {
             <Lead>
               See how many people use a model, which agents they use it through, and how many tokens it handles.
             </Lead>
+            <TextLink href="/models">
+              Compare models <Arrow />
+            </TextLink>
           </SectionHeader>
-          <TextLink href="/models">
-            Compare models <Arrow />
-          </TextLink>
         </Head>
 
         {pair.length > 0 && coverage ? (
@@ -146,11 +146,6 @@ function ModelColumn({ model, accounts }: { model: ModelUsageRow; accounts: numb
 }
 
 const Head = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 24px;
   margin-bottom: 40px;
 `;
 

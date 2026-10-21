@@ -6,7 +6,8 @@ export const portfoliosPath = (view?: "table") => (view ? `/capital/portfolios?v
 export const fundPath = (fund: string) => `/capital/funds/${encodeURIComponent(fund)}`;
 export const quarterPath = (fund: string, quarter: string) =>
   `${fundPath(fund)}/holdings/${encodeURIComponent(quarter)}`;
-export const companyPath = (slug: string) => `/companies/${encodeURIComponent(slug)}`;
+/** Company pages live inside Capital; model pages link their lab here too. */
+export const companyPath = (slug: string) => `/capital/companies/${encodeURIComponent(slug)}`;
 /** 1200x630 Open Graph card for a quarter page (route handler next to the page). */
 export const quarterOgImagePath = (fund: string, quarter: string) => `${quarterPath(fund, quarter)}/og`;
 

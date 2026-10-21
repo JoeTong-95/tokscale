@@ -30,7 +30,7 @@ export interface ModelRef {
   name: string;
   /** Lab/company display name, or null when unknown. */
   lab: string | null;
-  /** Lab/company slug for /companies/[slug], or null. */
+  /** Lab/company slug for /capital/companies/[slug], or null. */
   labSlug: string | null;
   /** Model family mark (e.g. "/assets/v2/models/claude.svg"), or null when the family is unknown. */
   logoUrl: string | null;

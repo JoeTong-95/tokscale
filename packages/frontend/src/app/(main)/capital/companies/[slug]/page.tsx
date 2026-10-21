@@ -14,11 +14,11 @@ import {
   quarterLabel,
   quarterKeyForPeriod,
 } from "@/lib/capital";
-import { Breadcrumbs } from "../../capital/_components/Breadcrumbs";
-import { CapitalShell } from "../../capital/_components/CapitalShell";
-import { JsonLd } from "../../capital/_components/JsonLd";
-import styles from "../../capital/_components/capital.module.css";
-import { changeClass, changeText } from "../../capital/_components/changeLabel";
+import { Breadcrumbs } from "../../_components/Breadcrumbs";
+import { CapitalShell } from "../../_components/CapitalShell";
+import { JsonLd } from "../../_components/JsonLd";
+import styles from "../../_components/capital.module.css";
+import { changeClass, changeText } from "../../_components/changeLabel";
 
 interface PageProps {
   params: Promise<{ slug: string }>;

@@ -10,7 +10,7 @@ export interface LabGroup {
   /** labSlug, or UNKNOWN_LAB_KEY when the lab is not identified. */
   key: string;
   name: string;
-  /** Slug for /companies/[slug], or null. */
+  /** Slug for /capital/companies/[slug], or null. */
   slug: string | null;
   models: ModelUsageRow[];
 }

@@ -28,6 +28,11 @@ const nextConfig: NextConfig = {
     ],
   },
 
+  // Company pages moved under /capital; keep any shared /companies links working.
+  redirects: async () => [
+    { source: "/companies/:slug", destination: "/capital/companies/:slug", permanent: true },
+  ],
+
   // Security headers for production
   headers: async () => [
     {

@@ -248,7 +248,7 @@ describe("pages and SEO", () => {
     const urls = entries.map((e) => e.url);
     expect(new Set(urls).size).toBe(urls.length);
     expect(urls.some((u) => u.endsWith("/capital/funds/thiel-macro/holdings/2026-q2"))).toBe(true);
-    expect(urls.some((u) => u.endsWith("/companies/amazon"))).toBe(true);
+    expect(urls.some((u) => u.endsWith("/capital/companies/amazon"))).toBe(true);
     const quarter = entries.find((e) => e.url.endsWith("/thiel-macro/holdings/2026-q2"))!;
     expect((quarter.lastModified as Date).toISOString()).toBe("2026-10-19T00:00:00.000Z");
     // 2 section pages + 2 funds + 8 quarters + every company with data

@@ -87,7 +87,7 @@ describe("navigation", () => {
     expect(isNavItemActive(leaderboards, "/groups/acme")).toBe(true);
     expect(isNavItemActive(models, "/models/claude-opus-5")).toBe(true);
     expect(isNavItemActive(models, "/modelsx")).toBe(false);
-    expect(isNavItemActive(capital, "/companies/anthropic")).toBe(true);
+    expect(isNavItemActive(capital, "/capital/companies/anthropic")).toBe(true);
     expect(isNavItemActive(capital, null)).toBe(false);
   });
 });

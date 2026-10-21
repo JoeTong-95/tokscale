@@ -30,9 +30,8 @@ export function methodologyUrl(): string {
   return `${getPublicOrigin()}/methodology`;
 }
 
-export function companyPath(slug: string): string {
-  return `/companies/${encodeURIComponent(slug)}`;
-}
+/** Company pages live inside Capital (see @/lib/capital/urls). */
+export { companyPath } from "@/lib/capital/urls";
 
 export function modelPath(key: string): string {
   return `/models/${encodeURIComponent(key)}`;

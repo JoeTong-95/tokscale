@@ -1625,8 +1625,7 @@ a.companyName:hover {
   text-transform: uppercase;
 }
 
-.input,
-.select {
+.input {
   height: 34px;
   padding: 0 10px;
   border: 1px solid var(--cap-rule-strong);
@@ -1638,6 +1637,15 @@ a.companyName:hover {
   font-weight: 500;
   letter-spacing: normal;
   text-transform: none;
+}
+
+/* The filter selects are the shared Select component; these set its size and colours. */
+.select {
+  --select-height: 34px;
+  --select-font-size: 0.8125rem;
+  --select-padding-x: 10px;
+  --select-background: rgba(255, 255, 255, 0.03);
+  --select-border-color: var(--cap-rule-strong);
 }
 
 .input {
@@ -1707,9 +1715,12 @@ a.companyName:hover {
   }
 
   .input,
-  .select,
   .button {
     height: 44px;
+  }
+
+  .select {
+    --select-height: 44px;
   }
 }
 

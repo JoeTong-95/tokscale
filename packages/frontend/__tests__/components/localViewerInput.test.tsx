@@ -66,10 +66,45 @@ describe("local viewer data input", () => {
     expect(fetch).toHaveBeenCalledWith("/sample-data.json");
   });
 
+  it("loads a chosen .json file in the browser", async () => {
+    const data = localExport();
+    const { onDataLoaded } = setup();
+    expect(screen.getByRole("button", { name: "Choose file" })).toBeTruthy();
+    const input = document.querySelector<HTMLInputElement>('input[type="file"]');
+    expect(input?.accept).toBe(".json,application/json");
+    const file = new File([JSON.stringify(data)], "usage.json", { type: "application/json" });
+    fireEvent.change(input as HTMLInputElement, { target: { files: [file] } });
+    await waitFor(() => expect(onDataLoaded).toHaveBeenCalledWith(data));
+  });
+
+  it("loads a dropped export and shows where to drop it while dragging", async () => {
+    const data = localExport();
+    const { onDataLoaded } = setup();
+    const card = screen.getByRole("region", { name: "Load token usage data" });
+    const file = new File([JSON.stringify(data)], "usage.json", { type: "application/json" });
+    const dataTransfer = { types: ["Files"], files: [file], dropEffect: "none" };
+
+    fireEvent.dragEnter(card, { dataTransfer });
+    expect(card.textContent).toContain("Drop the export to load it");
+    fireEvent.drop(card, { dataTransfer });
+    expect(card.textContent).not.toContain("Drop the export to load it");
+    await waitFor(() => expect(onDataLoaded).toHaveBeenCalledWith(data));
+  });
+
+  it("refuses a dropped file that is not JSON", async () => {
+    const { onDataLoaded } = setup();
+    const card = screen.getByRole("region", { name: "Load token usage data" });
+    const file = new File(["not an export"], "notes.txt", { type: "text/plain" });
+    fireEvent.drop(card, { dataTransfer: { types: ["Files"], files: [file] } });
+    await waitFor(() => expect(screen.getByRole("alert").textContent).toContain("notes.txt is not a .json file"));
+    expect(onDataLoaded).not.toHaveBeenCalled();
+  });
+
   it("explains how to get an export", () => {
     setup();
     const steps = screen.getByRole("region", { name: "How to get your data" });
     expect(steps.textContent).toContain("bunx tokscale");
     expect(steps.textContent).toContain("tokscale graph");
+    expect(steps.textContent).toContain("tokscale graph --output usage.json");
   });
 });

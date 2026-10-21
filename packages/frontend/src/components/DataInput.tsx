@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useId, useState } from "react";
+import { useCallback, useId, useRef, useState, type DragEvent } from "react";
 import styled, { keyframes } from "styled-components";
 import type { TokenContributionData } from "@/lib/types";
 import { isValidContributionData } from "@/lib/utils";
@@ -10,26 +10,38 @@ interface DataInputProps {
   onDataLoaded: (data: TokenContributionData) => void;
 }
 
+/** Read a chosen or dropped file as text. FileReader works in every browser the site supports. */
+function readFileText(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(typeof reader.result === "string" ? reader.result : "");
+    reader.onerror = () => reject(reader.error ?? new Error("The file could not be read"));
+    reader.readAsText(file);
+  });
+}
+
 export function DataInput({ onDataLoaded }: DataInputProps) {
   const [rawJson, setRawJson] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const titleId = useId();
   const textareaId = useId();
   const tipId = useId();
   const errorId = useId();
   const stepsId = useId();
 
-  const parseJson = useCallback(() => {
+  const parseText = useCallback((text: string) => {
     setError(null);
 
-    if (!rawJson.trim()) {
+    if (!text.trim()) {
       setError("Please enter JSON data");
       return;
     }
 
     try {
-      const parsed = JSON.parse(rawJson);
+      const parsed = JSON.parse(text);
 
       if (!isValidContributionData(parsed)) {
         setError("Invalid data format. Expected TokenContributionData structure with meta, summary, years, and contributions.");
@@ -40,7 +52,27 @@ export function DataInput({ onDataLoaded }: DataInputProps) {
     } catch (err) {
       setError(`Invalid JSON: ${err instanceof Error ? err.message : "Unknown error"}`);
     }
-  }, [rawJson, onDataLoaded]);
+  }, [onDataLoaded]);
+
+  const parseJson = useCallback(() => parseText(rawJson), [parseText, rawJson]);
+
+  // A file is read in the browser, like pasted text: nothing leaves the machine.
+  const loadFile = useCallback(async (file: File) => {
+    setError(null);
+    if (!/\.json$/i.test(file.name) && file.type !== "application/json") {
+      setError(`${file.name} is not a .json file. Save the export with tokscale graph --output usage.json.`);
+      return;
+    }
+    try {
+      const text = await readFileText(file);
+      setRawJson(text);
+      parseText(text);
+    } catch (err) {
+      setError(`Failed to read ${file.name}: ${err instanceof Error ? err.message : "Unknown error"}`);
+    }
+  }, [parseText]);
+
+  const draggingFiles = (event: DragEvent) => Array.from(event.dataTransfer?.types ?? []).includes("Files");
 
   const loadSampleData = useCallback(async () => {
     setIsLoading(true);
@@ -64,11 +96,35 @@ export function DataInput({ onDataLoaded }: DataInputProps) {
 
   return (
     <Layout>
-      <InputCard aria-labelledby={titleId}>
+      <InputCard
+        aria-labelledby={titleId}
+        $dragging={isDragging}
+        onDragEnter={(event) => {
+          if (!draggingFiles(event)) return;
+          event.preventDefault();
+          setIsDragging(true);
+        }}
+        onDragOver={(event) => {
+          if (!draggingFiles(event)) return;
+          event.preventDefault();
+          event.dataTransfer.dropEffect = "copy";
+        }}
+        onDragLeave={(event) => {
+          if (event.relatedTarget instanceof Node && event.currentTarget.contains(event.relatedTarget)) return;
+          setIsDragging(false);
+        }}
+        onDrop={(event) => {
+          if (!draggingFiles(event)) return;
+          event.preventDefault();
+          setIsDragging(false);
+          const file = event.dataTransfer.files[0];
+          if (file) void loadFile(file);
+        }}
+      >
         <CardHeader>
           <CardTitle id={titleId}>Load token usage data</CardTitle>
           <CardLead>
-            Paste JSON from <InlineCode>tokscale graph</InlineCode>, or load sample data.
+            Paste JSON from <InlineCode>tokscale graph</InlineCode>, choose or drop a saved export, or load sample data.
           </CardLead>
         </CardHeader>
 
@@ -93,7 +149,7 @@ export function DataInput({ onDataLoaded }: DataInputProps) {
             aria-describedby={error ? `${tipId} ${errorId}` : tipId}
             $hasError={!!error}
           />
-          <Tip id={tipId}>Tip: Press Ctrl+Enter (Cmd+Enter on Mac) to parse.</Tip>
+          <Tip id={tipId}>Tip: Press Ctrl+Enter (Cmd+Enter on Mac) to parse. You can also drop a .json file on this card.</Tip>
 
           {error && (
             <ErrorBox id={errorId} role="alert">
@@ -105,6 +161,22 @@ export function DataInput({ onDataLoaded }: DataInputProps) {
             <PrimaryButton type="button" onClick={parseJson} disabled={isLoading || !rawJson.trim()}>
               Parse JSON
             </PrimaryButton>
+
+            <SecondaryButton type="button" onClick={() => fileInputRef.current?.click()} disabled={isLoading}>
+              Choose file
+            </SecondaryButton>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".json,application/json"
+              hidden
+              onChange={(event) => {
+                const file = event.target.files?.[0];
+                // Clear it so choosing the same file again still loads it.
+                event.target.value = "";
+                if (file) void loadFile(file);
+              }}
+            />
 
             <SecondaryButton type="button" onClick={loadSampleData} disabled={isLoading}>
               {isLoading ? (
@@ -121,6 +193,8 @@ export function DataInput({ onDataLoaded }: DataInputProps) {
             </SecondaryButton>
           </Actions>
         </CardBody>
+
+        {isDragging && <DropHint aria-hidden="true">Drop the export to load it</DropHint>}
       </InputCard>
 
       <Steps aria-labelledby={stepsId}>
@@ -134,7 +208,10 @@ export function DataInput({ onDataLoaded }: DataInputProps) {
             Run the graph command
             <Command>tokscale graph</Command>
           </li>
-          <li>Copy the JSON output and paste it into the box.</li>
+          <li>
+            Copy the JSON output and paste it into the box, or save it to a file and choose or drop it here.
+            <Command>tokscale graph --output usage.json</Command>
+          </li>
         </StepList>
       </Steps>
     </Layout>
@@ -144,7 +221,7 @@ export function DataInput({ onDataLoaded }: DataInputProps) {
 const Layout = styled.div`
   display: grid;
   max-width: 1120px;
-  grid-template-columns: minmax(0, 1fr) minmax(240px, 320px);
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 360px);
   align-items: start;
   gap: 16px;
 
@@ -153,12 +230,27 @@ const Layout = styled.div`
   }
 `;
 
-const InputCard = styled.section`
+const InputCard = styled.section<{ $dragging: boolean }>`
+  position: relative;
   min-width: 0;
   overflow: hidden;
-  border: 1px solid var(--service-border);
+  border: 1px solid ${({ $dragging }) => ($dragging ? "var(--service-focus)" : "var(--service-border)")};
   border-radius: 12px;
   background: var(--service-surface);
+`;
+
+const DropHint = styled.div`
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border: 2px dashed var(--service-focus);
+  border-radius: 12px;
+  background: rgba(7, 9, 13, 0.92);
+  color: var(--service-text);
+  font-size: 1rem;
+  font-weight: 600;
+  pointer-events: none;
 `;
 
 const CardHeader = styled.header`
@@ -414,5 +506,5 @@ const Command = styled.code`
   background: var(--service-surface-muted);
   color: var(--service-text);
   font-size: 0.8125rem;
-  white-space: nowrap;
+  white-space: normal;
 `;

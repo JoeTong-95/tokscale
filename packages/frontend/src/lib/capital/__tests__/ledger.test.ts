@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { quarterLabel } from "@/lib/capital";
 import { capitalSitemapEntries } from "@/lib/capital/sitemap";
 import { legacyCapitalRedirect } from "@/lib/capital/redirects";
 import { ledger, total } from "@/lib/capital/ledger";
@@ -47,6 +48,8 @@ describe("ledger views", () => {
   it("adds capex only inside one aligned calendar quarter and one currency", () => {
     const q = ledger.capexCalendarQuarter()!;
     expect(q.key).toMatch(/^\d{4}-q[1-4]$/);
+    expect(q.label).toBe(quarterLabel(q.key));
+    expect(quarterLabel("2026-q2")).toBe("Q2 2026");
     expect(q.entries.every((e) => e.quarter.calendarQuarter === q.key && e.quarter.currency === "USD")).toBe(true);
     expect(q.total.value).toBe(q.entries.reduce((sum, e) => sum + e.quarter.value, 0));
     expect(q.derivedCount).toBe(q.entries.filter((e) => e.quarter.derived).length);

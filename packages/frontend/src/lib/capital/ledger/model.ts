@@ -1,4 +1,3 @@
-import { capital as thirteenF } from "../model";
 import { quarterLabel } from "../format";
 import {
   companyPath,
@@ -459,7 +458,6 @@ export function createLedgerModel(content: LedgerContent) {
     }
     const metricStatements = statementsOf(org.id);
     const capex = capexViews.get(org.id) ?? null;
-    const holdings = thirteenF.getCompany(slug);
     // Parties to deals (compute, leases, acquisitions). Round investors are listed in their own section.
     const counterparties = new Map<string, OrgView>();
     for (const e of timeline.filter((x) => x.route === "deals")) {
@@ -474,8 +472,7 @@ export function createLedgerModel(content: LedgerContent) {
       ...(org.parent ? [org.parent.sourceId] : []),
       ...(org.founded ? [org.founded.sourceId] : []),
     ]);
-    const factCount =
-      timeline.length + metricStatements.length + (capex ? capex.quarters.length + capex.years.length : 0) + (holdings?.positions.length ?? 0);
+    const factCount = timeline.length + metricStatements.length + (capex ? capex.quarters.length + capex.years.length : 0);
     const reviewed = [org.reviewedAt, ...timeline.map((e) => e.event.reviewedAt), ...timeline.flatMap((e) => e.event.corrections.map((c) => c.date))]
       .sort()
       .at(-1)!;
@@ -500,7 +497,6 @@ export function createLedgerModel(content: LedgerContent) {
       statements: metricStatements,
       latestRunRate: metricStatements.find((s) => s.measure === "revenue_run_rate" && HEADER_STATUSES.has(s.status)) ?? null,
       capex,
-      holdings,
       counterparties: [...counterparties.values()],
       related,
       sources: [...citedSourceIds].map(sourceOf).sort((a, b) => (b.publishedAt ?? "").localeCompare(a.publishedAt ?? "")),
@@ -525,9 +521,8 @@ export function createLedgerModel(content: LedgerContent) {
     const ownAmounts = participations.flatMap((p) =>
       p.event.amounts.filter((a) => a.amount.from === org.id && a.amount.measure !== "cumulative_investment")
     );
-    const fund = org.fund ? thirteenF.getFund(org.fund) : null;
     const otherEvents = eventsOf(org.id).filter((e) => !participations.some((p) => p.event.id === e.id));
-    const factCount = participations.length + (fund ? fund.quarters.filter((q) => q.holdings.length > 0).length : 0);
+    const factCount = participations.length;
     const dates = participations.map((p) => p.event.date).sort();
     return {
       org: view,
@@ -538,7 +533,6 @@ export function createLedgerModel(content: LedgerContent) {
       portfolio: [...portfolio.values()],
       ownAmounts,
       otherEvents,
-      fund,
       companyHref: view.companyHref,
       sources: [...new Set(participations.flatMap((p) => p.event.event.sourceIds))].map(sourceOf),
       factCount,
@@ -633,15 +627,13 @@ export function createLedgerModel(content: LedgerContent) {
       .filter((o) => o.kinds.includes("investor"))
       .map((o) => {
         const parts = (investorParticipations.get(o.id) ?? []).sort((a, b) => b.event.date.localeCompare(a.event.date));
-        const fund = o.fund ? thirteenF.getFund(o.fund) : null;
         return {
           org: orgView(o.id),
           rounds: parts.length,
           leads: parts.filter((p) => p.roles.includes("lead_investor") || p.roles.includes("co_lead")).length,
           latest: parts[0] ? eventView(parts[0].event) : null,
           portfolio: [...new Set(parts.map((p) => eventView(p.event).issuer?.displayName).filter(Boolean))] as string[],
-          fund,
-          indexable: parts.length > 0 || Boolean(fund),
+          indexable: parts.length > 0,
         };
       });
   }
@@ -724,7 +716,6 @@ export function createLedgerModel(content: LedgerContent) {
       const formD = financing
         .flatMap((e) => e.amounts)
         .find((a) => a.amount.measure === "form_d_amount_sold" && a.amount.value !== null) ?? null;
-      const holdings = thirteenF.getCompany(org.slug);
       return {
         org,
         country: org.org.hq?.country ?? null,
@@ -744,7 +735,6 @@ export function createLedgerModel(content: LedgerContent) {
         capexLatest: capex?.quarters.at(-1) ?? null,
         capexTtm: ttmContiguous ? { value: lastFour.reduce((s, q) => s + q.value, 0), currency: lastFour[0].currency, start: lastFour[0].start, end: lastFour[3].end, derived: lastFour.some((q) => q.derived) } : null,
         formD,
-        holders13f: holdings ? holdings.current.length : 0,
         leadsOfLastRound: lastRound
           ? lastRound.participants.filter((p) => p.roles.includes("lead_investor") || p.roles.includes("co_lead")).map((p) => p.org)
           : [],

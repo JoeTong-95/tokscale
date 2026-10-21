@@ -4,25 +4,26 @@ import { useState } from "react";
 import styled from "styled-components";
 import type { SupportedAgent } from "@/components/home/agents";
 
-const INITIAL_COUNT = 16;
+/** Phones show this many agents until the list is expanded; wider screens show all. */
+const MOBILE_COUNT = 12;
+const MOBILE_MAX = "680px";
 
 export function AgentsGrid({ agents }: { agents: SupportedAgent[] }) {
   const [expanded, setExpanded] = useState(false);
-  const visible = expanded ? agents : agents.slice(0, INITIAL_COUNT);
-  const hidden = agents.length - INITIAL_COUNT;
+  const collapsible = agents.length > MOBILE_COUNT;
 
   return (
     <div>
-      <Grid id="supported-agents-list">
-        {visible.map((agent) => (
+      <Grid id="supported-agents-list" data-expanded={expanded ? "true" : "false"}>
+        {agents.map((agent) => (
           <li key={agent.key}>
-            {/* eslint-disable-next-line @next/next/no-img-element -- remote logos from mixed hosts */}
-            <img src={agent.logoUrl} alt="" width={24} height={24} loading="lazy" />
-            <span>{agent.name}</span>
+            {/* eslint-disable-next-line @next/next/no-img-element -- small static icons */}
+            <img src={agent.logoUrl} alt="" width={20} height={20} loading="lazy" decoding="async" />
+            <span title={agent.name}>{agent.name}</span>
           </li>
         ))}
       </Grid>
-      {hidden > 0 ? (
+      {collapsible ? (
         <Toggle
           type="button"
           aria-expanded={expanded}
@@ -38,62 +39,50 @@ export function AgentsGrid({ agents }: { agents: SupportedAgent[] }) {
 
 const Grid = styled.ul`
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(156px, 1fr));
+  gap: 0 20px;
   margin: 0;
   padding: 0;
-  border-top: 1px solid var(--v2-rule);
-  border-left: 1px solid var(--v2-rule);
   list-style: none;
 
   li {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     min-width: 0;
-    min-height: 64px;
-    padding: 12px 16px;
-    border-right: 1px solid var(--v2-rule);
-    border-bottom: 1px solid var(--v2-rule);
+    min-height: 36px;
   }
 
   img {
     flex-shrink: 0;
-    width: 24px;
-    height: 24px;
-    border-radius: 6px;
-    background: #fff;
-    object-fit: contain;
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 0 1px var(--v2-rule);
   }
 
   span {
     overflow: hidden;
     color: var(--v2-text);
-    font-size: 15px;
+    font-size: 14px;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  @media (max-width: 960px) {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  @media (max-width: 680px) {
+  @media (max-width: ${MOBILE_MAX}) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 16px;
 
-    li {
-      min-height: 56px;
-      padding: 10px 12px;
-    }
-
-    span {
-      font-size: 14px;
+    &[data-expanded="false"] li:nth-child(n + ${MOBILE_COUNT + 1}) {
+      display: none;
     }
   }
 `;
 
 const Toggle = styled.button`
+  display: none;
   min-height: 44px;
-  margin-top: 16px;
+  margin-top: 12px;
   padding: 0 16px;
   border: 1px solid var(--v2-rule-strong);
   border-radius: 8px;
@@ -109,5 +98,10 @@ const Toggle = styled.button`
   &:focus-visible {
     outline: 2px solid var(--v2-focus);
     outline-offset: 3px;
+  }
+
+  @media (max-width: ${MOBILE_MAX}) {
+    display: inline-flex;
+    align-items: center;
   }
 `;

@@ -26,6 +26,7 @@ export interface HomeCapitalLab {
   name: string;
   href: string | null;
   logo: string | null;
+  avatar: string | null;
   monogram: string;
   /** Share of identified-model tokens among Tokscale users in the window (0..1). */
   share: number;
@@ -150,6 +151,7 @@ function labs(ledger: LedgerModel, snapshot: UsageSnapshot | null): HomeCapitalL
       name: row.org.displayName,
       href: row.org.companyHref ?? row.org.href,
       logo: row.org.logo,
+      avatar: row.org.avatar,
       monogram: row.org.monogram,
       share: usage!.share ?? 0,
       topModel: top ? { key: top.key, name: top.name, logoUrl: top.logoUrl, href: `/models/${encodeURIComponent(top.key)}` } : null,

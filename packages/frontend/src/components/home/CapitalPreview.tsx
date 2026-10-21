@@ -147,7 +147,13 @@ function LabRow({ lab }: { lab: HomeCapitalLab }) {
     <LabItem>
       <LabName>
         <OrgTile aria-hidden="true">
-          {lab.logo ? <OrgLogo src={lab.logo} alt="" width={16} height={16} loading="lazy" /> : lab.monogram}
+          {lab.logo ? (
+            <OrgLogo src={lab.logo} alt="" width={16} height={16} loading="lazy" />
+          ) : lab.avatar ? (
+            <OrgAvatar src={lab.avatar} alt="" width={26} height={26} loading="lazy" />
+          ) : (
+            lab.monogram
+          )}
         </OrgTile>
         {lab.href ? <CellLink href={lab.href}>{lab.name}</CellLink> : <span>{lab.name}</span>}
       </LabName>
@@ -441,6 +447,7 @@ const OrgTile = styled.span`
   width: 26px;
   height: 26px;
   place-items: center;
+  overflow: hidden;
   border: 1px solid var(--v2-rule-strong);
   border-radius: 6px;
   background: var(--v2-surface-raised);
@@ -453,6 +460,14 @@ const OrgLogo = styled.img`
   display: block;
   width: 16px;
   height: 16px;
+`;
+
+/* The company's own square picture fills the tile. */
+const OrgAvatar = styled.img`
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 `;
 
 const CellLink = styled(Link)`

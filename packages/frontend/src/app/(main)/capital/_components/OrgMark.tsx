@@ -4,13 +4,17 @@ import styles from "./capital.module.css";
 
 /**
  * Decorative company mark. A vendored lab mark (LobeHub, MIT) where one exists for the
- * company itself; otherwise a text monogram. The name is always rendered next to it.
+ * company itself, else the company's own square picture (X, LinkedIn or site icon),
+ * else a text monogram. The name is always rendered next to it.
  */
-export function OrgMark({ org, large = false }: { org: Pick<OrgView, "logo" | "monogram">; large?: boolean }) {
-  const size = large ? 28 : 16;
+export function OrgMark({ org, large = false }: { org: Pick<OrgView, "logo" | "avatar" | "monogram">; large?: boolean }) {
+  const avatar = org.logo ? null : org.avatar;
+  const className = [styles.mark, large ? styles.markLarge : "", avatar ? styles.markAvatar : ""].filter(Boolean).join(" ");
+  const src = org.logo ?? avatar;
+  const size = org.logo ? (large ? 28 : 16) : large ? 48 : 28;
   return (
-    <span className={`${styles.mark} ${large ? styles.markLarge : ""}`} aria-hidden="true">
-      {org.logo ? <Image src={org.logo} alt="" width={size} height={size} unoptimized /> : org.monogram}
+    <span className={className} aria-hidden="true">
+      {src ? <Image src={src} alt="" width={size} height={size} unoptimized /> : org.monogram}
     </span>
   );
 }

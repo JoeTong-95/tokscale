@@ -107,6 +107,8 @@ export interface OrgView {
   href: string | null;
   monogram: string;
   logo: string | null;
+  /** Full-bleed square picture, shown when there is no `logo`. */
+  avatar: string | null;
   primaryCategory: Category | null;
   categoryLabel: string | null;
   investorTypeLabels: string[];
@@ -259,6 +261,7 @@ export function createLedgerModel(content: LedgerContent) {
       href: companyHref ?? investorHref,
       monogram: monogram(org.shortName ?? org.name),
       logo: org.logo ?? null,
+      avatar: org.avatar ?? null,
       primaryCategory,
       categoryLabel: primaryCategory ? CATEGORY_LABELS[primaryCategory] : null,
       investorTypeLabels: org.investorTypes.map((t) => INVESTOR_TYPE_LABELS[t]),

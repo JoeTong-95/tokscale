@@ -149,6 +149,12 @@ export const orgSchema = z
     nportIssuerNames: z.array(z.string().min(1)).default([]),
     /** Vendored mark under /assets/v2/models (LobeHub, MIT). Monogram when absent. */
     logo: z.string().regex(/^\/assets\/v2\/models\/[a-z0-9]+\.svg$/).optional(),
+    /**
+     * Square company picture under /assets/v2/orgs: the org's own X profile picture,
+     * LinkedIn logo or site icon (provenance in SOURCES.json there). Used when there
+     * is no `logo`.
+     */
+    avatar: z.string().regex(/^\/assets\/v2\/orgs\/[a-z0-9-]+\.webp$/).optional(),
     /** Slug in funds.json for a 13F manager. */
     fund: slug.optional(),
     /** Part of the owner-approved seed list (33 companies, 16 investors). */

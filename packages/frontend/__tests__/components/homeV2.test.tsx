@@ -11,6 +11,7 @@ import {
   uniqueByKey,
   uniqueNames,
   updatedLabel,
+  updatedShortLabel,
   userChange,
 } from "../../src/components/home/format";
 import { NAV_ITEMS, isNavItemActive } from "../../src/components/layout/Navigation";
@@ -21,6 +22,12 @@ import { fixtureSnapshot } from "../../src/lib/explore/fixtures";
 import { TOKSCALE_DISCORD_URL, TOKSCALE_X_URL } from "../../src/lib/community";
 
 describe("home format helpers", () => {
+  it("shortens the data time for the snapshot header", () => {
+    expect(updatedShortLabel("2026-10-19T09:24:00.000Z", "2026-10-19")).toBe("09:24 UTC");
+    expect(updatedShortLabel("2026-10-20T01:05:00.000Z", "2026-10-19")).toBe("Oct 20, 01:05 UTC");
+    expect(updatedShortLabel(null, "2026-10-19")).toBeNull();
+  });
+
   it("labels the coverage window in UTC", () => {
     expect(coverageRangeLabel({ start: "2026-09-19", end: "2026-10-18" })).toBe("Sep 19 – Oct 18, 2026");
     expect(coverageRangeLabel({ start: "2025-12-20", end: "2026-01-18" })).toBe("Dec 20, 2025 – Jan 18, 2026");
@@ -114,6 +121,7 @@ describe("community snapshot", () => {
     expect(markup.match(/href="\/models\/[^"]+"/g)).toHaveLength(5);
     expect(markup).toContain("Last 30 days");
     expect(markup).toContain("Est. cost");
+    expect(markup).toMatch(/Updated (<!-- -->)?Oct 19, 04:12 UTC/);
     expect(markup).not.toContain("Based on public usage submissions");
   });
 

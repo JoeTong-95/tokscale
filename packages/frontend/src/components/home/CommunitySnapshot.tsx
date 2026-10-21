@@ -6,7 +6,15 @@ import type { CommunitySnapshot as Snapshot, HumanRow, ModelUsageRow } from "@/l
 import { AgentMark } from "@/components/explore/ExploreUI";
 import { ModelMark } from "@/components/explore/ModelMark";
 import { Arrow, focusRing, VisuallyHidden } from "./primitives";
-import { compactCurrency, compactNumber, coverageRangeLabel, periodLabel, userChange, wholeNumber } from "./format";
+import {
+  compactCurrency,
+  compactNumber,
+  coverageRangeLabel,
+  periodLabel,
+  updatedShortLabel,
+  userChange,
+  wholeNumber,
+} from "./format";
 
 interface CommunitySnapshotProps {
   snapshot: Snapshot | null;
@@ -18,6 +26,7 @@ export function CommunitySnapshot({ snapshot }: CommunitySnapshotProps) {
   const coverage = snapshot?.coverage ?? null;
   const range = coverage ? coverageRangeLabel(coverage) : null;
   const period = coverage ? periodLabel(coverage.period) : "Last 30 days";
+  const updated = coverage ? updatedShortLabel(coverage.lastDataAt, coverage.end) : null;
 
   return (
     <Panel aria-labelledby="community-snapshot-title">
@@ -26,6 +35,7 @@ export function CommunitySnapshot({ snapshot }: CommunitySnapshotProps) {
         <PeriodMeta>
           <strong>{period}</strong>
           {range ? <span>{range}</span> : null}
+          {updated ? <span>Updated {updated}</span> : null}
         </PeriodMeta>
       </PanelHeader>
 

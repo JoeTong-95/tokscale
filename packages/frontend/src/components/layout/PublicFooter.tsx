@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import styled from "styled-components";
-import { TOKSCALE_DISCORD_URL, TOKSCALE_X_URL } from "@/lib/community";
+import { TOKSCALE_DISCORD_URL, TOKSCALE_INSTAGRAM_URL, TOKSCALE_X_URL } from "@/lib/community";
 
 export const GITHUB_URL = "https://github.com/junhoyeo/tokscale";
 export const SPONSOR_URL = "https://github.com/sponsors/junhoyeo";
@@ -27,6 +27,9 @@ export function PublicFooter() {
           </a>
           <a href={TOKSCALE_X_URL} target="_blank" rel="noopener noreferrer" aria-label="Tokscale on X">
             X
+          </a>
+          <a href={TOKSCALE_INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" aria-label="Tokscale on Instagram">
+            Instagram
           </a>
           <a href={SPONSOR_URL} target="_blank" rel="noopener noreferrer">
             Sponsor

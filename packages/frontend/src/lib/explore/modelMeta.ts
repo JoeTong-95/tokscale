@@ -5,6 +5,7 @@
  * not start with a known family prefix gets lab = null.
  */
 import { SOURCE_DISPLAY_NAMES, SOURCE_LOGOS } from "@/lib/constants";
+import { agentIconUrl } from "@/lib/agentIcons";
 import { ownValue } from "@/lib/safeRecord";
 import type { AgentRef, ModelRef } from "./types";
 
@@ -236,5 +237,5 @@ export function agentRef(client: string): AgentRef {
   const key = agentKey(client);
   const names = SOURCE_DISPLAY_NAMES as Record<string, string>;
   const logos = SOURCE_LOGOS as Record<string, string>;
-  return { key, name: ownValue(names, key) ?? key, logoUrl: ownValue(logos, key) ?? null };
+  return { key, name: ownValue(names, key) ?? key, logoUrl: agentIconUrl(key) ?? ownValue(logos, key) ?? null };
 }

@@ -93,7 +93,7 @@ describe("agentRef", () => {
   it("uses the shared client names and logos", () => {
     const claude = agentRef("claude");
     expect(claude.name).toBe("Claude Code");
-    expect(claude.logoUrl).toMatch(/^https:\/\//);
+    expect(claude.logoUrl).toBe("/assets/v2/agents/client-claude.webp");
   });
 
   it("folds legacy client aliases", () => {

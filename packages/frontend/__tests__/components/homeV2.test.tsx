@@ -1,6 +1,10 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
+import { existsSync } from "node:fs";
+import path from "node:path";
 import { listSupportedAgents, agentLogoUrl } from "../../src/components/home/agents";
+import { AGENT_ICONS } from "../../src/lib/agentIcons";
+import { SOURCE_DISPLAY_NAMES } from "../../src/lib/constants";
 import { CapitalPreview } from "../../src/components/home/CapitalPreview";
 import { CommunitySnapshot } from "../../src/components/home/CommunitySnapshot";
 import { TrustedBy } from "../../src/components/home/TrustedBy";
@@ -83,6 +87,22 @@ describe("supported agents", () => {
       [],
     );
     expect(agents.map((agent) => agent.key)).toEqual(["a", "c"]);
+  });
+
+  it("uses a vendored README icon for every client", () => {
+    for (const key of Object.keys(SOURCE_DISPLAY_NAMES)) {
+      const icon = AGENT_ICONS[key];
+      expect(icon, key).toMatch(/^\/assets\/v2\/agents\//);
+      expect(existsSync(path.join(process.cwd(), "public", icon)), icon).toBe(true);
+    }
+    expect(listSupportedAgents().every((agent) => agent.logoUrl.startsWith("/assets/v2/agents/"))).toBe(true);
+  });
+
+  it("uses each client's own icon", () => {
+    expect(AGENT_ICONS.omp).toContain("omp-sh");
+    expect(AGENT_ICONS["9router"]).toBe("/assets/v2/agents/9router.svg");
+    expect(AGENT_ICONS["9router"]).not.toBe(AGENT_ICONS.gjc);
+    expect(AGENT_ICONS.kilo).toBe(AGENT_ICONS.kilocode);
   });
 
   it("falls back to the client registry logo", () => {

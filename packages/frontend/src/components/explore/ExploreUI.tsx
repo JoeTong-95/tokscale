@@ -8,6 +8,7 @@
 import Link from "next/link";
 import styled from "styled-components";
 import { SegmentButton, SegmentedGroup } from "@/components/leaderboard/RankingUI";
+import { agentIconUrl } from "@/lib/agentIcons";
 import { SOURCE_LOGOS } from "@/lib/constants";
 import type { AgentRef, Coverage } from "@/lib/explore";
 import { clampShare, describeCoverage, formatShare, type UsersChange } from "./format";
@@ -385,6 +386,8 @@ const MarkMonogram = styled.span<{ $size: number }>`
 export function agentLogoUrl(agent: Pick<AgentRef, "key" | "logoUrl">): string | null {
   if (agent.logoUrl) return agent.logoUrl;
   const key = agent.key.toLowerCase();
+  const icon = agentIconUrl(key);
+  if (icon) return icon;
   return Object.prototype.hasOwnProperty.call(SOURCE_LOGOS, key)
     ? SOURCE_LOGOS[key as keyof typeof SOURCE_LOGOS]
     : null;

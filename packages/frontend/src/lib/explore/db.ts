@@ -29,7 +29,8 @@ import { maxAnchorDate, queryStart, resolveWindow, toIsoDate, type ExploreWindow
 
 export const EXPLORE_REVALIDATE_SECONDS = 600;
 // v2: ModelRef gained logoUrl and more families got a lab. v3: Muse models attributed to Meta. v4: QwQ name.
-const CACHE_VERSION = "v4";
+// v5: agent icons come from the README icons.
+const CACHE_VERSION = "v5";
 const TAGS = ["explore"];
 
 /** Visible (not leaderboard-hidden) day rows. */

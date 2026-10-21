@@ -95,7 +95,14 @@ export interface QuarterView extends QuarterRef {
   /** Share of the reported value in the five largest positions (0..1). */
   topFiveWeight: number;
   previous: (QuarterRef & { reportedValueUsd: number; positions: number; hasPage: boolean }) | null;
+  /**
+   * Change in reported 13F value vs the previous quarter. null when that quarter is not in
+   * the dataset, and also when it listed no positions: a change from an empty report is not a
+   * change in a portfolio, so pages say "all positions new" instead of "+$X from $0".
+   */
   reportedValueChangeUsd: number | null;
+  /** How this quarter compares with the one before it. */
+  comparison: "compared" | "previous-empty" | "not-in-dataset";
   /** Neighbouring quarters that have a page (at least one position). */
   older: QuarterRef | null;
   newer: QuarterRef | null;
@@ -262,7 +269,9 @@ function buildQuarter(content: CapitalContent, fund: PublishedFundRecord, quarte
           hasPage: previousRecord.holdings.length > 0,
         }
       : null,
-    reportedValueChangeUsd: previousTotal === null ? null : total - previousTotal,
+    reportedValueChangeUsd:
+      previousTotal === null || !previousRecord || previousRecord.holdings.length === 0 ? null : total - previousTotal,
+    comparison: !previousRecord ? "not-in-dataset" : previousRecord.holdings.length === 0 ? "previous-empty" : "compared",
     older: olderPage ? ref(fund.slug, olderPage) : null,
     newer: newerPage ? ref(fund.slug, newerPage) : null,
     story: content.stories.find((s) => s.fund === fund.slug && s.quarter === quarter.quarter) ?? null,

@@ -730,6 +730,7 @@ mod tests {
             workspace_key: Some("/Users/z/devpro/ea/ea-world-service".to_string()),
             // The label the aggregator now produces for a worktree row.
             workspace_label: Some("ea-world-service ⑃ nicole-25-20".to_string()),
+            machine: None,
             tokens: Default::default(),
             cost: 5367.48,
             performance: Default::default(),
@@ -815,6 +816,7 @@ mod tests {
             client: "claude".to_string(),
             workspace_key: Some("/Users/z/tokscale".to_string()),
             workspace_label: Some("tokscale ⑃ main".to_string()),
+            machine: None,
             tokens: Default::default(),
             cost: 12.5,
             performance: Default::default(),

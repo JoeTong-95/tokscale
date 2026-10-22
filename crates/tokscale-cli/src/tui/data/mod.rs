@@ -54,6 +54,8 @@ pub struct ModelUsage {
     pub client: String,
     pub workspace_key: Option<String>,
     pub workspace_label: Option<String>,
+    /// Machine label of the row; set only for `GroupBy::MachineModel`.
+    pub machine: Option<String>,
     pub tokens: TokenBreakdown,
     pub cost: f64,
     pub performance: ModelPerformance,
@@ -529,9 +531,11 @@ fn daily_source_model_key(
     match group_by {
         GroupBy::WorkspaceModel => workspace_model_daily_key(workspace_group_key, model),
         GroupBy::ClientProviderModel => format!("{provider_id}:{model}"),
-        GroupBy::Model | GroupBy::ClientModel | GroupBy::Session | GroupBy::ClientSession => {
-            model.to_string()
-        }
+        GroupBy::Model
+        | GroupBy::ClientModel
+        | GroupBy::Session
+        | GroupBy::ClientSession
+        | GroupBy::MachineModel => model.to_string(),
     }
 }
 
@@ -544,9 +548,11 @@ fn daily_source_model_display_name(
     match group_by {
         GroupBy::WorkspaceModel => workspace_model_display_label(workspace_label, model),
         GroupBy::ClientProviderModel => format!("{provider_id} / {model}"),
-        GroupBy::Model | GroupBy::ClientModel | GroupBy::Session | GroupBy::ClientSession => {
-            model.to_string()
-        }
+        GroupBy::Model
+        | GroupBy::ClientModel
+        | GroupBy::Session
+        | GroupBy::ClientSession
+        | GroupBy::MachineModel => model.to_string(),
     }
 }
 
@@ -557,7 +563,8 @@ fn model_color_key(group_by: &GroupBy, _provider_id: &str, model: &str) -> Strin
         | GroupBy::ClientModel
         | GroupBy::WorkspaceModel
         | GroupBy::Session
-        | GroupBy::ClientSession => model.to_string(),
+        | GroupBy::ClientSession
+        | GroupBy::MachineModel => model.to_string(),
     }
 }
 
@@ -568,7 +575,8 @@ fn hourly_model_key(group_by: &GroupBy, provider_id: &str, model: &str) -> Strin
         | GroupBy::ClientModel
         | GroupBy::WorkspaceModel
         | GroupBy::Session
-        | GroupBy::ClientSession => model.to_string(),
+        | GroupBy::ClientSession
+        | GroupBy::MachineModel => model.to_string(),
     }
 }
 
@@ -579,7 +587,8 @@ fn hourly_model_display_name(group_by: &GroupBy, provider_id: &str, model: &str)
         | GroupBy::ClientModel
         | GroupBy::WorkspaceModel
         | GroupBy::Session
-        | GroupBy::ClientSession => model.to_string(),
+        | GroupBy::ClientSession
+        | GroupBy::MachineModel => model.to_string(),
     }
 }
 
@@ -940,8 +949,15 @@ impl DataLoader {
                 GroupBy::ClientSession => {
                     format!("{}:{}:{}", msg.client, msg.session_id, normalized_model)
                 }
+                GroupBy::MachineModel => {
+                    let machine = tokscale_core::message_machine_label(msg);
+                    format!("{}:{}:{}", machine.len(), machine, normalized_model)
+                }
             };
-            let merge_clients = matches!(group_by, GroupBy::Model | GroupBy::WorkspaceModel);
+            let merge_clients = matches!(
+                group_by,
+                GroupBy::Model | GroupBy::WorkspaceModel | GroupBy::MachineModel
+            );
 
             let model_entry = model_map.entry(key.clone()).or_insert_with(|| ModelUsage {
                 model: normalized_model.clone(),
@@ -955,6 +971,11 @@ impl DataLoader {
                 },
                 workspace_label: if *group_by == GroupBy::WorkspaceModel {
                     Some(workspace_label.clone())
+                } else {
+                    None
+                },
+                machine: if *group_by == GroupBy::MachineModel {
+                    Some(tokscale_core::message_machine_label(msg).to_string())
                 } else {
                     None
                 },
@@ -2123,6 +2144,7 @@ mod tests {
             pricing_model_id: None,
             estimate_status: tokscale_core::sessions::EstimateStatus::Unpriced,
             copilot_context: None,
+            machine_label: None,
         };
 
         accumulate_session_entry(&mut entry, &msg, 0.0, "test-model", "test-model", true);
@@ -2889,6 +2911,45 @@ mod tests {
         assert_eq!(usage.models[0].client, "claude, qwen");
         assert_eq!(usage.models[0].session_count, 2);
         assert_eq!(usage.models[0].cost, 4.0);
+    }
+
+    #[test]
+    fn test_aggregate_messages_machine_model_splits_rows_by_machine() {
+        let labeled = |client: &str, session: &str, machine: &str, cost: f64| {
+            let mut msg = make_workspace_message(
+                client,
+                "claude-sonnet-4-5-20250929",
+                "anthropic",
+                session,
+                cost,
+                None,
+                None,
+            );
+            msg.machine_label = Some(machine.to_string());
+            msg
+        };
+        let loader = DataLoader::new(None);
+        let usage = loader
+            .aggregate_messages(
+                vec![
+                    labeled("claude", "session-1", "local", 1.0),
+                    labeled("qwen", "session-2", "local", 2.0),
+                    labeled("claude", "session-3", "steven", 4.0),
+                ],
+                &GroupBy::MachineModel,
+            )
+            .unwrap();
+
+        let mut models = usage.models;
+        models.sort_by(|a, b| a.machine.cmp(&b.machine));
+        assert_eq!(models.len(), 2);
+        assert_eq!(models[0].machine.as_deref(), Some("local"));
+        assert_eq!(models[0].client, "claude, qwen");
+        assert_eq!(models[0].cost, 3.0);
+        assert_eq!(models[1].machine.as_deref(), Some("steven"));
+        assert_eq!(models[1].cost, 4.0);
+        assert_ne!(models[0].group_key, models[1].group_key);
+        assert_eq!(models[0].workspace_label, None);
     }
 
     #[test]

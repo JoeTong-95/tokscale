@@ -296,7 +296,10 @@ const TableWrapper = styled.div`
   }
 `;
 
+/* Rows are row links (globals.css); the cells have padding, so the focus ring sits inside. */
 const Table = styled.table`
+  --row-focus-offset: -2px;
+
   width: 100%;
 `;
 
@@ -326,17 +329,13 @@ const Td = styled.td`
   }
 `;
 
+/* The row's primary link: the whole row opens the profile (row links, globals.css). */
 const UserCell = styled(Link)`
   display: inline-flex;
   align-items: center;
   gap: 10px;
   color: inherit;
   text-decoration: none;
-
-  &:focus-visible {
-    outline: 2px solid var(--service-focus);
-    outline-offset: 3px;
-  }
 `;
 
 const UserAvatar = styled.img`
@@ -357,6 +356,11 @@ const Muted = styled.span`
 const DesktopRow = styled.tr<{ $current: boolean }>`
   background: ${({ $current }) => $current ? "var(--service-accent-soft)" : "transparent"};
   box-shadow: ${({ $current }) => $current ? "inset 2px 0 0 var(--service-accent)" : "none"};
+
+  /* Your own row keeps its tint under the row-link hover. */
+  &[data-row-link]:hover {
+    background: ${({ $current }) => $current ? "var(--service-accent-soft)" : "var(--v2-row-hover)"};
+  }
 `;
 
 const Pagination = styled.div`
@@ -413,11 +417,12 @@ function GroupRow({
   isCurrentUser: boolean;
 }) {
   return (
-    <DesktopRow $current={isCurrentUser}>
+    <DesktopRow $current={isCurrentUser} data-row-link="">
       <Td>#{user.rank}</Td>
       <Td>
         <UserCell
           href={`/u/${user.username}`}
+          data-row-primary=""
           aria-current={isCurrentUser ? "true" : undefined}
         >
           <UserAvatar src={user.avatarUrl || `https://github.com/${user.username}.png`} alt="" />

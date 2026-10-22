@@ -307,10 +307,11 @@ export default async function CompaniesPage({ searchParams }: PageProps) {
           </thead>
           <tbody>
             {shown.map((row) => (
-              <tr key={row.org.id}>
+              <tr key={row.org.id} data-row-link={row.org.href ? "" : undefined}>
                 <td className={styles.full}>
                   <OrgCell
                     org={row.org}
+                    rowLink
                     sub={
                       <span className={styles.mobileOnly}>
                         {[row.categories.map((c) => CATEGORY_LABELS[c]).join(", "), row.country, row.org.statusText].filter(Boolean).join(" · ")}

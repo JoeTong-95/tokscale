@@ -1,10 +1,11 @@
 import { formatMoney } from "@/lib/capital/ledger";
 import { calendarSpanLabel, fiscalLabel, type CapexQuarter } from "@/lib/capital/ledger/capex";
+import { InstantTooltip } from "@/components/ui/InstantTooltip";
 import styles from "./capital.module.css";
 
 /**
  * Small bar chart of quarterly cash capex. Derived quarters (year-to-date minus the earlier
- * year-to-date) are hollow. Each bar has a text title; the table on the spending page holds
+ * year-to-date) are hollow. Each bar has a hover tooltip; the table on the spending page holds
  * the same numbers.
  */
 export function CapexBars({ quarters, label }: { quarters: CapexQuarter[]; label: string }) {
@@ -20,16 +21,17 @@ export function CapexBars({ quarters, label }: { quarters: CapexQuarter[]; label
       {shown.map((q, i) => {
         const h = max > 0 ? Math.max(1, (q.value / max) * (height - 2)) : 1;
         return (
-          <rect
+          <InstantTooltip
+            as="rect"
             key={`${q.start}-${q.end}`}
             className={q.derived ? styles.barDerived : styles.barFill}
             x={i * (barWidth + gap)}
             y={height - h}
             width={barWidth}
             height={h}
-          >
-            <title>{`${fiscalLabel(q)} (${calendarSpanLabel(q.start, q.end)}): ${formatMoney(q.value, q.currency)}${q.derived ? " (derived)" : ""}`}</title>
-          </rect>
+            content={`${fiscalLabel(q)} (${calendarSpanLabel(q.start, q.end)}): ${formatMoney(q.value, q.currency)}${q.derived ? " (derived)" : ""}`}
+            describe={false}
+          />
         );
       })}
     </svg>

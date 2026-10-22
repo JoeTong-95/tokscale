@@ -240,7 +240,10 @@ const DataDetails = styled.details`
   }
 `;
 
+/* Row focus rings sit inside, so the scroller does not clip them. */
 const DataScroll = styled.div`
+  --row-focus-offset: -2px;
+
   max-height: 360px;
   overflow: auto;
   border-top: 1px solid var(--service-border);
@@ -267,6 +270,8 @@ const DataTable = styled.table`
 
   th[scope="col"] {
     position: sticky;
+    /* Above the row links and the links raised over them (globals.css). */
+    z-index: 3;
     top: 0;
     background: var(--service-canvas);
     color: var(--service-text-muted);
@@ -568,8 +573,16 @@ export function ScoreTimeline({ timeline, unit, unitLabel, benchmarkName, source
             </thead>
             <tbody>
               {tableRows.map((p) => (
-                <tr key={p.key}>
-                  <th scope="row">{p.href ? <DataLink href={p.href}>{p.name}</DataLink> : p.name}</th>
+                <tr key={p.key} data-row-link={p.href ? "" : undefined}>
+                  <th scope="row">
+                    {p.href ? (
+                      <DataLink href={p.href} data-row-primary="">
+                        {p.name}
+                      </DataLink>
+                    ) : (
+                      p.name
+                    )}
+                  </th>
                   <td>
                     {formatIsoDay(p.releaseDate)}
                     {p.releaseFrom === "catalog" ? <DataSub>models.dev</DataSub> : null}

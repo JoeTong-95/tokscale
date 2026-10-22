@@ -8,6 +8,7 @@
  */
 import { useCallback, useEffect, useId, useRef, type ReactNode } from "react";
 import styled from "styled-components";
+import { InstantTooltip } from "@/components/ui/InstantTooltip";
 
 /* popover and popoverTarget are valid DOM props in React 19; forward them without styled-components' dev warning. */
 const forwardDomProps = { shouldForwardProp: (prop: string) => !prop.startsWith("$") };
@@ -127,9 +128,9 @@ export function InfoPopover({ label, children }: { label: string; children: Reac
 
   return (
     <>
-      <Trigger ref={triggerRef} type="button" popoverTarget={id} aria-label={label} title={label}>
+      <InstantTooltip as={Trigger} ref={triggerRef} type="button" popoverTarget={id} aria-label={label} content={label} describe={false}>
         <InfoGlyph />
-      </Trigger>
+      </InstantTooltip>
       <Panel ref={panelRef} id={id} popover="auto" role="dialog" aria-label={label}>
         {children}
       </Panel>

@@ -177,7 +177,6 @@ const List = styled.ul`
 `;
 
 const Item = styled.li`
-  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 2px 12px;
@@ -188,10 +187,6 @@ const Item = styled.li`
 
   &:not(:last-child) {
     border-bottom: 1px solid var(--service-border);
-  }
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.02);
   }
 
   @media (min-width: 720px) {
@@ -213,7 +208,7 @@ const NameBlock = styled.div`
   }
 `;
 
-/* Stretched link: the whole row is the touch target. */
+/* The row's primary link: the whole row opens the model (row links, globals.css). */
 const NameLink = styled(Link)`
   overflow: hidden;
   color: var(--service-text);
@@ -223,23 +218,8 @@ const NameLink = styled(Link)`
   text-overflow: ellipsis;
   white-space: nowrap;
 
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-  }
-
   &:hover {
     color: var(--service-accent-hover);
-  }
-
-  &:focus-visible {
-    outline: none;
-  }
-
-  &:focus-visible::after {
-    outline: 2px solid var(--service-focus);
-    outline-offset: -2px;
   }
 
   @media (max-width: 640px) {
@@ -524,10 +504,12 @@ export function ModelCatalog({
               </LabHeading>
               <List id={`lab-list-${group.key}`}>
                 {preview.shown.map((model) => (
-                  <Item key={model.key}>
+                  <Item key={model.key} data-row-link="">
                     <NameBlock>
                       <ModelMark model={model} size={28} />
-                      <NameLink href={modelPath(model.key)}>{model.name}</NameLink>
+                      <NameLink href={modelPath(model.key)} data-row-primary="">
+                        {model.name}
+                      </NameLink>
                       <Key>{model.key}</Key>
                     </NameBlock>
                     <MobilePrimary>

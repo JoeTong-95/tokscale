@@ -409,9 +409,11 @@ function BenchmarkRow({
     (usage, index): usage is AgentUsage => usage !== null && usages.findIndex((u) => u?.key === usage.key) === index,
   );
   return (
-    <Row>
+    <Row data-row-link="">
       <Name>
-        <NameLink href={benchmarkPath(row.slug)}>{info.name}</NameLink>
+        <NameLink href={benchmarkPath(row.slug)} data-row-primary="">
+          {info.name}
+        </NameLink>
         <Category>
           {row.categoryLabel}
           {info.collectedBy ? ` · ${info.publisher}, collected by ${info.collectedBy}` : ` · ${info.publisher}`}

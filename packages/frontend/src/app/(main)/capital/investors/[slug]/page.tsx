@@ -162,12 +162,12 @@ export default async function InvestorPage({ params }: PageProps) {
                 {p.participations.map(({ event, roleLabels }) => {
                   const size = event.amounts.find((a) => a.skipped === null && ["equity_raised", "debt_raised", "ipo_proceeds", "equity_investment", "purchase_price"].includes(a.amount.measure));
                   return (
-                    <tr key={event.id}>
+                    <tr key={event.id} data-row-link="">
                       <td className={styles.nowrap} data-label="Date">
                         {formatPartialDate(event.date)}
                       </td>
                       <td className={styles.full}>
-                        <Link className={styles.cellMain} href={event.href}>
+                        <Link className={styles.cellMain} href={event.href} data-row-primary="">
                           {event.title}
                         </Link>
                         <span className={styles.cellSub}>{event.issuer ? event.issuer.name : event.partiesText}</span>

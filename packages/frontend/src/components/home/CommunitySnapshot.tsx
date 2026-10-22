@@ -5,6 +5,7 @@ import styled, { css } from "styled-components";
 import type { CommunitySnapshot as Snapshot, HumanRow, ModelUsageRow } from "@/lib/explore";
 import { AgentMark } from "@/components/explore/ExploreUI";
 import { ModelMark } from "@/components/explore/ModelMark";
+import { InstantTooltip } from "@/components/ui/InstantTooltip";
 import { Arrow, focusRing, VisuallyHidden } from "./primitives";
 import { compactCost, compactNumber, userChange, wholeNumber } from "./format";
 
@@ -79,7 +80,7 @@ function HumanItem({ human }: { human: HumanRow }) {
   const topAgent = human.topAgents[0];
   return (
     <li>
-      <RowLink href={`/u/${encodeURIComponent(human.username)}`} $kind="humans" title={`@${human.username}`}>
+      <RowLink href={`/u/${encodeURIComponent(human.username)}`} $kind="humans">
         <Rank>{human.rank}</Rank>
         <Identity>
           <AvatarImg
@@ -89,7 +90,10 @@ function HumanItem({ human }: { human: HumanRow }) {
             height={22}
             loading="lazy"
           />
-          <Name>{name}</Name>
+          {/* The handle is in the tooltip when the row shows a display name. */}
+          <Name content={name !== human.username ? `@${human.username}` : null} describe={false}>
+            {name}
+          </Name>
           {human.displayName && human.displayName !== human.username ? (
             <VisuallyHidden> (@{human.username})</VisuallyHidden>
           ) : null}
@@ -105,7 +109,7 @@ function HumanItem({ human }: { human: HumanRow }) {
             <StackText>—</StackText>
           )}
           {topAgent ? (
-            <AgentChip title={topAgent.name}>
+            <AgentChip content={topAgent.name} describe={false}>
               <AgentMark agent={topAgent} size={16} />
               <VisuallyHidden>, {topAgent.name}</VisuallyHidden>
             </AgentChip>
@@ -128,11 +132,14 @@ function ModelItem({ model }: { model: ModelUsageRow }) {
   const change = userChange(model);
   return (
     <li>
-      <RowLink href={`/models/${encodeURIComponent(model.key)}`} $kind="models" title={model.lab ?? undefined}>
+      <RowLink href={`/models/${encodeURIComponent(model.key)}`} $kind="models">
         <Rank>{model.rank}</Rank>
         <Identity>
           <ModelMark model={model} size={22} />
-          <Name>{model.name}</Name>
+          {/* The lab is in the tooltip. */}
+          <Name content={model.lab} describe={false}>
+            {model.name}
+          </Name>
           {model.lab ? <VisuallyHidden> by {model.lab}</VisuallyHidden> : null}
         </Identity>
         <Value>
@@ -344,7 +351,7 @@ const ellipsis = css`
   white-space: nowrap;
 `;
 
-const Name = styled.span`
+const Name = styled(InstantTooltip)`
   ${ellipsis}
   min-width: 0;
   color: var(--v2-text);
@@ -370,7 +377,7 @@ const StackText = styled.span`
   min-width: 0;
 `;
 
-const AgentChip = styled.span`
+const AgentChip = styled(InstantTooltip)`
   display: inline-flex;
   flex-shrink: 0;
   align-items: center;

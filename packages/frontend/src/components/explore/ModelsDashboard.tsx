@@ -41,6 +41,7 @@ import { ControlBar, CoverageLine, InlineLink, LinkSegments, ModelMark, TouchSeg
 import { DEFAULT_EXPLORE_PERIOD, EXPLORE_PERIODS, formatCount, formatShare, periodShortLabel } from "./format";
 import { ScoreValue } from "./ScoreValue";
 import { SegmentedGroup } from "@/components/leaderboard/RankingUI";
+import { InstantTooltip } from "@/components/ui/InstantTooltip";
 import { Select } from "@/components/ui/Select";
 
 interface Column {
@@ -134,8 +135,10 @@ const Scroller = styled.div`
   }
 `;
 
+/* Above the row covers and the controls raised over them, like the sticky model column. */
 const Fade = styled.div<{ $visible: boolean }>`
   position: absolute;
+  z-index: 3;
   top: 0;
   right: 0;
   bottom: 0;
@@ -190,22 +193,51 @@ const Table = styled.table`
     border-left: 1px solid var(--service-border);
   }
 
+  /*
+   * Row links (globals.css). The model cell is sticky, and a sticky cell is the
+   * containing block of its link's ::after, so that link covers only the cell;
+   * a data-row-cover link in the first data cell covers the rest of the row.
+   * The sticky cell stays above the cover (1) and the controls raised over it
+   * (2), and keeps an opaque background so scrolled cells do not show through.
+   */
   .model {
     position: sticky;
     left: 0;
-    z-index: 1;
+    z-index: 3;
     min-width: 220px;
     max-width: 280px;
     background: var(--service-canvas);
     text-align: left;
   }
 
-  tbody tr:hover td {
-    background: rgba(255, 255, 255, 0.02);
+  tbody tr:hover .model,
+  tbody tr:has([data-row-primary]:focus-visible) .model {
+    background: linear-gradient(var(--v2-row-hover), var(--v2-row-hover)), var(--service-canvas);
   }
 
-  tbody tr:hover td.model {
-    background: #12161f;
+  /* The focus ring is drawn on the cells, so the sticky cell cannot hide part of it. */
+  tbody tr [data-row-primary]:focus-visible::after {
+    outline: none;
+  }
+
+  tbody tr:has([data-row-primary]:focus-visible) > * {
+    box-shadow:
+      inset 0 2px 0 var(--v2-focus),
+      inset 0 -2px 0 var(--v2-focus);
+  }
+
+  tbody tr:has([data-row-primary]:focus-visible) > :first-child {
+    box-shadow:
+      inset 2px 0 0 var(--v2-focus),
+      inset 0 2px 0 var(--v2-focus),
+      inset 0 -2px 0 var(--v2-focus);
+  }
+
+  tbody tr:has([data-row-primary]:focus-visible) > :last-child {
+    box-shadow:
+      inset -2px 0 0 var(--v2-focus),
+      inset 0 2px 0 var(--v2-focus),
+      inset 0 -2px 0 var(--v2-focus);
   }
 `;
 
@@ -232,6 +264,15 @@ const SortButton = styled.button<{ $active: boolean }>`
   }
 `;
 
+/* A column header without sorting. It takes focus, so keyboard users can open its explanation. */
+const HeaderTip = styled(InstantTooltip)`
+  &:focus-visible {
+    border-radius: 4px;
+    outline: 2px solid var(--service-focus);
+    outline-offset: 2px;
+  }
+`;
+
 const ModelCell = styled.div`
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
@@ -242,6 +283,9 @@ const ModelCell = styled.div`
     grid-row: span 2;
   }
 `;
+
+/* Mouse-only cover over the rest of a table row; see the table styles. */
+const RowCover = styled(Link)``;
 
 const ModelLink = styled(Link)`
   overflow: hidden;
@@ -713,20 +757,23 @@ export function ModelsDashboard({
                     data-group-start={groupStart.has(column.id) ? "true" : undefined}
                     aria-sort={column.id === sort ? (sortAscending(sort) ? "ascending" : "descending") : undefined}
                     style={{ minWidth: column.width }}
-                    title={column.title}
                   >
                     {column.sortable ? (
-                      <SortButton
+                      <InstantTooltip
+                        as={SortButton}
                         type="button"
                         $active={column.id === sort}
                         aria-label={column.id === sort ? `${column.label}, sorted` : `Sort by ${column.label}`}
                         onClick={() => setSortChoice(column.id)}
+                        content={column.title}
                       >
                         {column.label}
                         <span aria-hidden="true">{column.id === sort ? (sortAscending(sort) ? "\u2191" : "\u2193") : ""}</span>
-                      </SortButton>
+                      </InstantTooltip>
                     ) : (
-                      column.label
+                      <HeaderTip content={column.title} focusable>
+                        {column.label}
+                      </HeaderTip>
                     )}
                   </th>
                 ))}
@@ -734,18 +781,23 @@ export function ModelsDashboard({
             </thead>
             <tbody>
               {(showAll ? sorted : sorted.slice(0, ROW_LIMIT)).map((row, index) => (
-                <tr key={row.key}>
+                <tr key={row.key} data-row-link="">
                   <th className="model" scope="row">
                     <ModelCell>
                       <ModelMark model={row} size={24} />
-                      <ModelLink href={modelPath(row.key)}>{row.name}</ModelLink>
+                      <ModelLink href={modelPath(row.key)} data-row-primary="">
+                        {row.name}
+                      </ModelLink>
                       <LabText>
                         {index + 1}. {row.lab ?? "Lab unknown"}
                       </LabText>
                     </ModelCell>
                   </th>
-                  {columns.map((column) => (
+                  {columns.map((column, columnIndex) => (
                     <td key={column.id} data-group-start={groupStart.has(column.id) ? "true" : undefined}>
+                      {columnIndex === 0 ? (
+                        <RowCover href={modelPath(row.key)} prefetch={false} tabIndex={-1} aria-hidden="true" data-row-cover="" />
+                      ) : null}
                       {column.render(row, "end")}
                     </td>
                   ))}
@@ -765,19 +817,23 @@ export function ModelsDashboard({
 
       <Cards aria-label="Models">
         {(showAll ? sorted : sorted.slice(0, CARD_LIMIT)).map((row, index) => (
-          <Card key={row.key}>
+          <Card key={row.key} data-row-link="">
             <CardHead>
               <span>{index + 1}</span>
               <ModelMark model={row} size={28} />
               <CardName>
-                <ModelLink href={modelPath(row.key)}>{row.name}</ModelLink>
+                <ModelLink href={modelPath(row.key)} data-row-primary="">
+                  {row.name}
+                </ModelLink>
                 <LabText>{row.lab ?? "Lab unknown"}</LabText>
               </CardName>
             </CardHead>
             <CardFacts>
               {columns.map((column) => (
                 <div key={column.id}>
-                  <dt title={column.title}>{column.label}</dt>
+                  <InstantTooltip as="dt" content={column.title} describe={false}>
+                    {column.label}
+                  </InstantTooltip>
                   <dd>{column.render(row, "start")}</dd>
                 </div>
               ))}

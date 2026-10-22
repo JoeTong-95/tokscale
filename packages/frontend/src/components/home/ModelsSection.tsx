@@ -4,6 +4,7 @@ import Link from "next/link";
 import styled from "styled-components";
 import type { Coverage, ModelUsageRow } from "@/lib/explore";
 import { ModelMark } from "@/components/explore/ModelMark";
+import { InstantTooltip } from "@/components/ui/InstantTooltip";
 import { agentLogoUrl } from "./agents";
 import {
   compactCost,
@@ -13,7 +14,7 @@ import {
   userChange,
   wholeNumber,
 } from "./format";
-import { Arrow, Container, Eyebrow, Lead, Section, SectionHeader, SectionTitle, TextLink } from "./primitives";
+import { Arrow, Container, Eyebrow, Lead, Section, SectionHeader, SectionTitle, TextLink, VisuallyHidden } from "./primitives";
 
 interface ModelsSectionProps {
   models: ModelUsageRow[];
@@ -69,7 +70,10 @@ function ModelColumn({ model, accounts, period }: { model: ModelUsageRow; accoun
         </MarkSlot>
         <ModelName id={titleId}>
           {model.name}{" "}
-          <Rank title={`#${model.rank} by active users, ${period}`}>#{model.rank}</Rank>
+          <Rank content={`#${model.rank} by active users, ${period}`} describe={false} openWithParentFocus>
+            #{model.rank}
+            <VisuallyHidden> by active users, {period}</VisuallyHidden>
+          </Rank>
         </ModelName>
         <ModelLab>{model.lab ?? "Unknown lab"}</ModelLab>
       </ModelHead>
@@ -215,8 +219,8 @@ const ModelName = styled.h3`
   line-height: 1.1;
 `;
 
-/* Rank by active users in the period, as on the featured human; the hover title spells it out. */
-const Rank = styled.span`
+/* Rank by active users in the period, as on the featured human; the tooltip spells it out. */
+const Rank = styled(InstantTooltip)`
   color: var(--v2-accent);
   white-space: nowrap;
 `;

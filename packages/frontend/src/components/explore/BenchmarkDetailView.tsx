@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useEffect, useId, useRef, useState } from "react";
 import styled from "styled-components";
 import { PrimaryActionLink } from "@/components/leaderboard/RankingUI";
+import { InstantTooltip } from "@/components/ui/InstantTooltip";
 import type { SourceNote } from "@/lib/benchmarks/attribution";
 import type { BenchmarkPageInfo, DateKind, MappingSummary, ResultColumns, ResultRow, TimelineData } from "@/lib/benchmarks/detail";
 import { formatIsoDay } from "@/lib/benchmarks/format";
@@ -257,10 +258,6 @@ const Table = styled.table`
     white-space: nowrap;
   }
 
-  tbody tr:hover {
-    background: rgba(255, 255, 255, 0.02);
-  }
-
   @media (max-width: ${STACK_BELOW}) {
     display: block;
 
@@ -455,7 +452,7 @@ const NarrowOnly = styled.span`
   }
 `;
 
-const WideOnly = styled.span`
+const WideOnly = styled(InstantTooltip)`
   @media (max-width: ${STACK_BELOW}) {
     display: none;
   }
@@ -732,7 +729,7 @@ function UsageCell({ row, usageAvailable }: { row: ResultRow; usageAvailable: bo
   }
   return (
     <td data-col="usage" role="cell">
-      <WideOnly aria-hidden="true" title="No Tokscale usage in the last 30 days">
+      <WideOnly aria-hidden="true" content="No Tokscale usage in the last 30 days" describe={false}>
         {"\u2014"}
       </WideOnly>
       <NarrowOnly aria-hidden="true">
@@ -759,7 +756,7 @@ function ResultRowView({
   const matched = row.modelKey !== null && row.modelName !== null;
   const name = matched ? (row.modelName as string) : row.sourceName;
   return (
-    <tr role="row">
+    <tr role="row" data-row-link={row.href ? "" : undefined}>
       <td data-col="rank" role="cell">
         {rank}
       </td>
@@ -767,7 +764,13 @@ function ResultRowView({
         <ModelCell>
           {matched ? <ModelMark model={{ name, logoUrl: row.logoUrl }} size={20} /> : <UnmatchedMark aria-hidden="true" />}
           <ModelText>
-            {row.href ? <ModelLink href={row.href}>{name}</ModelLink> : <ModelName>{name}</ModelName>}
+            {row.href ? (
+              <ModelLink href={row.href} data-row-primary="">
+                {name}
+              </ModelLink>
+            ) : (
+              <ModelName>{name}</ModelName>
+            )}
             {matched && row.sourceName !== name ? <Sub>Listed as {row.sourceName}</Sub> : null}
             {!matched ? <Sub>Not matched to a Tokscale model</Sub> : null}
           </ModelText>

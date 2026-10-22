@@ -97,13 +97,15 @@ export function CapitalPreview({ data }: CapitalPreviewProps) {
                 </PanelHead>
                 <MoveList>
                   {data.events.map((event) => (
-                    <li key={event.id}>
+                    <li key={event.id} data-row-link="">
                       <MoveMeta>
                         <span>{event.date}</span>
                         <Tag>{event.tag}</Tag>
                       </MoveMeta>
                       <MoveBody>
-                        <MoveTitle href={event.href}>{event.title}</MoveTitle>
+                        <MoveTitle href={event.href} data-row-primary="">
+                          {event.title}
+                        </MoveTitle>
                         <MoveSub>{event.parties}</MoveSub>
                       </MoveBody>
                       <MoveValue>
@@ -132,7 +134,7 @@ export function CapitalPreview({ data }: CapitalPreviewProps) {
 
 function LabRow({ lab }: { lab: HomeCapitalLab }) {
   return (
-    <LabItem>
+    <LabItem data-row-link={lab.href ? "" : undefined}>
       <LabName>
         <OrgTile aria-hidden="true">
           {lab.logo ? (
@@ -143,7 +145,13 @@ function LabRow({ lab }: { lab: HomeCapitalLab }) {
             lab.monogram
           )}
         </OrgTile>
-        {lab.href ? <CellLink href={lab.href}>{lab.name}</CellLink> : <span>{lab.name}</span>}
+        {lab.href ? (
+          <CellLink href={lab.href} data-row-primary="">
+            {lab.name}
+          </CellLink>
+        ) : (
+          <span>{lab.name}</span>
+        )}
       </LabName>
       <Share>
         <VisuallyHidden>Share of Tokscale tokens: </VisuallyHidden>
@@ -309,8 +317,12 @@ const Panels = styled.div`
   margin-top: 28px;
 `;
 
+/* Clips the row hover backgrounds to the rounded corners; row focus rings sit inside. */
 const Panel = styled.section`
+  --row-focus-offset: -2px;
+
   min-width: 0;
+  overflow: hidden;
   border: 1px solid var(--v2-rule-strong);
   border-radius: 12px;
   background: rgba(4, 5, 8, 0.86);

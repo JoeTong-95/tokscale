@@ -19,10 +19,13 @@ export function OrgMark({ org, large = false }: { org: Pick<OrgView, "logo" | "a
   );
 }
 
-/** Mark plus linked name, for tables. */
-export function OrgCell({ org, sub }: { org: OrgView; sub?: React.ReactNode }) {
+/**
+ * Mark plus linked name, for tables. With `rowLink`, the name is the primary link of a row
+ * marked data-row-link, so the whole row opens the organization's page.
+ */
+export function OrgCell({ org, sub, rowLink = false }: { org: OrgView; sub?: React.ReactNode; rowLink?: boolean }) {
   const name = org.href ? (
-    <a className={styles.cellMain} href={org.href}>
+    <a className={styles.cellMain} href={org.href} data-row-primary={rowLink ? "" : undefined}>
       {org.name}
     </a>
   ) : (

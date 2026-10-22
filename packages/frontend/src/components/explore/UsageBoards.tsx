@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * Models and Agents rankings: a dense table from 720px up, and
+ * Models and Agents rankings: a dense table from 840px up, and
  * information-complete stacked rows below it (no horizontal scrolling).
  */
 import Link from "next/link";
@@ -22,12 +22,15 @@ import {
 import { UNKNOWN_LAB_NAME } from "./catalog";
 import { AgentMark, ChangeText, EmptyNote, InlineLink, ModelMark, ShareMeter, VisuallyHidden } from "./ExploreUI";
 
+/* The table needs about 800px (seven columns, names on one line); below 840px the stacked rows show instead. */
+const TABLE_FROM = "840px";
+
 const TableWrap = styled.div`
   display: none;
   border-top: 1px solid var(--service-border);
   border-bottom: 1px solid var(--service-border);
 
-  @media (min-width: 720px) {
+  @media (min-width: ${TABLE_FROM}) {
     display: block;
   }
 `;
@@ -231,7 +234,7 @@ const MobileList = styled.ol`
   border-top: 1px solid var(--service-border);
   border-bottom: 1px solid var(--service-border);
 
-  @media (min-width: 720px) {
+  @media (min-width: ${TABLE_FROM}) {
     display: none;
   }
 `;

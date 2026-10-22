@@ -120,6 +120,7 @@ pub struct DailyUsage {
     pub date: NaiveDate,
     pub tokens: TokenBreakdown,
     pub cost: f64,
+    /// Keyed by client, or by machine label for `GroupBy::MachineModel`.
     pub source_breakdown: BTreeMap<String, DailySourceInfo>,
     pub message_count: u32,
     pub turn_count: u32,
@@ -139,6 +140,7 @@ pub struct HourlyUsage {
     pub datetime: NaiveDateTime,
     pub tokens: TokenBreakdown,
     pub cost: f64,
+    /// Clients seen, or machine labels for `GroupBy::MachineModel`.
     pub clients: BTreeSet<String>,
     pub models: BTreeMap<String, HourlyModelInfo>,
     pub message_count: u32,
@@ -150,6 +152,7 @@ pub struct MinutelyUsage {
     pub datetime: NaiveDateTime,
     pub tokens: TokenBreakdown,
     pub cost: f64,
+    /// Clients seen, or machine labels for `GroupBy::MachineModel`.
     pub clients: BTreeSet<String>,
     pub models: BTreeMap<String, HourlyModelInfo>,
     pub message_count: u32,
@@ -958,6 +961,13 @@ impl DataLoader {
                 group_by,
                 GroupBy::Model | GroupBy::WorkspaceModel | GroupBy::MachineModel
             );
+            // What the time-period views' Source column lists: the machine for
+            // `machine,model`, the client otherwise.
+            let period_source = if *group_by == GroupBy::MachineModel {
+                tokscale_core::message_machine_label(msg)
+            } else {
+                msg.client.as_str()
+            };
 
             let model_entry = model_map.entry(key.clone()).or_insert_with(|| ModelUsage {
                 model: normalized_model.clone(),
@@ -1176,7 +1186,7 @@ impl DataLoader {
 
                 let source_entry = daily_entry
                     .source_breakdown
-                    .entry(msg.client.clone())
+                    .entry(period_source.to_string())
                     .or_insert_with(|| DailySourceInfo {
                         tokens: TokenBreakdown::default(),
                         cost: 0.0,
@@ -1305,7 +1315,7 @@ impl DataLoader {
                 if msg.is_turn_start {
                     hourly_entry.turn_count += 1;
                 }
-                hourly_entry.clients.insert(msg.client.clone());
+                hourly_entry.clients.insert(period_source.to_string());
 
                 let hourly_model_key =
                     hourly_model_key(group_by, &msg.provider_id, &normalized_model);
@@ -1400,7 +1410,7 @@ impl DataLoader {
                 if msg.is_turn_start {
                     minutely_entry.turn_count += 1;
                 }
-                minutely_entry.clients.insert(msg.client.clone());
+                minutely_entry.clients.insert(period_source.to_string());
 
                 let m_model_key = hourly_model_key(group_by, &msg.provider_id, &normalized_model);
                 let m_model =
@@ -2950,6 +2960,82 @@ mod tests {
         assert_eq!(models[1].cost, 4.0);
         assert_ne!(models[0].group_key, models[1].group_key);
         assert_eq!(models[0].workspace_label, None);
+    }
+
+    /// Two messages in the same hour from two machines, one of them unlabeled.
+    fn two_machine_messages() -> Vec<UnifiedMessage> {
+        let local = make_workspace_message(
+            "claude",
+            "claude-sonnet-4-5-20250929",
+            "anthropic",
+            "session-1",
+            1.0,
+            None,
+            None,
+        );
+        let mut steven = make_workspace_message(
+            "pi",
+            "claude-sonnet-4-5-20250929",
+            "anthropic",
+            "session-2",
+            2.0,
+            None,
+            None,
+        );
+        steven.machine_label = Some("steven".to_string());
+        vec![local, steven]
+    }
+
+    #[test]
+    fn test_period_breakdowns_list_machines_for_machine_model() {
+        let loader = DataLoader::new(None).with_minutely_enabled(true);
+        let usage = loader
+            .aggregate_messages(two_machine_messages(), &GroupBy::MachineModel)
+            .unwrap();
+
+        assert_eq!(usage.daily.len(), 1);
+        let sources: Vec<&str> = usage.daily[0]
+            .source_breakdown
+            .keys()
+            .map(String::as_str)
+            .collect();
+        assert_eq!(sources, vec!["local", "steven"]);
+        assert_eq!(usage.daily[0].source_breakdown["local"].cost, 1.0);
+        assert_eq!(usage.daily[0].source_breakdown["steven"].cost, 2.0);
+
+        assert_eq!(usage.hourly.len(), 1);
+        let hourly: Vec<&str> = usage.hourly[0].clients.iter().map(String::as_str).collect();
+        assert_eq!(hourly, vec!["local", "steven"]);
+        assert_eq!(usage.minutely.len(), 1);
+        let minutely: Vec<&str> = usage.minutely[0]
+            .clients
+            .iter()
+            .map(String::as_str)
+            .collect();
+        assert_eq!(minutely, vec!["local", "steven"]);
+    }
+
+    #[test]
+    fn test_period_breakdowns_list_clients_for_client_model() {
+        let loader = DataLoader::new(None).with_minutely_enabled(true);
+        let usage = loader
+            .aggregate_messages(two_machine_messages(), &GroupBy::ClientModel)
+            .unwrap();
+
+        let sources: Vec<&str> = usage.daily[0]
+            .source_breakdown
+            .keys()
+            .map(String::as_str)
+            .collect();
+        assert_eq!(sources, vec!["claude", "pi"]);
+        let hourly: Vec<&str> = usage.hourly[0].clients.iter().map(String::as_str).collect();
+        assert_eq!(hourly, vec!["claude", "pi"]);
+        let minutely: Vec<&str> = usage.minutely[0]
+            .clients
+            .iter()
+            .map(String::as_str)
+            .collect();
+        assert_eq!(minutely, vec!["claude", "pi"]);
     }
 
     #[test]
